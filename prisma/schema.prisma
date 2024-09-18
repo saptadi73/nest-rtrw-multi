@@ -1,0 +1,111 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model kk {
+  id                 Int          @id @default(autoincrement())
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  no_kk String
+  no_blok Int
+  no_rumah Int
+  warga warga[]
+  setor setor[]
+  hutang hutang[]
+  pengeluaran pengeluaran[]
+}
+
+model warga {
+  id                 Int          @id @default(autoincrement())
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  nama String
+  type type @relation(fields: [id_type],references: [id])
+  id_type Int
+  kk kk? @relation(fields: [id_kk], references: [id])
+  id_kk Int?
+  nik String?
+  jenis_kelamin Boolean? @default(true)
+  tempat_lahir String?
+  tanggal_lahir DateTime?
+  no_hp String?
+}
+
+model type {
+  id                 Int          @id @default(autoincrement())
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  nama String
+  warga warga[]
+}
+
+model iuran {
+  id                 Int          @id @default(autoincrement())
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  iuran Int
+  keterangan String
+  setor setor[]
+}
+
+model setor {
+  id                 Int          @id @default(autoincrement())
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  kk kk @relation(fields: [id_kk], references: [id])
+  id_kk Int
+  nilai Int
+  iuran iuran @relation(fields: [id_iuran], references: [id])
+  id_iuran Int
+  tanggal DateTime
+}
+
+model hutang {
+  id                 Int          @id @default(autoincrement())
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  kk kk @relation(fields: [id_kk], references: [id])
+  id_kk Int
+  nilai Int
+}
+
+model pengeluaran {
+  id                 Int          @id @default(autoincrement())
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  kk kk @relation(fields: [id_kk], references: [id])
+  id_kk Int
+  nilai Int
+  biaya biaya @relation(fields: [id_biaya], references: [id])
+  id_biaya Int
+  tanggal DateTime
+}
+
+model biaya {
+  id                 Int          @id @default(autoincrement())
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  jenis_biaya String
+  keterangan String
+  pengeluaran pengeluaran[]
+}
+
+model photo {
+  id                 Int          @id @default(autoincrement())
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  nama String
+  keterangan String?
+  url String
+}
