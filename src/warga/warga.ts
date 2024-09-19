@@ -278,13 +278,15 @@ export class Warga {
                         },
                     },
                     kk: {
-                        where: {
-                            id: idKKku,
-                        },
                         select: {
                             no_blok: true,
                             no_rumah: true,
                         },
+                    },
+                },
+                where: {
+                    kk: {
+                        id: idKKku,
                     },
                 },
                 orderBy: {

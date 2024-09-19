@@ -1,4 +1,4 @@
-import { IsDateString, IsInt } from 'class-validator';
+import { IsDateString, IsInt, IsOptional, IsString } from 'class-validator';
 
 export class SetorCreateDto {
     @IsInt()
@@ -12,4 +12,8 @@ export class SetorCreateDto {
 
     @IsDateString()
     tanggal: string;
+
+    @IsString()
+    @IsOptional()
+    keterangan: string;
 }

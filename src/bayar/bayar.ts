@@ -20,6 +20,7 @@ export class Bayar {
             const addIuran = await this.prisma.iuran.create({
                 data: {
                     iuran: createIuran.iuran,
+                    nama: createIuran.nama,
                     keterangan: createIuran.keterangan,
                 },
             });
@@ -61,6 +62,7 @@ export class Bayar {
                             id: createBayar.id_iuran,
                         },
                     },
+                    keterangan: createBayar.keterangan,
                     nilai: createBayar.nilai,
                     tanggal: isoDate,
                 },
@@ -169,6 +171,7 @@ export class Bayar {
                     id: true,
                     iuran: true,
                     keterangan: true,
+                    nama: true,
                 },
                 orderBy: {
                     id: 'asc',
@@ -324,7 +327,7 @@ export class Bayar {
         try {
             const tambahBiaya = await this.prisma.biaya.create({
                 data: {
-                    jenis_biaya: createBiaya.jenis_biaya,
+                    nama: createBiaya.jenis_biaya,
                     keterangan: createBiaya.keterangan,
                 },
             });
@@ -357,7 +360,7 @@ export class Bayar {
         try {
             const tambahBiaya = await this.prisma.biaya.update({
                 data: {
-                    jenis_biaya: createBiaya.jenis_biaya,
+                    nama: createBiaya.jenis_biaya,
                     keterangan: createBiaya.keterangan,
                 },
                 where: {
@@ -479,6 +482,44 @@ export class Bayar {
             return {
                 status: 'nok',
                 message: 'gagal tambah pengeluaran',
+                data: error,
+            };
+        }
+    }
+
+    async findWarga(id_kk) {
+        try {
+            const id_kkku = parseInt(id_kk);
+
+            const cariWargaku = await this.prisma.warga.findFirst({
+                select: {
+                    nama: true,
+                    no_hp: true,
+                },
+                where: {
+                    id_kk: id_kkku,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil lihat Warga',
+                result: cariWargaku,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal tambah pengeluaran karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal dapat data warga',
                 data: error,
             };
         }

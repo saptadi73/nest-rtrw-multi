@@ -40,6 +40,8 @@ model warga {
   tempat_lahir String?
   tanggal_lahir DateTime?
   no_hp String?
+  anggaran anggaran[]
+  photo photo[]
 }
 
 model type {
@@ -54,8 +56,9 @@ model iuran {
   id                 Int          @id @default(autoincrement())
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
-  iuran Int
-  keterangan String
+  nama String
+  iuran Int?
+  keterangan String?
   setor setor[]
 }
 
@@ -68,6 +71,7 @@ model setor {
   nilai Int
   iuran iuran @relation(fields: [id_iuran], references: [id])
   id_iuran Int
+  keterangan String?
   tanggal DateTime
 }
 
@@ -92,13 +96,38 @@ model pengeluaran {
   tanggal DateTime
 }
 
+model anggaran {
+  id                 Int          @id @default(autoincrement())
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  warga warga @relation(fields: [id_warga], references: [id])
+  id_warga Int
+  nilai Int
+  jenis_anggaran jenis_anggaran @relation(fields: [id_jenis_anggaran], references: [id])
+  id_jenis_anggaran Int
+  tanggal DateTime
+  keterangan String?
+  type_anggaran Boolean
+  bukti bukti[]
+}
+
 model biaya {
   id                 Int          @id @default(autoincrement())
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
-  jenis_biaya String
-  keterangan String
+  nama String
+  keterangan String?
+  biaya Int?
   pengeluaran pengeluaran[]
+}
+
+model jenis_anggaran {
+  id                 Int          @id @default(autoincrement())
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  nama String
+  keterangan String?
+  anggaran anggaran[]
 }
 
 model photo {
@@ -108,4 +137,18 @@ model photo {
   nama String
   keterangan String?
   url String
+  warga warga? @relation(references: [id], fields: [id_warga])
+  id_warga Int
 }
+
+model bukti {
+  id                 Int          @id @default(autoincrement())
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  nama String
+  keterangan String?
+  url String
+  anggaran anggaran? @relation(references: [id], fields: [id_anggaran])
+  id_anggaran Int
+}
+
