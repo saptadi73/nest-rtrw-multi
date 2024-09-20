@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsInt, IsOptional, IsString } from 'class-validator';
 
 export class JenisAnggaranCreateDto {
     @IsString()
@@ -7,4 +7,8 @@ export class JenisAnggaranCreateDto {
     @IsString()
     @IsOptional()
     keterangan: string;
+
+    @IsInt()
+    @IsOptional()
+    id: number;
 }
