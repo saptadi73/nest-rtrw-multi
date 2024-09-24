@@ -10,6 +10,10 @@ import {
 } from '@nestjs/common';
 import { Bayar } from './bayar';
 import { SetorCreateDto } from './dto/setor.create.dto';
+import { JenisAnggaranCreateDto } from './dto/jenis.anggaran.create.dto';
+import { AnggaranCreateDto } from './dto/anggaran.create.dto';
+import { AnggaranUpdateDto } from './dto/anggaran.update.dto';
+import { SetorUpdateDto } from './dto/setor.update.dto';
 
 @Controller('bayar')
 export class BayarController {
@@ -56,6 +60,137 @@ export class BayarController {
     async cariWarga(@Param('id') id: string) {
         try {
             return this.bayar.findWarga(id);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('add/jenis/anggaran')
+    @Header('Content-Type', 'application/json')
+    async tambahJenisAnggaran(@Body() tambahJenisAnggaran: JenisAnggaranCreateDto) {
+        try {
+            return this.bayar.addJenisAnggaran(tambahJenisAnggaran);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('list/jenis/anggaran')
+    async listJenisAnggaran() {
+        try {
+            return this.bayar.listJenisAnggaran();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('add/anggaran')
+    @Header('Content-Type', 'application/json')
+    async addAnggaran(@Body() createAnggaran: AnggaranCreateDto) {
+        try {
+            return this.bayar.tambahAnggaran(createAnggaran);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('update/anggaran')
+    @Header('Content-Type', 'application/json')
+    async editAnggaran(@Body() updateAnggaran: AnggaranUpdateDto) {
+        try {
+            return this.bayar.tambahAnggaran(updateAnggaran);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('cari/setor/:id')
+    async findDataSetor(@Param('id') id: string) {
+        try {
+            return this.bayar.FindSetoran(id);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('update/anggaran')
+    @Header('Content-Type', 'application/json')
+    async updateAnggaran(updateAnggaranbku: AnggaranUpdateDto) {
+        try {
+            return this.bayar.editAnggaran(updateAnggaranbku);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('update/setoran')
+    @Header('Content-Type', 'application/json')
+    async updateSetoran(updateSetoran: SetorUpdateDto) {
+        try {
+            return this.bayar.updateSetor(updateSetoran);
         } catch (error) {
             throw new HttpException(
                 {

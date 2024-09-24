@@ -10,6 +10,9 @@ import { BiayaCreateDto } from './dto/biaya.create.dto';
 import { BiayaUpdateDto } from './dto/biaya.update.dto';
 import { PengeluaranCreateDto } from './dto/pengeluaran.create.dto';
 import { PengeluaranUpdateDto } from './dto/pengeluaran.update.dto';
+import { JenisAnggaranCreateDto } from './dto/jenis.anggaran.create.dto';
+import { AnggaranCreateDto } from './dto/anggaran.create.dto';
+import { AnggaranUpdateDto } from './dto/anggaran.update.dto';
 
 @Injectable()
 export class Bayar {
@@ -520,6 +523,339 @@ export class Bayar {
             return {
                 status: 'nok',
                 message: 'gagal dapat data warga',
+                data: error,
+            };
+        }
+    }
+
+    async addJenisAnggaran(createJenisAnggaran: JenisAnggaranCreateDto) {
+        try {
+            const addJenisAnggaran = await this.prisma.jenis_anggaran.create({
+                data: {
+                    nama: createJenisAnggaran.nama,
+                    keterangan: createJenisAnggaran.keterangan,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil menambah Jenis Anggaran',
+                result: addJenisAnggaran,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal tambah jenis Anggaran karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal tambah Jenis Anggaran',
+                data: error,
+            };
+        }
+    }
+
+    async listJenisAnggaran() {
+        try {
+            const DaftarJenisAnggaran = await this.prisma.jenis_anggaran.findMany({
+                select: {
+                    id: true,
+                    nama: true,
+                    keterangan: true,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil mendapatkan daftar jenis anggaran',
+                result: DaftarJenisAnggaran,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat jenis Anggaran karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal lihat jenis Anggaran',
+                data: error,
+            };
+        }
+    }
+
+    async tambahAnggaran(createAnggaran: AnggaranCreateDto) {
+        try {
+            const dateString = createAnggaran.tanggal;
+            const date = new Date(dateString);
+            const isoDate = date.toISOString();
+            let typeku = true;
+            if (createAnggaran.type_anggaran == '0') {
+                typeku = false;
+            } else {
+                typeku = true;
+            }
+            const addAnggaran = await this.prisma.anggaran.create({
+                data: {
+                    warga: {
+                        connect: {
+                            id: createAnggaran.id_warga,
+                        },
+                    },
+                    jenis_anggaran: {
+                        connect: {
+                            id: createAnggaran.id_jenis_anggaran,
+                        },
+                    },
+                    nilai: createAnggaran.nilai,
+                    tanggal: isoDate,
+                    keterangan: createAnggaran.keterangan,
+                    type_anggaran: typeku,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil tambah anggaran',
+                result: addAnggaran,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal tambah Anggaran karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal tambah Anggaran',
+                data: error,
+            };
+        }
+    }
+
+    async editAnggaran(updateAnggaran: AnggaranUpdateDto) {
+        try {
+            const dateString = updateAnggaran.tanggal;
+            const date = new Date(dateString);
+            const isoDate = date.toISOString();
+            let typeku = true;
+            if (updateAnggaran.type_anggaran == '0') {
+                typeku = false;
+            } else {
+                typeku = true;
+            }
+            const ubahAnggaran = await this.prisma.anggaran.update({
+                data: {
+                    warga: {
+                        connect: {
+                            id: updateAnggaran.id_warga,
+                        },
+                    },
+                    jenis_anggaran: {
+                        connect: {
+                            id: updateAnggaran.id_jenis_anggaran,
+                        },
+                    },
+                    nilai: updateAnggaran.nilai,
+                    tanggal: isoDate,
+                    keterangan: updateAnggaran.keterangan,
+                    type_anggaran: typeku,
+                },
+                where: {
+                    id: updateAnggaran.id,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil update data anggaran',
+                result: ubahAnggaran,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal update data Anggaran karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal update data Anggaran',
+                data: error,
+            };
+        }
+    }
+
+    async updateSetor(updateSetor: SetorUpdateDto) {
+        try {
+            const dateString = updateSetor.tanggal;
+            const date = new Date(dateString);
+            const isoDate = date.toISOString();
+            const editSetor = await this.prisma.setor.update({
+                data: {
+                    kk: {
+                        connect: {
+                            id: updateSetor.id_kk,
+                        },
+                    },
+                    iuran: {
+                        connect: {
+                            id: updateSetor.id_iuran,
+                        },
+                    },
+                    nilai: updateSetor.nilai,
+                    tanggal: isoDate,
+                    keterangan: updateSetor.keterangan,
+                },
+                where: {
+                    id: updateSetor.id,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil update data anggaran',
+                result: editSetor,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal update data setor karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal update data Setor',
+                data: error,
+            };
+        }
+    }
+
+    async FindSetoran(idSetoran) {
+        try {
+            const idSetoranku = parseInt(idSetoran);
+
+            const golekSetoranku = await this.prisma.setor.findFirst({
+                select: {
+                    id: true,
+                    nilai: true,
+                    kk: {
+                        select: {
+                            id: true,
+                            no_blok: true,
+                            no_rumah: true,
+                            no_kk: true,
+                        },
+                    },
+                    tanggal: true,
+                    iuran: {
+                        select: {
+                            id: true,
+                            nama: true,
+                        },
+                    },
+                },
+                where: {
+                    id: idSetoranku,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data setoran',
+                result: golekSetoranku,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data setor karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal dapat data Setor',
+                data: error,
+            };
+        }
+    }
+    async findAnggaran(idAnggaran) {
+        try {
+            const idAnggaranku = parseInt(idAnggaran);
+            const golekAnggaran = await this.prisma.anggaran.findFirst({
+                select: {
+                    warga: {
+                        select: {
+                            id: true,
+                            nama: true,
+                            no_hp: true,
+                        },
+                    },
+                    nilai: true,
+                    tanggal: true,
+                    keterangan: true,
+                    type_anggaran: true,
+                    jenis_anggaran: {
+                        select: {
+                            id: true,
+                            nama: true,
+                            keterangan: true,
+                        },
+                    },
+                },
+                where: {
+                    id: idAnggaranku,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data anggaran',
+                result: golekAnggaran,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data anggaran karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal dapat data anggaran',
                 data: error,
             };
         }

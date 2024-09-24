@@ -147,4 +147,77 @@ export class WargaController {
             );
         }
     }
+
+    @Get('list/all')
+    async listWargaAll() {
+        try {
+            return this.Warga.listAllWarga();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('find/kk/:id')
+    async cariWarga(@Param('id') id: string) {
+        try {
+            return this.Warga.findKK(id);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+    @Post('update/kk/:id')
+    @Header('Content-Type', 'application/json')
+    async updateKK(id) {
+        try {
+            return this.Warga.updateKK(id);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('update/warga/:id')
+    @Header('Content-Type', 'application/json')
+    async updateWarga(id) {
+        try {
+            return this.Warga.updateWarga(id);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
 }

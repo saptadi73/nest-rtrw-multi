@@ -68,6 +68,37 @@ export class Warga {
         }
     }
 
+    async findKK(idkk: string) {
+        try {
+            const idkkku = parseInt(idkk);
+            const CariKK = await this.prisma.kk.findFirst({
+                select: {
+                    id: true,
+                    no_blok: true,
+                    no_kk: true,
+                    no_rumah: true,
+                },
+                where: {
+                    id: idkkku,
+                },
+            });
+            return { status: 'ok', message: 'berhasil dapat data kk', result: CariKK };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data kk karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal dapat data kk', data: error };
+        }
+    }
+
     async createWarga(createWarga: WargaCreateDto) {
         try {
             const dateString = createWarga.tanggal_lahir;
@@ -158,6 +189,41 @@ export class Warga {
                 }
             }
             return { status: 'nok', message: 'gagal update data warga', data: error };
+        }
+    }
+
+    async findWarga(idWarga: string) {
+        try {
+            const idwargaku = parseInt(idWarga);
+            const cariWarga = await this.prisma.warga.findFirst({
+                select: {
+                    id: true,
+                    nama: true,
+                    nik: true,
+                    id_type: true,
+                    no_hp: true,
+                    tempat_lahir: true,
+                    tanggal_lahir: true,
+                    jenis_kelamin: true,
+                },
+                where: {
+                    id: idwargaku,
+                },
+            });
+            return { status: 'ok', message: 'berhasil cari data warga', result: cariWarga };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal cari data warga karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal cari data warga', data: error };
         }
     }
 
@@ -326,24 +392,10 @@ export class Warga {
                     tanggal_lahir: true,
                     no_hp: true,
                     nik: true,
-                    type: {
-                        select: {
-                            nama: true,
-                        },
-                    },
-                    kk: {
-                        select: {
-                            id: true,
-                            no_blok: true,
-                            no_rumah: true,
-                            no_kk: true,
-                        },
-                    },
                 },
                 orderBy: {
                     kk: {
                         no_blok: 'asc',
-                        no_rumah: 'asc',
                     },
                 },
             });
@@ -364,7 +416,7 @@ export class Warga {
                     };
                 }
             }
-            return { status: 'nok', message: 'gagal dapat data warga', data: error };
+            return { status: 'nok', message: 'gagal dapat data warganya, maaf', data: error };
         }
     }
 
