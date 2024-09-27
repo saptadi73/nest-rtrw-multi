@@ -498,9 +498,27 @@ export class Bayar {
                 select: {
                     nama: true,
                     no_hp: true,
+                    nik: true,
+                    tanggal_lahir: true,
+                    tempat_lahir: true,
+                    type: {
+                        select: {
+                            id: true,
+                            nama: true,
+                        },
+                    },
                 },
                 where: {
-                    id_kk: id_kkku,
+                    AND: [
+                        {
+                            kk: {
+                                id: id_kkku,
+                            },
+                        },
+                        {
+                            id_type: 1,
+                        },
+                    ],
                 },
             });
             return {
@@ -764,6 +782,7 @@ export class Bayar {
                 select: {
                     id: true,
                     nilai: true,
+                    keterangan: true,
                     kk: {
                         select: {
                             id: true,

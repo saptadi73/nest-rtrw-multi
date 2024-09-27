@@ -220,4 +220,22 @@ export class WargaController {
             );
         }
     }
+
+    @Get('find/warga/:id')
+    async findWarga(@Param('id') id: string) {
+        try {
+            return this.Warga.findWarga(id);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
 }

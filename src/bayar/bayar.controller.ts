@@ -204,4 +204,23 @@ export class BayarController {
             );
         }
     }
+
+    @Get('find/anggaran/:id')
+    async cariAnggaran(@Param('id') id: string) {
+        try {
+            return this.bayar.findAnggaran(id);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
 }
