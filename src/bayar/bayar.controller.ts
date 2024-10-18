@@ -14,6 +14,8 @@ import { JenisAnggaranCreateDto } from './dto/jenis.anggaran.create.dto';
 import { AnggaranCreateDto } from './dto/anggaran.create.dto';
 import { AnggaranUpdateDto } from './dto/anggaran.update.dto';
 import { SetorUpdateDto } from './dto/setor.update.dto';
+import { LaporanSetoranDto } from './dto/laporan.setoran.dto';
+import { LaporanAnggaranDto } from './dto/laporan.anggaran.dto';
 
 @Controller('bayar')
 export class BayarController {
@@ -223,4 +225,60 @@ export class BayarController {
         }
     }
 
+    @Post('list/setoran')
+    @Header('Content-Type', 'application/json')
+    async daftarSetoran(@Body() laporanTanggal: LaporanSetoranDto) {
+        try {
+            return this.bayar.listSetoran(laporanTanggal);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('list/anggaran')
+    @Header('Content-Type', 'application/json')
+    async daftarAnggaran(@Body() laporanAnggaran: LaporanAnggaranDto) {
+        try {
+            return this.bayar.listAnggaran(laporanAnggaran);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('list/setor')
+    @Header('Content-Type', 'application/json')
+    async listSetoran(@Body() laporanSetorku: LaporanSetoranDto) {
+        try {
+            return this.bayar.listSetoran(laporanSetorku);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
 }

@@ -39,11 +39,12 @@ export class Warga {
         }
     }
 
-    async updateKK(updateKk: KkUpdateDto) {
+    async updateKK(id: string, updateKk: KkUpdateDto) {
         try {
+            const idku = parseInt(id);
             const editKK = await this.prisma.kk.update({
                 where: {
-                    id: updateKk.id,
+                    id: idku,
                 },
                 data: {
                     no_kk: updateKk.no_kk,
@@ -64,7 +65,7 @@ export class Warga {
                     };
                 }
             }
-            return { status: 'nok', message: 'gagal update data kk', data: error };
+            return { status: 'nok', message: 'gagal update data kk', data: 'error' };
         }
     }
 
@@ -103,6 +104,7 @@ export class Warga {
         try {
             const dateString = createWarga.tanggal_lahir;
             const date = new Date(dateString);
+            date.setHours(date.getHours() + 7);
             const isoDate = date.toISOString();
             let jk = true;
             if (createWarga.jenis_kelamin == '0') {
@@ -147,11 +149,20 @@ export class Warga {
         }
     }
 
-    async updateWarga(createWarga: WargaUpdateDto) {
+    async updateWarga(id: string, createWarga: WargaUpdateDto) {
         try {
+            const idku = parseInt(id);
             const dateString = createWarga.tanggal_lahir;
             const date = new Date(dateString);
+            date.setHours(date.getHours() + 7);
             const isoDate = date.toISOString();
+            let jk = true;
+            if (createWarga.jenis_kelamin == '0') {
+                jk = false;
+            } else {
+                jk = true;
+            }
+            console.log(isoDate);
             const addWarga = await this.prisma.warga.update({
                 data: {
                     nama: createWarga.nama,
@@ -159,20 +170,20 @@ export class Warga {
                     nik: createWarga.nik,
                     tempat_lahir: createWarga.tempat_lahir,
                     tanggal_lahir: isoDate,
-                    jenis_kelamin: createWarga.jenis_kelamin,
+                    jenis_kelamin: jk,
+                    kk: {
+                        connect: {
+                            id: createWarga.id_kk,
+                        },
+                    },
                     type: {
-                        connectOrCreate: {
-                            where: {
-                                id: createWarga.id_kk,
-                            },
-                            create: {
-                                nama: createWarga.nama_type,
-                            },
+                        connect: {
+                            id: createWarga.id_type,
                         },
                     },
                 },
                 where: {
-                    id: createWarga.id,
+                    id: idku,
                 },
             });
             return { status: 'ok', message: 'berhasil update data warga', result: addWarga };
@@ -205,6 +216,7 @@ export class Warga {
                     tempat_lahir: true,
                     tanggal_lahir: true,
                     jenis_kelamin: true,
+                    id_kk: true,
                 },
                 where: {
                     id: idwargaku,
@@ -392,6 +404,12 @@ export class Warga {
                     tanggal_lahir: true,
                     no_hp: true,
                     nik: true,
+                    kk: {
+                        select: {
+                            no_blok: true,
+                            no_rumah: true,
+                        },
+                    },
                 },
                 orderBy: {
                     kk: {

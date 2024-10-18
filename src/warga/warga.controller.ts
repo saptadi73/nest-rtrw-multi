@@ -18,6 +18,8 @@ import { FileNameEditor, ImageFileFilter } from './file.utils';
 import { CreateFileDto } from './dto/create.file.dto';
 import { KkCreateDto } from './dto/kk.create.dto';
 import { WargaCreateDto } from './dto/warga.create.dto';
+import { KkUpdateDto } from './dto/kk.update.dto';
+import { WargaUpdateDto } from './dto/warga.update.dto';
 
 @Controller('warga')
 export class WargaController {
@@ -185,9 +187,9 @@ export class WargaController {
     }
     @Post('update/kk/:id')
     @Header('Content-Type', 'application/json')
-    async updateKK(id) {
+    async updateKK(@Param('id') id: string, @Body() updateKK: KkUpdateDto) {
         try {
-            return this.Warga.updateKK(id);
+            return this.Warga.updateKK(id, updateKK);
         } catch (error) {
             throw new HttpException(
                 {
@@ -204,9 +206,9 @@ export class WargaController {
 
     @Post('update/warga/:id')
     @Header('Content-Type', 'application/json')
-    async updateWarga(id) {
+    async updateWarga(@Param('id') id: string, @Body() updateWarga: WargaUpdateDto) {
         try {
-            return this.Warga.updateWarga(id);
+            return this.Warga.updateWarga(id, updateWarga);
         } catch (error) {
             throw new HttpException(
                 {

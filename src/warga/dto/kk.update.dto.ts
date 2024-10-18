@@ -14,5 +14,6 @@ export class KkUpdateDto {
     no_rumah: number;
 
     @IsInt()
+    @IsOptional()
     id: number;
 }

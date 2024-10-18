@@ -33,10 +33,11 @@ export class WargaUpdateDto {
     @IsOptional()
     tanggal_lahir: string;
 
-    @IsBoolean()
+    @IsString()
     @IsOptional()
-    jenis_kelamin: boolean;
+    jenis_kelamin: string;
 
     @IsInt()
+    @IsOptional()
     id: number;
 }

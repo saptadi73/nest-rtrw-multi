@@ -13,6 +13,9 @@ import { PengeluaranUpdateDto } from './dto/pengeluaran.update.dto';
 import { JenisAnggaranCreateDto } from './dto/jenis.anggaran.create.dto';
 import { AnggaranCreateDto } from './dto/anggaran.create.dto';
 import { AnggaranUpdateDto } from './dto/anggaran.update.dto';
+import { LaporanSetoranDto } from './dto/laporan.setoran.dto';
+import { toZonedTime } from 'date-fns-tz';
+import { LaporanAnggaranDto } from './dto/laporan.anggaran.dto';
 
 @Injectable()
 export class Bayar {
@@ -52,6 +55,8 @@ export class Bayar {
         try {
             const dateString = createBayar.tanggal;
             const date = new Date(dateString);
+            date.setHours(date.getHours() + 7);
+
             const isoDate = date.toISOString();
             const tambahBayar = await this.prisma.setor.create({
                 data: {
@@ -70,6 +75,7 @@ export class Bayar {
                     tanggal: isoDate,
                 },
             });
+
             return {
                 status: 'ok',
                 message: 'berhasil tambah setoran',
@@ -126,6 +132,8 @@ export class Bayar {
         try {
             const dateString = createBayar.tanggal;
             const date = new Date(dateString);
+            date.setHours(date.getHours() + 7);
+
             const isoDate = date.toISOString();
             const tambahBayar = await this.prisma.setor.update({
                 data: {
@@ -201,8 +209,19 @@ export class Bayar {
         }
     }
 
-    async listSetoran() {
+    async listSetoran(laporanTanggal: LaporanSetoranDto) {
         try {
+            const dateString_awal = laporanTanggal.tanggal_awal;
+            const date_awal = new Date(dateString_awal);
+            date_awal.setHours(date_awal.getHours() + 7);
+
+            const isoDate_awal = date_awal.toISOString();
+
+            const dateString_akhir = laporanTanggal.tanggal_akhir;
+            const date_akhir = new Date(dateString_akhir);
+            date_akhir.setHours(date_akhir.getHours() + 7);
+
+            const isoDate_akhir = date_akhir.toISOString();
             const listSetoran = await this.prisma.setor.findMany({
                 select: {
                     id: true,
@@ -228,10 +247,26 @@ export class Bayar {
                     tanggal: true,
                     iuran: {
                         select: {
+                            id: true,
                             iuran: true,
                             keterangan: true,
                         },
                     },
+                },
+                where: {
+                    AND: [
+                        {
+                            tanggal: {
+                                lte: isoDate_akhir,
+                                gte: isoDate_awal,
+                            },
+                        },
+                        {
+                            iuran: {
+                                id: laporanTanggal.iuran,
+                            },
+                        },
+                    ],
                 },
             });
             return {
@@ -399,6 +434,8 @@ export class Bayar {
         try {
             const dateString = addPengeluaran.tanggal;
             const date = new Date(dateString);
+            date.setHours(date.getHours() + 7);
+
             const isoDate = date.toISOString();
             const tambahPengeluaran = await this.prisma.pengeluaran.create({
                 data: {
@@ -445,6 +482,8 @@ export class Bayar {
         try {
             const dateString = addPengeluaran.tanggal;
             const date = new Date(dateString);
+            date.setHours(date.getHours() + 7);
+
             const isoDate = date.toISOString();
             const tambahPengeluaran = await this.prisma.pengeluaran.update({
                 data: {
@@ -617,6 +656,8 @@ export class Bayar {
         try {
             const dateString = createAnggaran.tanggal;
             const date = new Date(dateString);
+            date.setHours(date.getHours() + 7);
+
             const isoDate = date.toISOString();
             let typeku = true;
             if (createAnggaran.type_anggaran == '0') {
@@ -671,6 +712,8 @@ export class Bayar {
         try {
             const dateString = updateAnggaran.tanggal;
             const date = new Date(dateString);
+            date.setHours(date.getHours() + 7);
+
             const isoDate = date.toISOString();
             let typeku = true;
             if (updateAnggaran.type_anggaran == '0') {
@@ -728,6 +771,8 @@ export class Bayar {
         try {
             const dateString = updateSetor.tanggal;
             const date = new Date(dateString);
+            date.setHours(date.getHours() + 7);
+
             const isoDate = date.toISOString();
             const editSetor = await this.prisma.setor.update({
                 data: {
@@ -859,6 +904,95 @@ export class Bayar {
                 status: 'ok',
                 message: 'berhasil dapat data anggaran',
                 result: golekAnggaran,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data anggaran karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal dapat data anggaran',
+                data: error,
+            };
+        }
+    }
+
+    async listAnggaran(laporanAnggaran: LaporanAnggaranDto) {
+        try {
+            const dateString_awal = laporanAnggaran.tanggal_awal;
+            const date_awal = new Date(dateString_awal);
+            date_awal.setHours(date_awal.getHours() + 7);
+
+            const isoDate_awal = date_awal.toISOString();
+
+            const dateString_akhir = laporanAnggaran.tanggal_akhir;
+            const date_akhir = new Date(dateString_akhir);
+            date_akhir.setHours(date_akhir.getHours() + 7);
+
+            const isoDate_akhir = date_akhir.toISOString();
+            let typeku = false;
+
+            if (laporanAnggaran.type_anggaran == '0') {
+                typeku = false;
+            } else {
+                typeku = true;
+            }
+
+            const LaporanAnggaran = await this.prisma.anggaran.findMany({
+                select: {
+                    warga: {
+                        select: {
+                            id: true,
+                            nama: true,
+                            kk: {
+                                select: {
+                                    id: true,
+                                    no_blok: true,
+                                    no_rumah: true,
+                                },
+                            },
+                        },
+                    },
+                    nilai: true,
+                    id: true,
+                    jenis_anggaran: {
+                        select: {
+                            id: true,
+                            nama: true,
+                        },
+                    },
+                    tanggal: true,
+                    type_anggaran: true,
+                },
+                where: {
+                    AND: [
+                        {
+                            tanggal: {
+                                gte: isoDate_awal,
+                                lte: isoDate_akhir,
+                            },
+                        },
+                        {
+                            type_anggaran: typeku,
+                        },
+                        {
+                            id_jenis_anggaran: laporanAnggaran.id_jenis_anggaran,
+                        },
+                    ],
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data anggaran',
+                result: LaporanAnggaran,
             };
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
