@@ -262,23 +262,4 @@ export class BayarController {
             );
         }
     }
-
-    @Post('list/setor')
-    @Header('Content-Type', 'application/json')
-    async listSetoran(@Body() laporanSetorku: LaporanSetoranDto) {
-        try {
-            return this.bayar.listSetoran(laporanSetorku);
-        } catch (error) {
-            throw new HttpException(
-                {
-                    status: HttpStatus.FORBIDDEN,
-                    message: 'Forbidden Access',
-                },
-                HttpStatus.FORBIDDEN,
-                {
-                    cause: error,
-                }
-            );
-        }
-    }
 }
