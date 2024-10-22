@@ -16,6 +16,7 @@ import { AnggaranUpdateDto } from './dto/anggaran.update.dto';
 import { SetorUpdateDto } from './dto/setor.update.dto';
 import { LaporanSetoranDto } from './dto/laporan.setoran.dto';
 import { LaporanAnggaranDto } from './dto/laporan.anggaran.dto';
+import { HitungHutangDto } from './dto/hitung.hutang.dto';
 
 @Controller('bayar')
 export class BayarController {
@@ -249,6 +250,25 @@ export class BayarController {
     async daftarAnggaran(@Body() laporanAnggaran: LaporanAnggaranDto) {
         try {
             return this.bayar.listAnggaran(laporanAnggaran);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('list/belum')
+    @Header('Content-Type', 'application/json')
+    async belumBayarIuran(@Body() hutangHitung: HitungHutangDto) {
+        try {
+            return this.bayar.listBelumBayar(hutangHitung);
         } catch (error) {
             throw new HttpException(
                 {

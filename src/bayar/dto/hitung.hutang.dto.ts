@@ -19,5 +19,5 @@ export class HitungHutangDto {
 
     @IsInt()
     @IsOptional()
-    id_type: number;
+    iuran: number;
 }

@@ -307,12 +307,21 @@ export class Bayar {
                     },
                 },
                 where: {
-                    tanggal: {
-                        gte: startDate,
-                        lt: endDate,
-                    },
+                    AND:[
+                        {
+                            tanggal: {
+                                gte: startDate,
+                                lt: endDate,
+                            },
+                        },
+                        {
+                            id_iuran: hutang.iuran,
+                        },
+                    ],
                 },
             });
+
+            const listIDBayar = wargaBayarBulan.map((setor) => setor.kk.id);
 
             const WargaGakBayar = await this.prisma.kk.findMany({
                 select: {
@@ -333,7 +342,7 @@ export class Bayar {
                 },
                 where: {
                     id: {
-                        notIn: wargaBayarBulan.map((setor) => setor.kk.id),
+                        notIn: listIDBayar,
                     },
                 },
             });
