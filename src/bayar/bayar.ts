@@ -273,6 +273,8 @@ export class Bayar {
                 message: 'berhasil dapat data setoran',
                 result: listSetoran,
             };
+            console.log(isoDate_awal);
+            console.log(isoDate_akhir);
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 if (error.code === 'P2002') {
