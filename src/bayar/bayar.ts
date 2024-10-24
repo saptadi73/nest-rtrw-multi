@@ -1219,4 +1219,222 @@ export class Bayar {
         }
     }
 
+    async listSetor() {
+        try {
+            const tanggal = new Date();
+            const month = tanggal.getMonth(); // September
+            const year = tanggal.getFullYear();
+
+            const startDate = new Date(year, month - 1, 1); // September 1, 2023
+            const endDate = new Date(year, month, 1);
+
+            const daftarSetor = await this.prisma.setor.findMany({
+                select: {
+                    kk: {
+                        select: {
+                            id: true,
+                            no_blok: true,
+                            no_rumah: true,
+                            warga: {
+                                select: {
+                                    id: true,
+                                    nama: true,
+                                },
+                            },
+                        },
+                    },
+                    nilai: true,
+                    tanggal: true,
+                },
+                where: {
+                    tanggal: {
+                        gte: startDate,
+                        lte: endDate,
+                    },
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data jumlah warga iuran',
+                data: daftarSetor,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data jumlah warga iuran karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal dapat data jumlah warga iuran',
+                data: error,
+            };
+        }
+    }
+
+    async listWargaIuran() {
+        try {
+            const listIuranAll = await this.prisma.setor.findMany({
+                select: {
+                    id: true,
+                    kk: {
+                        select: {
+                            id: true,
+                            no_blok: true,
+                            no_rumah: true,
+                            warga: {
+                                select: {
+                                    id: true,
+                                    nama: true,
+                                },
+                                where: {
+                                    type: {
+                                        id: 1,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    nilai: true,
+                    tanggal: true,
+                    iuran: {
+                        select: {
+                            nama: true,
+                        },
+                    },
+                },
+                orderBy: {
+                    id: 'asc',
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data daftar warga iuran',
+                data: listIuranAll,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data daftar warga iuran karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal dapat data daftar warga iuran',
+                data: error,
+            };
+        }
+    }
+
+    async listAllPemasukan() {
+        try {
+            const daftarAllPemasukan = await this.prisma.anggaran.findMany({
+                select: {
+                    warga: {
+                        select: {
+                            nama: true,
+                        },
+                    },
+                    nilai: true,
+                    jenis_anggaran: {
+                        select: {
+                            id: true,
+                            nama: true,
+                        },
+                    },
+                    tanggal: true,
+                },
+                where: {
+                    type_anggaran: true,
+                },
+                orderBy: {
+                    id: 'asc',
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data jumlah pemasukan',
+                data: daftarAllPemasukan,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data pemasukan karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal dapat data pemasukan warga iuran',
+                data: error,
+            };
+        }
+    }
+
+    async listAllPengeluaran() {
+        try {
+            const daftarAllPengeluaran = await this.prisma.anggaran.findMany({
+                select: {
+                    warga: {
+                        select: {
+                            nama: true,
+                        },
+                    },
+                    nilai: true,
+                    jenis_anggaran: {
+                        select: {
+                            id: true,
+                            nama: true,
+                        },
+                    },
+                    tanggal: true,
+                },
+                where: {
+                    type_anggaran: false,
+                },
+                orderBy: {
+                    id: 'asc',
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data jumlah pemasukan',
+                data: daftarAllPengeluaran,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data pemasukan karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal dapat data pemasukan warga iuran',
+                data: error,
+            };
+        }
+    }
 }

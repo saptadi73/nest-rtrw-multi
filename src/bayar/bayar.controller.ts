@@ -282,4 +282,76 @@ export class BayarController {
             );
         }
     }
+
+    @Get('jumlah/iuran')
+    async jmLIuranAll() {
+        try {
+            return this.bayar.jumlahIuranBulanan();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('jumlah/anggaran/masuk')
+    async jmlAnggaranMasuk() {
+        try {
+            return this.bayar.jumlahAnggaranMasuk();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('jumlah/anggaran/keluar')
+    async jumlahAnggaranKeluar() {
+        try {
+            return this.bayar.jumlahAnggaranKeluar();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('jumlah/warga/iuran')
+    async jumlahWargaIuran() {
+        try {
+            return this.bayar.jmlWargaIuran();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
 }
