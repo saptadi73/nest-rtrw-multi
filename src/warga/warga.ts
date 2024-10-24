@@ -546,4 +546,122 @@ export class Warga {
             return { status: 'nok', message: 'gagal dapat data Keluarga', data: error };
         }
     }
+
+    async jumlahKK() {
+        try {
+            const jumlahSemuaKK = await this.prisma.kk.aggregate({
+                _count: {
+                    id: true,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data jumlah KK',
+                result: jumlahSemuaKK,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data jumlah KK karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal dapat data jumlah KK', data: error };
+        }
+    }
+
+    async jumlahWarga() {
+        try {
+            const jumlahWarga = await this.prisma.warga.aggregate({
+                _count: {
+                    id: true,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data jumlah warga',
+                result: jumlahWarga,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data jumlah KK karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal dapat data jumlah Warga', data: error };
+        }
+    }
+
+    async jumlahWargaLk() {
+        try {
+            const jumlahWarga = await this.prisma.warga.aggregate({
+                _count: {
+                    id: true,
+                },
+                where: {
+                    jenis_kelamin: true,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data jumlah warga',
+                result: jumlahWarga,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data jumlah KK karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal dapat data jumlah Warga', data: error };
+        }
+    }
+
+    async jumlahWargaPr() {
+        try {
+            const jumlahWarga = await this.prisma.warga.aggregate({
+                _count: {
+                    id: true,
+                },
+                where: {
+                    jenis_kelamin: false,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data jumlah warga',
+                result: jumlahWarga,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data jumlah KK karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal dapat data jumlah Warga', data: error };
+        }
+    }
 }

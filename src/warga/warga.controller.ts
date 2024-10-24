@@ -240,4 +240,76 @@ export class WargaController {
             );
         }
     }
+
+    @Get('jumlah/kk')
+    async jumlahKKku() {
+        try {
+            return this.Warga.jumlahKK();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('jumlah/warga')
+    async jumlahwargaku() {
+        try {
+            return this.Warga.jumlahWarga();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('jumlah/warga/lk')
+    async jumlahWargaLk() {
+        try {
+            return this.Warga.jumlahWargaLk();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('jumlahwarga/pr')
+    async jumlahWargaPr() {
+        try {
+            return this.Warga.jumlahWargaPr();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
 }
