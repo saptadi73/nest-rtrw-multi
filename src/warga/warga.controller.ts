@@ -384,4 +384,40 @@ export class WargaController {
             );
         }
     }
+
+    @Get('daftar/warga/lk')
+    async WargaLk() {
+        try {
+            return this.Warga.listAllWargaLk();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('daftar/warga/pr')
+    async WargaPr() {
+        try {
+            return this.Warga.listAllWargaPr();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
 }

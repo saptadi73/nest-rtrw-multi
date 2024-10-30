@@ -354,4 +354,76 @@ export class BayarController {
             );
         }
     }
+
+    @Get('daftar/setor')
+    async daftarWargaSetor() {
+        try {
+            return this.bayar.listWargaIuran();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('daftar/pemasukan')
+    async daftarPemasukan() {
+        try {
+            return this.bayar.listAllPemasukan();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('daftar/pengeluaran')
+    async daftarPengeluaran() {
+        try {
+            return this.bayar.listAllPengeluaran();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('iuran/bulanan')
+    async iuranBulan() {
+        try {
+            return this.bayar.iuranBulan();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
 }

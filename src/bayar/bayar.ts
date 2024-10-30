@@ -1030,8 +1030,8 @@ export class Bayar {
             const month = tanggal.getMonth(); // September
             const year = tanggal.getFullYear();
 
-            const startDate = new Date(year, month - 1, 1); // September 1, 2023
-            const endDate = new Date(year, month, 1);
+            const startDate = new Date(year, month, 1); // September 1, 2023
+            const endDate = new Date(year, month + 1, 1);
 
             const jumlahiuran = await this.prisma.setor.aggregate({
                 _sum: {
@@ -1075,8 +1075,8 @@ export class Bayar {
             const month = tanggal.getMonth(); // September
             const year = tanggal.getFullYear();
 
-            const startDate = new Date(year, month - 1, 1); // September 1, 2023
-            const endDate = new Date(year, month, 1);
+            const startDate = new Date(year, month, 1); // September 1, 2023
+            const endDate = new Date(year, month + 1, 1);
 
             const jmlAngInc = await this.prisma.anggaran.aggregate({
                 _sum: {
@@ -1127,8 +1127,8 @@ export class Bayar {
             const month = tanggal.getMonth(); // September
             const year = tanggal.getFullYear();
 
-            const startDate = new Date(year, month - 1, 1); // September 1, 2023
-            const endDate = new Date(year, month, 1);
+            const startDate = new Date(year, month, 1); // September 1, 2023
+            const endDate = new Date(year, month + 1, 1);
 
             const jmlAngInc = await this.prisma.anggaran.aggregate({
                 _sum: {
@@ -1179,14 +1179,13 @@ export class Bayar {
             const month = tanggal.getMonth(); // September
             const year = tanggal.getFullYear();
 
-            const startDate = new Date(year, month - 1, 1); // September 1, 2023
-            const endDate = new Date(year, month, 1);
+            const startDate = new Date(year, month, 1); // September 1, 2023
+            const endDate = new Date(year, month + 1, 1);
 
-            const jmlIuran = await this.prisma.setor.groupBy({
+            const jmlIuran = await this.prisma.setor.aggregate({
                 _count: {
                     id_kk: true,
                 },
-                by: ['id_kk'],
                 where: {
                     tanggal: {
                         gte: startDate,
@@ -1225,8 +1224,8 @@ export class Bayar {
             const month = tanggal.getMonth(); // September
             const year = tanggal.getFullYear();
 
-            const startDate = new Date(year, month - 1, 1); // September 1, 2023
-            const endDate = new Date(year, month, 1);
+            const startDate = new Date(year, month, 1); // September 1, 2023
+            const endDate = new Date(year, month + 1, 1);
 
             const daftarSetor = await this.prisma.setor.findMany({
                 select: {
@@ -1433,6 +1432,99 @@ export class Bayar {
             return {
                 status: 'nok',
                 message: 'gagal dapat data pemasukan warga iuran',
+                data: error,
+            };
+        }
+    }
+
+    async iuranBulan() {
+        try {
+            const tanggal = new Date();
+            const tahun = tanggal.getFullYear();
+            const iuranBulanan = await this.prisma
+                .$queryRaw`SELECT sum(nilai) as jumlah, month(tanggal) as bulan FROM setor WHERE YEAR(tanggal)=${tahun} group by month(tanggal);`;
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data iuran',
+                data: iuranBulanan,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data iuran karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal dapat data iuran',
+                data: error,
+            };
+        }
+    }
+
+    async pemasukanBulan() {
+        try {
+            const tanggal = new Date();
+            const tahun = tanggal.getFullYear();
+            const iuranBulanan = await this.prisma
+                .$queryRaw`SELECT sum(nilai) as jumlah, month(tanggal) as bulan FROM anggaran WHERE type_anggaran=1 AND YEAR(tanggal)=${tahun};`;
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data bulanan pemasukan anggaran',
+                data: iuranBulanan,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data bulanan pemasukan karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal dapat data pemasukan',
+                data: error,
+            };
+        }
+    }
+
+    async pengeluaranBulan() {
+        try {
+            const tanggal = new Date();
+            const tahun = tanggal.getFullYear();
+            const iuranBulanan = await this.prisma
+                .$queryRaw`SELECT sum(nilai) as jumlah, month(tanggal) as bulan FROM anggaran WHERE type_anggaran=0 AND YEAR(tanggal)=${tahun};`;
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data bulanan pengeluaran anggaran',
+                data: iuranBulanan,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data bulanan pengeluaran karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal dapat data pengeluaran',
                 data: error,
             };
         }
