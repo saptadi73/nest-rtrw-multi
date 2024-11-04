@@ -426,4 +426,40 @@ export class BayarController {
             );
         }
     }
+
+    @Get('masuk/bulanan')
+    async masukBulan() {
+        try {
+            return this.bayar.pemasukanBulan();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('keluar/bulanan')
+    async keluarBulan() {
+        try {
+            return this.bayar.pengeluaranBulan();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
 }

@@ -1187,10 +1187,17 @@ export class Bayar {
                     id_kk: true,
                 },
                 where: {
-                    tanggal: {
-                        gte: startDate,
-                        lte: endDate,
-                    },
+                    AND: [
+                        {
+                            tanggal: {
+                                gte: startDate,
+                                lte: endDate,
+                            },
+                        },
+                        {
+                            id_iuran: 1,
+                        },
+                    ],
                 },
             });
             return {
