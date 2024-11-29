@@ -24,6 +24,7 @@ model kk {
   setor setor[]
   hutang hutang[]
   pengeluaran pengeluaran[]
+  filekeluarga filekeluarga[]
 }
 
 model warga {
@@ -42,6 +43,7 @@ model warga {
   no_hp String?
   anggaran anggaran[]
   photo photo[]
+  filewarga filewarga[]
 }
 
 model type {
@@ -150,5 +152,26 @@ model bukti {
   url String
   anggaran anggaran? @relation(references: [id], fields: [id_anggaran])
   id_anggaran Int
+}
+
+model filekeluarga {
+  id                 Int          @id @default(autoincrement())
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  nama String
+  keterangan String?
+  url String
+  kk kk @relation(references: [id], fields: [id_kk])
+  id_kk Int
+}
+
+model filewarga {
+  id                 Int          @id @default(autoincrement())
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  nama String
+  keterangan String?
+  warga warga @relation(references: [id], fields: [id_warga])
+  id_warga Int
 }
 
