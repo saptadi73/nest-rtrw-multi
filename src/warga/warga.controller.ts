@@ -20,6 +20,7 @@ import { KkCreateDto } from './dto/kk.create.dto';
 import { WargaCreateDto } from './dto/warga.create.dto';
 import { KkUpdateDto } from './dto/kk.update.dto';
 import { WargaUpdateDto } from './dto/warga.update.dto';
+import { CreateFileKeluargaDto } from './dto/create.file.keluarga.dto';
 
 @Controller('warga')
 export class WargaController {
@@ -77,6 +78,39 @@ export class WargaController {
     ) {
         try {
             return this.Warga.photoUpload(fileuploaddto, file);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('fotoktp')
+    @UseInterceptors(
+        FileInterceptor('file', {
+            storage: diskStorage({
+                filename: FileNameEditor,
+                destination: FILE_UPLOAD_DIR,
+            }),
+            limits: {
+                fileSize: 1000 * 1000 * 10,
+            },
+            fileFilter: ImageFileFilter,
+        })
+    )
+    async uploadKk(
+        @UploadedFile() file: Express.Multer.File,
+        @Body() fileuploaddto: CreateFileKeluargaDto
+    ) {
+        try {
+            return this.Warga.UploadKK(fileuploaddto, file);
         } catch (error) {
             throw new HttpException(
                 {
