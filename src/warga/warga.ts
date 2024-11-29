@@ -1,4 +1,3 @@
-import { filekeluarga } from './../../node_modules/.prisma/client/index.d';
 import { Injectable } from '@nestjs/common';
 import { PrismaWargaService } from './prisma.warga.service';
 import { KkCreateDto } from './dto/kk.create.dto';
@@ -10,7 +9,6 @@ import { TypeCreateDto } from './dto/type.create.dto';
 import { TypeUpdateDto } from './dto/type.update.dto';
 import { CreateFileDto } from './dto/create.file.dto';
 import { CreateFileKeluargaDto } from './dto/create.file.keluarga.dto';
-import { url } from 'inspector';
 
 @Injectable()
 export class Warga {
