@@ -1,3 +1,4 @@
+import { filekeluarga } from './../../node_modules/.prisma/client/index.d';
 import { Injectable } from '@nestjs/common';
 import { PrismaWargaService } from './prisma.warga.service';
 import { KkCreateDto } from './dto/kk.create.dto';
@@ -8,6 +9,8 @@ import { WargaUpdateDto } from './dto/warga.update.dto';
 import { TypeCreateDto } from './dto/type.create.dto';
 import { TypeUpdateDto } from './dto/type.update.dto';
 import { CreateFileDto } from './dto/create.file.dto';
+import { CreateFileKeluargaDto } from './dto/create.file.keluarga.dto';
+import { url } from 'inspector';
 
 @Injectable()
 export class Warga {
@@ -477,12 +480,44 @@ export class Warga {
                     nama: uploadfile.nama,
                     keterangan: uploadfile.keterangan,
                     url: fileku.filename,
+                    id_warga: uploadfile.id_warga,
                 },
             });
             return {
                 status: 'ok',
                 message: 'berhasil upload photo',
                 result: uploadPhoto,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal upload photo karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal upload photo', data: error };
+        }
+    }
+
+    async UploadKK(uploadKK: CreateFileKeluargaDto, fileku) {
+        try {
+            const fileKK = await this.prisma.filekeluarga.create({
+                data: {
+                    nama: uploadKK.nama,
+                    keterangan: uploadKK.keterangan,
+                    id_kk: uploadKK.id_kk,
+                    url: fileku.filename,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil upload photo',
+                result: fileKK,
             };
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {

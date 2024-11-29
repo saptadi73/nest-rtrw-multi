@@ -58,6 +58,39 @@ export class WargaController {
         }
     }
 
+    @Post('fotoktp')
+    @UseInterceptors(
+        FileInterceptor('file', {
+            storage: diskStorage({
+                filename: FileNameEditor,
+                destination: FILE_UPLOAD_DIR,
+            }),
+            limits: {
+                fileSize: 1000 * 1000 * 10,
+            },
+            fileFilter: ImageFileFilter,
+        })
+    )
+    async uploadKTP(
+        @UploadedFile() file: Express.Multer.File,
+        @Body() fileuploaddto: CreateFileDto
+    ) {
+        try {
+            return this.Warga.photoUpload(fileuploaddto, file);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
     @Post('add/kk')
     @Header('Content-Type', 'application/json')
     async tambahKK(@Body() createKK: KkCreateDto) {
