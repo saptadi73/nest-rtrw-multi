@@ -92,7 +92,7 @@ export class WargaController {
         }
     }
 
-    @Post('fotoktp')
+    @Post('fotokk')
     @UseInterceptors(
         FileInterceptor('file', {
             storage: diskStorage({

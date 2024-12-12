@@ -1,5 +1,5 @@
 import { Optional } from '@nestjs/common';
-import { IsNumber, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class CreateFileKeluargaDto {
     @IsString()
@@ -10,6 +10,6 @@ export class CreateFileKeluargaDto {
     @Optional()
     keterangan: string;
 
-    @IsNumber()
-    id_kk: number;
+    @IsString()
+    id_kk: string;
 }

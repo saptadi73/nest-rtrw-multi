@@ -478,7 +478,7 @@ export class Warga {
                     nama: uploadfile.nama,
                     keterangan: uploadfile.keterangan,
                     url: fileku.filename,
-                    id_warga: uploadfile.id_warga,
+                    id_warga: parseInt(uploadfile.id_warga),
                 },
             });
             return {
@@ -508,7 +508,7 @@ export class Warga {
                 data: {
                     nama: uploadKK.nama,
                     keterangan: uploadKK.keterangan,
-                    id_kk: uploadKK.id_kk,
+                    id_kk: parseInt(uploadKK.id_kk),
                     url: fileku.filename,
                 },
             });
