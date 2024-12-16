@@ -791,4 +791,70 @@ export class Warga {
             return { status: 'nok', message: 'gagal dapat data warganya, maaf', data: error };
         }
     }
+
+    async getPhotoKK(id: string) {
+        try {
+            const dataKK = await this.prisma.filekeluarga.findFirst({
+                select: {
+                    id: true,
+                    nama: true,
+                    keterangan: true,
+                    url: true,
+                },
+                where: {
+                    id_kk: parseInt(id),
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil mendapatkan data KK',
+                data: dataKK,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message: 'gagal dapat data fptp KK',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal dapat data warganya, maaf', data: error };
+        }
+    }
+
+    async getPhotoKTP(id: string) {
+        try {
+            const dataKK = await this.prisma.photo.findFirst({
+                select: {
+                    id: true,
+                    nama: true,
+                    keterangan: true,
+                    url: true,
+                },
+                where: {
+                    id_warga: parseInt(id),
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil mendapatkan data KTP',
+                data: dataKK,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message: 'gagal dapat data Foto KTP',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal dapat data warganya, maaf', data: error };
+        }
+    }
 }

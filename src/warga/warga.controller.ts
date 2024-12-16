@@ -487,4 +487,40 @@ export class WargaController {
             );
         }
     }
+
+    @Get('viewkk/:id')
+    async viewKk(@Param('id') id: string) {
+        try {
+            return this.Warga.getPhotoKK(id);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('viewktp/:id')
+    async viewKtp(@Param('id') id: string) {
+        try {
+            return this.Warga.getPhotoKTP(id);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
 }
