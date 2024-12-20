@@ -13,7 +13,6 @@ import {
 import { Warga } from './warga';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { FILE_UPLOAD_DIR } from './constantan.main';
 import { FileNameEditor, ImageFileFilter } from './file.utils';
 import { CreateFileDto } from './dto/create.file.dto';
 import { KkCreateDto } from './dto/kk.create.dto';
@@ -31,7 +30,7 @@ export class WargaController {
         FileInterceptor('file', {
             storage: diskStorage({
                 filename: FileNameEditor,
-                destination: FILE_UPLOAD_DIR,
+                destination: './upload',
             }),
             limits: {
                 fileSize: 1000 * 1000 * 10,
@@ -64,7 +63,7 @@ export class WargaController {
         FileInterceptor('file', {
             storage: diskStorage({
                 filename: FileNameEditor,
-                destination: FILE_UPLOAD_DIR,
+                destination: './upload',
             }),
             limits: {
                 fileSize: 1000 * 1000 * 10,
@@ -97,7 +96,7 @@ export class WargaController {
         FileInterceptor('file', {
             storage: diskStorage({
                 filename: FileNameEditor,
-                destination: FILE_UPLOAD_DIR,
+                destination: './upload',
             }),
             limits: {
                 fileSize: 1000 * 1000 * 10,

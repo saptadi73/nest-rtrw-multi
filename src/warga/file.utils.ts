@@ -6,7 +6,8 @@ export const FileNameEditor = (
     file: any,
     callback: (error: any, filename) => void
 ) => {
-    const newFilename = 'photo-' + file.originalname;
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    const newFilename = uniqueSuffix + '-' + file.originalname;
     callback(null, newFilename);
 };
 

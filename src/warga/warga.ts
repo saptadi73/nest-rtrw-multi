@@ -800,6 +800,22 @@ export class Warga {
                     nama: true,
                     keterangan: true,
                     url: true,
+                    kk: {
+                        select: {
+                            id: true,
+                            no_blok: true,
+                            no_rumah: true,
+                            warga: {
+                                select: {
+                                    id: true,
+                                    nama: true,
+                                },
+                                where: {
+                                    id_type: 1,
+                                },
+                            },
+                        },
+                    },
                 },
                 where: {
                     id_kk: parseInt(id),
@@ -833,6 +849,19 @@ export class Warga {
                     nama: true,
                     keterangan: true,
                     url: true,
+                    warga: {
+                        select: {
+                            id: true,
+                            nama: true,
+                            kk: {
+                                select: {
+                                    id: true,
+                                    no_blok: true,
+                                    no_rumah: true,
+                                },
+                            },
+                        },
+                    },
                 },
                 where: {
                     id_warga: parseInt(id),
