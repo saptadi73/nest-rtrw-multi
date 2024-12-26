@@ -175,3 +175,32 @@ model filewarga {
   id_warga Int
 }
 
+model user {
+  id                 Int          @id @default(autoincrement())
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  userid String
+  password String
+  level level @relation(fields: [id_level],references: [id])
+  id_level Int
+  token token[]
+}
+
+model level {
+  id                 Int          @id @default(autoincrement())
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  nama String
+  deskripsi String?
+  user user[]
+}
+
+model token {
+  id                 Int          @id @default(autoincrement())
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  token String
+  user user @relation(fields: [id_user], references: [id])
+  id_user Int
+}
+

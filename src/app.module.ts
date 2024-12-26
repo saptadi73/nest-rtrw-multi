@@ -4,9 +4,10 @@ import { AppService } from './app.service';
 import { APP_PIPE } from '@nestjs/core';
 import { WargaModule } from './warga/warga.module';
 import { BayarModule } from './bayar/bayar.module';
+import { UserModule } from './user/user.module';
 
 @Module({
-    imports: [WargaModule, BayarModule],
+    imports: [WargaModule, BayarModule, UserModule],
     controllers: [AppController],
     providers: [
         AppService,
