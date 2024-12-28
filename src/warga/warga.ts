@@ -9,6 +9,7 @@ import { TypeCreateDto } from './dto/type.create.dto';
 import { TypeUpdateDto } from './dto/type.update.dto';
 import { CreateFileDto } from './dto/create.file.dto';
 import { CreateFileKeluargaDto } from './dto/create.file.keluarga.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class Warga {
@@ -21,6 +22,7 @@ export class Warga {
                     no_kk: createKK.no_kk,
                     no_blok: createKK.no_blok,
                     no_rumah: createKK.no_rumah,
+                    uuid: uuidv4(),
                 },
             });
             return { status: 'ok', message: 'berhasil tambah data kk', result: addWarga };
@@ -121,6 +123,7 @@ export class Warga {
                     tempat_lahir: createWarga.tempat_lahir,
                     tanggal_lahir: isoDate,
                     jenis_kelamin: jk,
+                    uuid: uuidv4(),
                     type: {
                         connect: {
                             id: createWarga.id_type,
@@ -245,6 +248,7 @@ export class Warga {
             const addType = await this.prisma.type.create({
                 data: {
                     nama: createType.nama,
+                    uuid: uuidv4(),
                 },
             });
             return { status: 'ok', message: 'berhasil tambah data type warga', result: addType };
@@ -479,6 +483,7 @@ export class Warga {
                     keterangan: uploadfile.keterangan,
                     url: fileku.filename,
                     id_warga: parseInt(uploadfile.id_warga),
+                    uuid: uuidv4(),
                 },
             });
             return {
@@ -510,6 +515,7 @@ export class Warga {
                     keterangan: uploadKK.keterangan,
                     id_kk: parseInt(uploadKK.id_kk),
                     url: fileku.filename,
+                    uuid: uuidv4(),
                 },
             });
             return {

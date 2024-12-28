@@ -15,6 +15,7 @@ import { AnggaranCreateDto } from './dto/anggaran.create.dto';
 import { AnggaranUpdateDto } from './dto/anggaran.update.dto';
 import { LaporanSetoranDto } from './dto/laporan.setoran.dto';
 import { LaporanAnggaranDto } from './dto/laporan.anggaran.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class Bayar {
@@ -27,6 +28,7 @@ export class Bayar {
                     iuran: createIuran.iuran,
                     nama: createIuran.nama,
                     keterangan: createIuran.keterangan,
+                    uuid: uuidv4(),
                 },
             });
             return {
@@ -72,6 +74,7 @@ export class Bayar {
                     keterangan: createBayar.keterangan,
                     nilai: createBayar.nilai,
                     tanggal: isoDate,
+                    uuid: uuidv4(),
                 },
             });
 
@@ -377,6 +380,7 @@ export class Bayar {
                 data: {
                     nama: createBiaya.jenis_biaya,
                     keterangan: createBiaya.keterangan,
+                    uuid: uuidv4(),
                 },
             });
             return {
@@ -451,6 +455,7 @@ export class Bayar {
                 data: {
                     nilai: addPengeluaran.nilai,
                     tanggal: isoDate,
+                    uuid: uuidv4(),
                     kk: {
                         connect: {
                             id: addPengeluaran.id_kk,
@@ -601,6 +606,7 @@ export class Bayar {
                 data: {
                     nama: createJenisAnggaran.nama,
                     keterangan: createJenisAnggaran.keterangan,
+                    uuid: uuidv4(),
                 },
             });
             return {
@@ -691,6 +697,7 @@ export class Bayar {
                     tanggal: isoDate,
                     keterangan: createAnggaran.keterangan,
                     type_anggaran: typeku,
+                    uuid: uuidv4(),
                 },
             });
             return {

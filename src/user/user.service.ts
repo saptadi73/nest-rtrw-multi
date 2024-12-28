@@ -4,6 +4,7 @@ import { CreateUserDto } from './dto/create.user.dto';
 import * as crypto from 'crypto';
 import { Prisma } from '@prisma/client';
 import { LoginUserDto } from './dto/login.user.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UserService {
@@ -19,6 +20,7 @@ export class UserService {
                 data: {
                     userid: userCreate.userid,
                     password: this.hashMD5(userCreate.pasword),
+                    uuid: uuidv4(),
                     level: {
                         connect: {
                             id: userCreate.id_level,

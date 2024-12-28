@@ -5,7 +5,7 @@ export class KkCreateDto {
     no_kk: string;
 
     @IsInt()
-    no_blok: number;
+    no_blok: string;
 
     @IsInt()
     no_rumah: number;
