@@ -10,6 +10,6 @@ export class LaporanAnggaranDto {
     @IsInt()
     id_jenis_anggaran: number;
 
-    @IsString()
-    type_anggaran: string;
+    @IsInt()
+    id_type_anggaran: number;
 }

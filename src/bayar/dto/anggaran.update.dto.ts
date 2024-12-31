@@ -21,9 +21,9 @@ export class AnggaranUpdateDto {
     @IsOptional()
     tanggal: string;
 
-    @IsString()
+    @IsInt()
     @IsOptional()
-    type_anggaran: string;
+    id_type_anggaran: number;
 
     @IsInt()
     id: number;

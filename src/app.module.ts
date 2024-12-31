@@ -5,9 +5,10 @@ import { APP_PIPE } from '@nestjs/core';
 import { WargaModule } from './warga/warga.module';
 import { BayarModule } from './bayar/bayar.module';
 import { UserModule } from './user/user.module';
+import { MailerModule } from './mailer/mailer.module';
 
 @Module({
-    imports: [WargaModule, BayarModule, UserModule],
+    imports: [WargaModule, BayarModule, UserModule, MailerModule],
     controllers: [AppController],
     providers: [
         AppService,

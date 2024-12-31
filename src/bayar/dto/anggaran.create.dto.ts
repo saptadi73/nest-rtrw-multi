@@ -17,8 +17,8 @@ export class AnggaranCreateDto {
     @IsDateString()
     tanggal: string;
 
-    @IsString()
-    type_anggaran: string;
+    @IsInt()
+    id_type_anggaran: number;
 
     @IsInt()
     @IsOptional()

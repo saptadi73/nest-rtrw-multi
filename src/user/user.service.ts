@@ -5,6 +5,9 @@ import * as crypto from 'crypto';
 import { Prisma } from '@prisma/client';
 import { LoginUserDto } from './dto/login.user.dto';
 import { v4 as uuidv4 } from 'uuid';
+import { differenceInHours } from 'date-fns';
+import { FindTokenDto } from './dto/find.token.dto';
+import { CreatePhotoUserDto } from './dto/create.photo.user.dto';
 
 @Injectable()
 export class UserService {
@@ -19,7 +22,7 @@ export class UserService {
             const tambahUser = await this.prisma.user.create({
                 data: {
                     userid: userCreate.userid,
-                    password: this.hashMD5(userCreate.pasword),
+                    password: this.hashMD5(userCreate.password),
                     uuid: uuidv4(),
                     level: {
                         connect: {
@@ -45,9 +48,43 @@ export class UserService {
         }
     }
 
+    async aktifUser(id: string) {
+        try {
+            const aktifkan = await this.prisma.user.update({
+                where: {
+                    uuid: id,
+                },
+                data: {
+                    status: true,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil aktifkan user',
+                data: aktifkan,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message: 'gagal aktifkan user',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal aktifkan user',
+                data: error,
+            };
+        }
+    }
+
     async loginUser(loginUser: LoginUserDto) {
         try {
-            const login = await this.prisma.user.findFirst({
+            const loginsaya = await this.prisma.user.findMany({
                 select: {
                     userid: true,
                     password: true,
@@ -60,22 +97,28 @@ export class UserService {
                             userid: loginUser.userid,
                         },
                         {
-                            password: this.hashMD5(loginUser.pasword),
+                            password: this.hashMD5(loginUser.password),
+                        },
+                        {
+                            status: true,
                         },
                     ],
                 },
             });
-            const createToken = await this.prisma.token.create({
+            const randomnya = this.randomChar();
+
+            const createTokenku = await this.prisma.token.create({
                 data: {
-                    token: this.randomChar(),
-                    id_user: login.id,
+                    token: randomnya,
+                    id_user: loginsaya[0].id,
                 },
             });
+
             return {
                 status: 'ok',
                 message: 'berhasil login',
-                data: login,
-                data2: createToken,
+                data: loginsaya[0].id,
+                data2: createTokenku,
             };
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -88,7 +131,11 @@ export class UserService {
                     };
                 }
             }
-            return { status: 'nok', message: 'gagal login', data: error };
+            return {
+                status: 'nok',
+                message: 'gagal login',
+                data: error,
+            };
         }
     }
 
@@ -97,7 +144,7 @@ export class UserService {
             const gantiPassword = await this.prisma.user.update({
                 data: {
                     userid: editPassword.userid,
-                    password: this.hashMD5(editPassword.pasword),
+                    password: this.hashMD5(editPassword.password),
                 },
                 where: {
                     id: editPassword.id,
@@ -124,32 +171,48 @@ export class UserService {
     }
 
     randomChar() {
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         let result = '';
-        for (let i = 0; i < length; i++) {
-            result += chars[Math.floor(Math.random() * chars.length)];
+        const charactersLength = characters.length;
+        for (let i = 0; i < 25; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
+
         return result;
     }
 
-    async findToken(token: string) {
+    async findToken(token: FindTokenDto) {
         try {
             const cariToken = await this.prisma.token.findFirst({
-                select: {
-                    token: true,
-                    id_user: true,
-                    id: true,
-                    createdAt: true,
-                },
                 where: {
-                    token: token,
+                    token: token.token,
                 },
             });
-            return {
-                status: 'ok',
-                message: 'berhasil dapat Token',
-                data: cariToken,
-            };
+
+            // return {
+            //     status: 'ok',
+            //     message: 'berhasil dapat token',
+            //     data: cariToken,
+            // };
+
+            const TimeNow = new Date();
+            const TimeToken = new Date(cariToken.createdAt);
+
+            const durasi = differenceInHours(TimeNow, TimeToken);
+
+            if (durasi < 15) {
+                return {
+                    status: 'ok',
+                    message: 'berhasil dapat Token',
+                    data: 15 - durasi,
+                };
+            } else {
+                return {
+                    status: 'nok',
+                    message: 'token tidak ada atau kadaluwarsa',
+                    data: durasi,
+                };
+            }
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 if (error.code === 'P2002') {
@@ -189,6 +252,38 @@ export class UserService {
                 }
             }
             return { status: 'nok', message: 'gagal delete token', data: error };
+        }
+    }
+
+    async photoUpload(uploadfile: CreatePhotoUserDto, fileku) {
+        try {
+            const uploadPhoto = await this.prisma.photo_user.create({
+                data: {
+                    nama: uploadfile.nama,
+                    keterangan: uploadfile.keterangan,
+                    url: fileku.filename,
+                    id_user: parseInt(uploadfile.id_user),
+                    uuid: uuidv4(),
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil upload photo user',
+                result: uploadPhoto,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal upload photo karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal upload photo', data: error };
         }
     }
 }

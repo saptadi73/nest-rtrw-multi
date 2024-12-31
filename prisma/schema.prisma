@@ -23,8 +23,6 @@ model kk {
   no_rumah Int
   warga warga[]
   setor setor[]
-  hutang hutang[]
-  pengeluaran pengeluaran[]
   filekeluarga filekeluarga[]
 }
 
@@ -96,30 +94,6 @@ model setor {
   keterangan String?
   tanggal DateTime
 }
-
-model hutang {
-  id                 Int          @id @default(autoincrement())
-  uuid String @unique
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  kk kk @relation(fields: [id_kk], references: [id])
-  id_kk Int
-  nilai Int
-}
-
-model pengeluaran {
-  id                 Int          @id @default(autoincrement())
-  uuid String @unique
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  kk kk @relation(fields: [id_kk], references: [id])
-  id_kk Int
-  nilai Int
-  biaya biaya @relation(fields: [id_biaya], references: [id])
-  id_biaya Int
-  tanggal DateTime
-}
-
 model anggaran {
   id                 Int          @id @default(autoincrement())
   uuid String @unique
@@ -132,19 +106,9 @@ model anggaran {
   id_jenis_anggaran Int
   tanggal DateTime
   keterangan String?
-  type_anggaran Boolean
+  type_anggaran type_anggaran @relation(fields: [id_type_anggaran], references: [id])
+  id_type_anggaran Int
   bukti bukti[]
-}
-
-model biaya {
-  id                 Int          @id @default(autoincrement())
-  uuid String @unique
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  nama String
-  keterangan String?
-  biaya Int?
-  pengeluaran pengeluaran[]
 }
 
 model jenis_anggaran {
@@ -153,7 +117,19 @@ model jenis_anggaran {
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
   nama String
+  type_anggaran type_anggaran @relation(fields: [id_type_anggaran], references: [id])
+  id_type_anggaran Int
   keterangan String?
+  anggaran anggaran[]
+}
+
+model type_anggaran {
+  id                 Int          @id @default(autoincrement())
+  uuid String @unique
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  type String
+  jenis_anggaran jenis_anggaran[]
   anggaran anggaran[]
 }
 
@@ -213,6 +189,8 @@ model user {
   password String
   level level @relation(fields: [id_level],references: [id])
   id_level Int
+  status Boolean @default(false)
+  photo_user photo_user[]
   token token[]
 }
 
@@ -229,7 +207,19 @@ model token {
   id                 Int          @id @default(autoincrement())
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
-  token String
+  token String @unique @db.VarChar(25)
+  user user @relation(fields: [id_user], references: [id])
+  id_user Int
+}
+
+model photo_user {
+  id                 Int          @id @default(autoincrement())
+  uuid String @unique
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  nama String
+  keterangan String?
+  url String
   user user @relation(fields: [id_user], references: [id])
   id_user Int
 }

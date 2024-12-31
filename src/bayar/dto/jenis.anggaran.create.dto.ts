@@ -11,4 +11,7 @@ export class JenisAnggaranCreateDto {
     @IsInt()
     @IsOptional()
     id: number;
+
+    @IsInt()
+    id_type_anggaran: number;
 }

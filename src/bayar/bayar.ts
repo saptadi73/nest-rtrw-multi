@@ -6,10 +6,6 @@ import { SetorCreateDto } from './dto/setor.create.dto';
 import { SetorUpdateDto } from './dto/setor.update.dto';
 import { IuranUpdateDto } from './dto/iuran.update.dto';
 import { HitungHutangDto } from './dto/hitung.hutang.dto';
-import { BiayaCreateDto } from './dto/biaya.create.dto';
-import { BiayaUpdateDto } from './dto/biaya.update.dto';
-import { PengeluaranCreateDto } from './dto/pengeluaran.create.dto';
-import { PengeluaranUpdateDto } from './dto/pengeluaran.update.dto';
 import { JenisAnggaranCreateDto } from './dto/jenis.anggaran.create.dto';
 import { AnggaranCreateDto } from './dto/anggaran.create.dto';
 import { AnggaranUpdateDto } from './dto/anggaran.update.dto';
@@ -374,176 +370,6 @@ export class Bayar {
         }
     }
 
-    async addBiaya(createBiaya: BiayaCreateDto) {
-        try {
-            const tambahBiaya = await this.prisma.biaya.create({
-                data: {
-                    nama: createBiaya.jenis_biaya,
-                    keterangan: createBiaya.keterangan,
-                    uuid: uuidv4(),
-                },
-            });
-            return {
-                status: 'ok',
-                message: 'berhasil tambah biaya',
-                result: tambahBiaya,
-            };
-        } catch (error) {
-            if (error instanceof Prisma.PrismaClientKnownRequestError) {
-                if (error.code === 'P2002') {
-                    console.log('failed unique constraint');
-                    return {
-                        status: 'nok',
-                        message:
-                            'gagal tambah biaya karena ada isian seharusnya unique, diisi berulang',
-                        data: error,
-                    };
-                }
-            }
-            return {
-                status: 'nok',
-                message: 'gagal tambah biaya',
-                data: error,
-            };
-        }
-    }
-
-    async editBiaya(createBiaya: BiayaUpdateDto) {
-        try {
-            const tambahBiaya = await this.prisma.biaya.update({
-                data: {
-                    nama: createBiaya.jenis_biaya,
-                    keterangan: createBiaya.keterangan,
-                },
-                where: {
-                    id: createBiaya.id,
-                },
-            });
-            return {
-                status: 'ok',
-                message: 'berhasil edit biaya',
-                result: tambahBiaya,
-            };
-        } catch (error) {
-            if (error instanceof Prisma.PrismaClientKnownRequestError) {
-                if (error.code === 'P2002') {
-                    console.log('failed unique constraint');
-                    return {
-                        status: 'nok',
-                        message:
-                            'gagal edit biaya karena ada isian seharusnya unique, diisi berulang',
-                        data: error,
-                    };
-                }
-            }
-            return {
-                status: 'nok',
-                message: 'gagal edit biaya',
-                data: error,
-            };
-        }
-    }
-
-    async addPengeluaran(addPengeluaran: PengeluaranCreateDto) {
-        try {
-            const dateString = addPengeluaran.tanggal;
-            const date = new Date(dateString);
-            date.setHours(date.getHours() + 7);
-
-            const isoDate = date.toISOString();
-            const tambahPengeluaran = await this.prisma.pengeluaran.create({
-                data: {
-                    nilai: addPengeluaran.nilai,
-                    tanggal: isoDate,
-                    uuid: uuidv4(),
-                    kk: {
-                        connect: {
-                            id: addPengeluaran.id_kk,
-                        },
-                    },
-                    biaya: {
-                        connect: {
-                            id: addPengeluaran.id_biaya,
-                        },
-                    },
-                },
-            });
-            return {
-                status: 'ok',
-                message: 'berhasil tambah pengeluaran',
-                result: tambahPengeluaran,
-            };
-        } catch (error) {
-            if (error instanceof Prisma.PrismaClientKnownRequestError) {
-                if (error.code === 'P2002') {
-                    console.log('failed unique constraint');
-                    return {
-                        status: 'nok',
-                        message:
-                            'gagal tambah pengeluaran karena ada isian seharusnya unique, diisi berulang',
-                        data: error,
-                    };
-                }
-            }
-            return {
-                status: 'nok',
-                message: 'gagal tambah pengeluaran',
-                data: error,
-            };
-        }
-    }
-
-    async editPengeluaran(addPengeluaran: PengeluaranUpdateDto) {
-        try {
-            const dateString = addPengeluaran.tanggal;
-            const date = new Date(dateString);
-            date.setHours(date.getHours() + 7);
-
-            const isoDate = date.toISOString();
-            const tambahPengeluaran = await this.prisma.pengeluaran.update({
-                data: {
-                    nilai: addPengeluaran.nilai,
-                    tanggal: isoDate,
-                    kk: {
-                        connect: {
-                            id: addPengeluaran.id_kk,
-                        },
-                    },
-                    biaya: {
-                        connect: {
-                            id: addPengeluaran.id_biaya,
-                        },
-                    },
-                },
-                where: {
-                    id: addPengeluaran.id,
-                },
-            });
-            return {
-                status: 'ok',
-                message: 'berhasil tambah pengeluaran',
-                result: tambahPengeluaran,
-            };
-        } catch (error) {
-            if (error instanceof Prisma.PrismaClientKnownRequestError) {
-                if (error.code === 'P2002') {
-                    console.log('failed unique constraint');
-                    return {
-                        status: 'nok',
-                        message:
-                            'gagal tambah pengeluaran karena ada isian seharusnya unique, diisi berulang',
-                        data: error,
-                    };
-                }
-            }
-            return {
-                status: 'nok',
-                message: 'gagal tambah pengeluaran',
-                data: error,
-            };
-        }
-    }
-
     async findWarga(id_kk) {
         try {
             const id_kkku = parseInt(id_kk);
@@ -607,6 +433,11 @@ export class Bayar {
                     nama: createJenisAnggaran.nama,
                     keterangan: createJenisAnggaran.keterangan,
                     uuid: uuidv4(),
+                    type_anggaran: {
+                        connect: {
+                            id: createJenisAnggaran.id_type_anggaran,
+                        },
+                    },
                 },
             });
             return {
@@ -675,12 +506,7 @@ export class Bayar {
             date.setHours(date.getHours() + 7);
 
             const isoDate = date.toISOString();
-            let typeku = true;
-            if (createAnggaran.type_anggaran == '0') {
-                typeku = false;
-            } else {
-                typeku = true;
-            }
+
             const addAnggaran = await this.prisma.anggaran.create({
                 data: {
                     warga: {
@@ -696,7 +522,11 @@ export class Bayar {
                     nilai: createAnggaran.nilai,
                     tanggal: isoDate,
                     keterangan: createAnggaran.keterangan,
-                    type_anggaran: typeku,
+                    type_anggaran: {
+                        connect: {
+                            id: createAnggaran.id_type_anggaran,
+                        },
+                    },
                     uuid: uuidv4(),
                 },
             });
@@ -732,12 +562,7 @@ export class Bayar {
             date.setHours(date.getHours() + 7);
 
             const isoDate = date.toISOString();
-            let typeku = true;
-            if (updateAnggaran.type_anggaran == '0') {
-                typeku = false;
-            } else {
-                typeku = true;
-            }
+
             const ubahAnggaran = await this.prisma.anggaran.update({
                 data: {
                     warga: {
@@ -753,7 +578,11 @@ export class Bayar {
                     nilai: updateAnggaran.nilai,
                     tanggal: isoDate,
                     keterangan: updateAnggaran.keterangan,
-                    type_anggaran: typeku,
+                    type_anggaran: {
+                        connect: {
+                            id: updateAnggaran.id_type_anggaran,
+                        },
+                    },
                 },
                 where: {
                     id: updateAnggaran.id,
@@ -955,13 +784,6 @@ export class Bayar {
             date_akhir.setHours(date_akhir.getHours() + 7);
 
             const isoDate_akhir = date_akhir.toISOString();
-            let typeku = false;
-
-            if (laporanAnggaran.type_anggaran == '0') {
-                typeku = false;
-            } else {
-                typeku = true;
-            }
 
             const LaporanAnggaran = await this.prisma.anggaran.findMany({
                 select: {
@@ -998,7 +820,7 @@ export class Bayar {
                             },
                         },
                         {
-                            type_anggaran: typeku,
+                            id_type_anggaran: laporanAnggaran.id_type_anggaran,
                         },
                         {
                             id_jenis_anggaran: laporanAnggaran.id_jenis_anggaran,
@@ -1098,7 +920,9 @@ export class Bayar {
                             },
                         },
                         {
-                            type_anggaran: true,
+                            type_anggaran: {
+                                id: 1,
+                            },
                         },
                     ],
                 },
@@ -1150,7 +974,9 @@ export class Bayar {
                             },
                         },
                         {
-                            type_anggaran: false,
+                            type_anggaran: {
+                                id: 2,
+                            },
                         },
                     ],
                 },
@@ -1370,7 +1196,9 @@ export class Bayar {
                     tanggal: true,
                 },
                 where: {
-                    type_anggaran: true,
+                    type_anggaran: {
+                        id: 1,
+                    },
                 },
                 orderBy: {
                     id: 'asc',
@@ -1420,7 +1248,9 @@ export class Bayar {
                     tanggal: true,
                 },
                 where: {
-                    type_anggaran: false,
+                    type_anggaran: {
+                        id: 2,
+                    },
                 },
                 orderBy: {
                     id: 'asc',
