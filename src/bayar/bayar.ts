@@ -12,6 +12,7 @@ import { AnggaranUpdateDto } from './dto/anggaran.update.dto';
 import { LaporanSetoranDto } from './dto/laporan.setoran.dto';
 import { LaporanAnggaranDto } from './dto/laporan.anggaran.dto';
 import { v4 as uuidv4 } from 'uuid';
+import { TypeAnggaranCreateDto } from './dto/type.anggaran.create.dto';
 
 @Injectable()
 export class Bayar {
@@ -465,13 +466,16 @@ export class Bayar {
         }
     }
 
-    async listJenisAnggaran() {
+    async listJenisAnggaran(jenisAnggaran: JenisAnggaranCreateDto) {
         try {
             const DaftarJenisAnggaran = await this.prisma.jenis_anggaran.findMany({
                 select: {
                     id: true,
                     nama: true,
                     keterangan: true,
+                },
+                where: {
+                    id_type_anggaran: jenisAnggaran.id_type_anggaran,
                 },
             });
             return {
@@ -1353,6 +1357,39 @@ export class Bayar {
                 status: 'ok',
                 message: 'berhasil dapat data bulanan pengeluaran anggaran',
                 data: iuranBulanan,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data bulanan pengeluaran karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal dapat data pengeluaran',
+                data: error,
+            };
+        }
+    }
+
+    async createTypeAnggaran(createTypeAnggaran: TypeAnggaranCreateDto) {
+        try {
+            const TypeAnggaran = await this.prisma.type_anggaran.create({
+                data: {
+                    type: createTypeAnggaran.type,
+                    uuid: uuidv4(),
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil tambah type anggaran',
+                data: TypeAnggaran,
             };
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {

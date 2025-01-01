@@ -2,6 +2,7 @@ import { IsInt, IsOptional, IsString } from 'class-validator';
 
 export class JenisAnggaranCreateDto {
     @IsString()
+    @IsOptional()
     nama: string;
 
     @IsString()
@@ -13,5 +14,6 @@ export class JenisAnggaranCreateDto {
     id: number;
 
     @IsInt()
+    @IsOptional()
     id_type_anggaran: number;
 }

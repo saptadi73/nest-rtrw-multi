@@ -17,6 +17,7 @@ import { SetorUpdateDto } from './dto/setor.update.dto';
 import { LaporanSetoranDto } from './dto/laporan.setoran.dto';
 import { LaporanAnggaranDto } from './dto/laporan.anggaran.dto';
 import { HitungHutangDto } from './dto/hitung.hutang.dto';
+import { TypeAnggaranCreateDto } from './dto/type.anggaran.create.dto';
 
 @Controller('bayar')
 export class BayarController {
@@ -96,10 +97,11 @@ export class BayarController {
         }
     }
 
-    @Get('list/jenis/anggaran')
-    async listJenisAnggaran() {
+    @Post('list/jenis/anggaran/')
+    @Header('Content-Type', 'application/json')
+    async listJenisAnggaranPemasukan(@Body() jenisAnggaran: JenisAnggaranCreateDto) {
         try {
-            return this.bayar.listJenisAnggaran();
+            return this.bayar.listJenisAnggaran(jenisAnggaran);
         } catch (error) {
             throw new HttpException(
                 {
@@ -449,6 +451,25 @@ export class BayarController {
     async keluarBulan() {
         try {
             return this.bayar.pengeluaranBulan();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('add/typeanggaran')
+    @Header('Content-Type', 'application/json')
+    async createTypeAnggaran(@Body() createTypeAnggaran: TypeAnggaranCreateDto) {
+        try {
+            return this.bayar.createTypeAnggaran(createTypeAnggaran);
         } catch (error) {
             throw new HttpException(
                 {
