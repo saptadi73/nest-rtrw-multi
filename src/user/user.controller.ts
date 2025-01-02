@@ -18,6 +18,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { FileNameEditor, ImageFileFilter } from './file.utils';
 import { CreatePhotoUserDto } from './dto/create.photo.user.dto';
+import { CreateLevelDto } from './dto/create.level.dto';
 
 @Controller('user')
 export class UserController {
@@ -117,6 +118,25 @@ export class UserController {
     ) {
         try {
             return this.User.photoUpload(fileuploaddto, file);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: error,
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('add/level')
+    @Header('Content-Type', 'application/json')
+    async nambahLevelUser(@Body() createLevel: CreateLevelDto) {
+        try {
+            return this.User.addLevel(createLevel);
         } catch (error) {
             throw new HttpException(
                 {

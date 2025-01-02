@@ -116,6 +116,24 @@ export class BayarController {
         }
     }
 
+    @Get('list/type/anggaran')
+    async listTypeAnggaran() {
+        try {
+            return this.bayar.listTypeAnggaran();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: error,
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
     @Post('add/anggaran')
     @Header('Content-Type', 'application/json')
     async addAnggaran(@Body() createAnggaran: AnggaranCreateDto) {

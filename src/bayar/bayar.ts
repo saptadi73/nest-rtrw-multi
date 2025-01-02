@@ -466,6 +466,39 @@ export class Bayar {
         }
     }
 
+    async listTypeAnggaran() {
+        try {
+            const typeAnggaran = await this.prisma.type_anggaran.findMany({
+                select: {
+                    id: true,
+                    type: true,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data type Anggaran',
+                result: typeAnggaran,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data type anggaran karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal dapat data type anggaran',
+                data: error,
+            };
+        }
+    }
+
     async listJenisAnggaran(jenisAnggaran: JenisAnggaranCreateDto) {
         try {
             const DaftarJenisAnggaran = await this.prisma.jenis_anggaran.findMany({

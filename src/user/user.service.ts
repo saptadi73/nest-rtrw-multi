@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { differenceInHours } from 'date-fns';
 import { FindTokenDto } from './dto/find.token.dto';
 import { CreatePhotoUserDto } from './dto/create.photo.user.dto';
+import { CreateLevelDto } from './dto/create.level.dto';
 
 @Injectable()
 export class UserService {
@@ -106,11 +107,13 @@ export class UserService {
                 },
             });
             const randomnya = this.randomChar();
+            const waktuNow = new Date();
 
             const createTokenku = await this.prisma.token.create({
                 data: {
                     token: randomnya,
                     id_user: loginsaya[0].id,
+                    lastLogin: waktuNow,
                 },
             });
 
@@ -196,20 +199,28 @@ export class UserService {
             // };
 
             const TimeNow = new Date();
-            const TimeToken = new Date(cariToken.createdAt);
+            const TimeToken = new Date(cariToken.lastLogin);
 
             const durasi = differenceInHours(TimeNow, TimeToken);
 
-            if (durasi < 15) {
+            if (durasi < 7) {
+                const updateLogin = await this.prisma.token.update({
+                    where: {
+                        id: cariToken.id,
+                    },
+                    data: {
+                        lastLogin: TimeNow,
+                    },
+                });
                 return {
                     status: 'ok',
                     message: 'berhasil dapat Token',
-                    data: 15 - durasi,
+                    data: updateLogin,
                 };
             } else {
                 return {
                     status: 'nok',
-                    message: 'token tidak ada atau kadaluwarsa',
+                    message: 'token kadaluwarsa',
                     data: durasi,
                 };
             }
@@ -284,6 +295,35 @@ export class UserService {
                 }
             }
             return { status: 'nok', message: 'gagal upload photo', data: error };
+        }
+    }
+
+    async addLevel(createLevel: CreateLevelDto) {
+        try {
+            const tambahLevel = await this.prisma.level.create({
+                data: {
+                    nama: createLevel.nama,
+                    deskripsi: createLevel.deskripsi,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil create level user',
+                result: tambahLevel,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal create level karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal create level', data: error };
         }
     }
 }
