@@ -10,19 +10,49 @@ import { TypeUpdateDto } from './dto/type.update.dto';
 import { CreateFileDto } from './dto/create.file.dto';
 import { CreateFileKeluargaDto } from './dto/create.file.keluarga.dto';
 import { v4 as uuidv4 } from 'uuid';
+import { BlokCreateDto } from './dto/blok.create.dto';
 
 @Injectable()
 export class Warga {
     constructor(private prisma: PrismaWargaService) {}
+
+    async createBlok(createBlok: BlokCreateDto) {
+        try {
+            const tambahBlok = await this.prisma.blok.create({
+                data: {
+                    uuid: uuidv4(),
+                    blok: createBlok.blok,
+                },
+            });
+            return { status: 'ok', message: 'berhasil tambah data blok', result: tambahBlok };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal tambah data kk karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal tambah data kk', data: error };
+        }
+    }
 
     async createKK(createKK: KkCreateDto) {
         try {
             const addWarga = await this.prisma.kk.create({
                 data: {
                     no_kk: createKK.no_kk,
-                    no_blok: createKK.no_blok,
                     no_rumah: createKK.no_rumah,
                     uuid: uuidv4(),
+                    blok: {
+                        connect: {
+                            id: createKK.id_blok,
+                        },
+                    },
                 },
             });
             return { status: 'ok', message: 'berhasil tambah data kk', result: addWarga };
@@ -51,7 +81,11 @@ export class Warga {
                 },
                 data: {
                     no_kk: updateKk.no_kk,
-                    no_blok: updateKk.no_blok,
+                    blok: {
+                        connect: {
+                            id: updateKk.id_blok,
+                        },
+                    },
                     no_rumah: updateKk.no_rumah,
                 },
             });
@@ -78,7 +112,7 @@ export class Warga {
             const CariKK = await this.prisma.kk.findFirst({
                 select: {
                     id: true,
-                    no_blok: true,
+                    blok: true,
                     no_kk: true,
                     no_rumah: true,
                 },
@@ -301,7 +335,12 @@ export class Warga {
                 select: {
                     id: true,
                     no_kk: true,
-                    no_blok: true,
+                    blok: {
+                        select: {
+                            id: true,
+                            blok: true,
+                        },
+                    },
                     no_rumah: true,
                     warga: {
                         select: {
@@ -323,7 +362,9 @@ export class Warga {
                     },
                 },
                 orderBy: {
-                    no_blok: 'asc',
+                    blok: {
+                        id: 'asc',
+                    },
                     no_rumah: 'asc',
                 },
             });
@@ -362,7 +403,12 @@ export class Warga {
                     },
                     kk: {
                         select: {
-                            no_blok: true,
+                            blok: {
+                                select: {
+                                    id: true,
+                                    blok: true,
+                                },
+                            },
                             no_rumah: true,
                         },
                     },
@@ -411,14 +457,21 @@ export class Warga {
                     nik: true,
                     kk: {
                         select: {
-                            no_blok: true,
+                            blok: {
+                                select: {
+                                    id: true,
+                                    blok: true,
+                                },
+                            },
                             no_rumah: true,
                         },
                     },
                 },
                 orderBy: {
                     kk: {
-                        no_blok: 'asc',
+                        blok: {
+                            id: 'asc',
+                        },
                     },
                 },
             });
@@ -543,7 +596,12 @@ export class Warga {
         try {
             const listKKsemua = await this.prisma.kk.findMany({
                 select: {
-                    no_blok: true,
+                    blok: {
+                        select: {
+                            id: true,
+                            blok: true,
+                        },
+                    },
                     no_rumah: true,
                     no_kk: true,
                     id: true,
@@ -558,7 +616,9 @@ export class Warga {
                 },
                 orderBy: [
                     {
-                        no_blok: 'asc',
+                        blok: {
+                            id: 'asc',
+                        },
                     },
                     {
                         no_rumah: 'asc',
@@ -716,7 +776,12 @@ export class Warga {
                     nik: true,
                     kk: {
                         select: {
-                            no_blok: true,
+                            blok: {
+                                select: {
+                                    id: true,
+                                    blok: true,
+                                },
+                            },
                             no_rumah: true,
                         },
                     },
@@ -726,7 +791,9 @@ export class Warga {
                 },
                 orderBy: {
                     kk: {
-                        no_blok: 'asc',
+                        blok: {
+                            id: 'asc',
+                        },
                     },
                 },
             });
@@ -763,7 +830,12 @@ export class Warga {
                     nik: true,
                     kk: {
                         select: {
-                            no_blok: true,
+                            blok: {
+                                select: {
+                                    id: true,
+                                    blok: true,
+                                },
+                            },
                             no_rumah: true,
                         },
                     },
@@ -773,7 +845,9 @@ export class Warga {
                 },
                 orderBy: {
                     kk: {
-                        no_blok: 'asc',
+                        blok: {
+                            id: 'asc',
+                        },
                     },
                 },
             });
@@ -809,7 +883,12 @@ export class Warga {
                     kk: {
                         select: {
                             id: true,
-                            no_blok: true,
+                            blok: {
+                                select: {
+                                    id: true,
+                                    blok: true,
+                                },
+                            },
                             no_rumah: true,
                             warga: {
                                 select: {
@@ -862,7 +941,12 @@ export class Warga {
                             kk: {
                                 select: {
                                     id: true,
-                                    no_blok: true,
+                                    blok: {
+                                        select: {
+                                            id: true,
+                                            blok: true,
+                                        },
+                                    },
                                     no_rumah: true,
                                 },
                             },

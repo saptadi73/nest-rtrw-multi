@@ -326,4 +326,33 @@ export class UserService {
             return { status: 'nok', message: 'gagal create level', data: error };
         }
     }
+
+    async daftarLevelUser() {
+        try {
+            const listLevel = await this.prisma.level.findMany({
+                select: {
+                    nama: true,
+                    deskripsi: true,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data level user',
+                result: listLevel,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal create level karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal create level', data: error };
+        }
+    }
 }

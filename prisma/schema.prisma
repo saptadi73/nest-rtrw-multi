@@ -19,11 +19,21 @@ model kk {
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
   no_kk String
-  no_blok String
+  blok blok @relation(references: [id], fields: [id_blok])
+  id_blok Int
   no_rumah Int
   warga warga[]
   setor setor[]
   filekeluarga filekeluarga[]
+}
+
+model blok {
+  id                 Int          @id @default(autoincrement())
+  uuid String @unique
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  blok String
+  kk kk[]
 }
 
 model entity {

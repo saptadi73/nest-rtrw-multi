@@ -7,7 +7,7 @@ export class KkUpdateDto {
 
     @IsInt()
     @IsOptional()
-    no_blok: string;
+    id_blok: number;
 
     @IsInt()
     @IsOptional()

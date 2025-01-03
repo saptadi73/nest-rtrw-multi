@@ -227,7 +227,12 @@ export class Bayar {
                     kk: {
                         select: {
                             id: true,
-                            no_blok: true,
+                            blok: {
+                                select: {
+                                    id: true,
+                                    blok: true,
+                                },
+                            },
                             no_rumah: true,
                             warga: {
                                 select: {
@@ -326,7 +331,12 @@ export class Bayar {
             const WargaGakBayar = await this.prisma.kk.findMany({
                 select: {
                     id: true,
-                    no_blok: true,
+                    blok: {
+                        select: {
+                            id: true,
+                            blok: true,
+                        },
+                    },
                     no_rumah: true,
                     warga: {
                         select: {
@@ -714,7 +724,12 @@ export class Bayar {
                     kk: {
                         select: {
                             id: true,
-                            no_blok: true,
+                            blok: {
+                                select: {
+                                    id: true,
+                                    blok: true,
+                                },
+                            },
                             no_rumah: true,
                             no_kk: true,
                         },
@@ -831,7 +846,12 @@ export class Bayar {
                             kk: {
                                 select: {
                                     id: true,
-                                    no_blok: true,
+                                    blok: {
+                                        select: {
+                                            id: true,
+                                            blok: true,
+                                        },
+                                    },
                                     no_rumah: true,
                                 },
                             },
@@ -1109,7 +1129,12 @@ export class Bayar {
                     kk: {
                         select: {
                             id: true,
-                            no_blok: true,
+                            blok: {
+                                select: {
+                                    id: true,
+                                    blok: true,
+                                },
+                            },
                             no_rumah: true,
                             warga: {
                                 select: {
@@ -1162,7 +1187,12 @@ export class Bayar {
                     kk: {
                         select: {
                             id: true,
-                            no_blok: true,
+                            blok: {
+                                select: {
+                                    id: true,
+                                    blok: true,
+                                },
+                            },
                             no_rumah: true,
                             warga: {
                                 select: {

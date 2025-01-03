@@ -150,4 +150,22 @@ export class UserController {
             );
         }
     }
+
+    @Get('daftar/level/user')
+    async getLevelUser() {
+        try {
+            return this.User.daftarLevelUser();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: error,
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
 }
