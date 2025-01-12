@@ -1,7 +1,7 @@
-import { IsInt, IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class IuranCreateDto {
-    @IsInt()
+    @IsNumber()
     iuran: number;
 
     @IsString()

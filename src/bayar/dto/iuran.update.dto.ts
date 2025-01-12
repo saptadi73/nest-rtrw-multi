@@ -9,5 +9,10 @@ export class IuranUpdateDto {
     id: number;
 
     @IsString()
+    @IsOptional()
     keterangan: string;
+
+    @IsString()
+    @IsOptional()
+    nama: string;
 }

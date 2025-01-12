@@ -102,6 +102,7 @@ export class Bayar {
                 data: {
                     iuran: createIuran.iuran,
                     keterangan: createIuran.keterangan,
+                    nama: createIuran.nama,
                 },
                 where: {
                     id: createIuran.id,
@@ -241,7 +242,7 @@ export class Bayar {
                                 },
                                 where: {
                                     type: {
-                                        nama: 'kepala keluarga',
+                                        id: 1,
                                     },
                                 },
                             },
@@ -345,7 +346,7 @@ export class Bayar {
                         },
                         where: {
                             type: {
-                                nama: 'kepala keluarga',
+                                id: 1,
                             },
                         },
                     },

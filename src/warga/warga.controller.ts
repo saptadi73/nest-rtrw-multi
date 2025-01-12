@@ -20,6 +20,9 @@ import { WargaCreateDto } from './dto/warga.create.dto';
 import { KkUpdateDto } from './dto/kk.update.dto';
 import { WargaUpdateDto } from './dto/warga.update.dto';
 import { CreateFileKeluargaDto } from './dto/create.file.keluarga.dto';
+import { BlokCreateDto } from './dto/blok.create.dto';
+import { TypeCreateDto } from './dto/type.create.dto';
+import { TypeUpdateDto } from './dto/type.update.dto';
 
 @Controller('warga')
 export class WargaController {
@@ -30,7 +33,7 @@ export class WargaController {
         FileInterceptor('file', {
             storage: diskStorage({
                 filename: FileNameEditor,
-                destination: './upload',
+                destination: '../upload',
             }),
             limits: {
                 fileSize: 1000 * 1000 * 10,
@@ -63,7 +66,7 @@ export class WargaController {
         FileInterceptor('file', {
             storage: diskStorage({
                 filename: FileNameEditor,
-                destination: './upload',
+                destination: '../upload',
             }),
             limits: {
                 fileSize: 1000 * 1000 * 10,
@@ -96,7 +99,7 @@ export class WargaController {
         FileInterceptor('file', {
             storage: diskStorage({
                 filename: FileNameEditor,
-                destination: './upload',
+                destination: '../upload',
             }),
             limits: {
                 fileSize: 1000 * 1000 * 10,
@@ -147,6 +150,152 @@ export class WargaController {
     async listKK() {
         try {
             return this.Warga.listKK();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('add/blok')
+    @Header('Content-Type', 'application/json')
+    async tambahBlok(@Body() createBlok: BlokCreateDto) {
+        try {
+            return this.Warga.createBlok(createBlok);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('edit/blok')
+    @Header('Content-Type', 'application/json')
+    async ubahBlok(@Body() createBlok: BlokCreateDto) {
+        try {
+            return this.Warga.editBlok(createBlok);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('daftar/blok')
+    async listBlok() {
+        try {
+            return this.Warga.listBlok();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('cari/blok/:id')
+    async cariBlok(@Param('id') id: string) {
+        try {
+            return this.Warga.findBlok(id);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('add/type')
+    async addTyoe(@Body() data: TypeCreateDto) {
+        try {
+            return this.Warga.createType(data);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('daftar/type')
+    async daftarType() {
+        try {
+            return this.Warga.listType();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('cari/type/:id')
+    async cariType(@Param('id') id: string) {
+        try {
+            return this.Warga.findType(id);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('update/type')
+    async editTyoe(@Body() data: TypeUpdateDto) {
+        try {
+            return this.Warga.updateType(data);
         } catch (error) {
             throw new HttpException(
                 {

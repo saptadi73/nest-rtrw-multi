@@ -1,7 +1,7 @@
-import { IsInt, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString, IsNumber } from 'class-validator';
 
 export class BlokCreateDto {
-    @IsInt()
+    @IsNumber()
     @IsOptional()
     id: number;
 
