@@ -1385,7 +1385,7 @@ export class Bayar {
             const tanggal = new Date();
             const tahun = tanggal.getFullYear();
             const iuranBulanan = await this.prisma
-                .$queryRaw`SELECT sum(nilai) as jumlah, month(tanggal) as bulan FROM anggaran WHERE type_anggaran=1 AND YEAR(tanggal)=${tahun};`;
+                .$queryRaw`SELECT sum(nilai)::int as jumlah, extract(month from tanggal) as bulan FROM anggaran WHERE id_type_anggaran=1 AND extract(YEAR from tanggal)=${tahun} GROUP BY extract(month from tanggal)`;
             return {
                 status: 'ok',
                 message: 'berhasil dapat data bulanan pemasukan anggaran',
@@ -1416,7 +1416,7 @@ export class Bayar {
             const tanggal = new Date();
             const tahun = tanggal.getFullYear();
             const iuranBulanan = await this.prisma
-                .$queryRaw`SELECT sum(nilai) as jumlah, month(tanggal) as bulan FROM anggaran WHERE type_anggaran=0 AND YEAR(tanggal)=${tahun};`;
+                .$queryRaw`SELECT sum(nilai)::int as jumlah, extract(month from tanggal) as bulan FROM anggaran where extract(month from tanggal)=1 and id_type_anggaran=2 and extract(year from tanggal)=${tahun} group by bulan;`;
             return {
                 status: 'ok',
                 message: 'berhasil dapat data bulanan pengeluaran anggaran',

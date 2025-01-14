@@ -25,6 +25,8 @@ model kk {
   warga warga[]
   setor setor[]
   filekeluarga filekeluarga[]
+  gps_location gps_location[]
+  photo_kk photo_kk[]
 }
 
 model blok {
@@ -51,6 +53,27 @@ model entity {
   kode_wilayah String
 }
 
+model polygon {
+  id                 Int          @id @default(autoincrement())
+  uuid String @unique
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  latitude Float
+  longitude Float
+}
+
+model gps_location {
+  id                 Int          @id @default(autoincrement())
+  uuid String @unique
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  latitude Float
+  longitude Float
+  kk kk @relation(fields: [id_kk], references: [id])
+  id_kk Int
+}
+
+
 model warga {
   id                 Int          @id @default(autoincrement())
   uuid String @unique
@@ -67,7 +90,7 @@ model warga {
   tanggal_lahir DateTime?
   no_hp String?
   anggaran anggaran[]
-  photo photo[]
+  photo_warga photo_warga[]
   filewarga filewarga[]
 }
 
@@ -143,7 +166,7 @@ model type_anggaran {
   anggaran anggaran[]
 }
 
-model photo {
+model photo_warga {
   id                 Int          @id @default(autoincrement())
   uuid String @unique
   createdAt          DateTime        @default(now())
@@ -233,5 +256,17 @@ model photo_user {
   url String
   user user @relation(fields: [id_user], references: [id])
   id_user Int
+}
+
+model photo_kk {
+  id                 Int          @id @default(autoincrement())
+  uuid String @unique
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  nama String
+  keterangan String?
+  url String
+  kk kk @relation(fields: [id_kk], references: [id])
+  id_kk Int
 }
 

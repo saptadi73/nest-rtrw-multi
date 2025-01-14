@@ -11,6 +11,7 @@ import { CreateFileDto } from './dto/create.file.dto';
 import { CreateFileKeluargaDto } from './dto/create.file.keluarga.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { BlokCreateDto } from './dto/blok.create.dto';
+import { CreateFileUserDto } from './dto/create.file.user.dto';
 
 @Injectable()
 export class Warga {
@@ -637,14 +638,46 @@ export class Warga {
         }
     }
 
-    async photoUpload(uploadfile: CreateFileDto, fileku) {
+    async photoUploadWarga(uploadfile: CreateFileDto, fileku) {
         try {
-            const uploadPhoto = await this.prisma.photo.create({
+            const uploadPhoto = await this.prisma.photo_warga.create({
                 data: {
                     nama: uploadfile.nama,
                     keterangan: uploadfile.keterangan,
                     url: fileku.filename,
                     id_warga: parseInt(uploadfile.id_warga),
+                    uuid: uuidv4(),
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil upload photo',
+                result: uploadPhoto,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal upload photo karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal upload photo', data: error };
+        }
+    }
+
+    async photoUploadUser(uploadfile: CreateFileUserDto, fileku) {
+        try {
+            const uploadPhoto = await this.prisma.photo_user.create({
+                data: {
+                    nama: uploadfile.nama,
+                    keterangan: uploadfile.keterangan,
+                    url: fileku.filename,
+                    id_user: parseInt(uploadfile.id_user),
                     uuid: uuidv4(),
                 },
             });
@@ -1037,7 +1070,7 @@ export class Warga {
 
     async getPhotoKTP(id: string) {
         try {
-            const dataKK = await this.prisma.photo.findFirst({
+            const dataKK = await this.prisma.photo_warga.findFirst({
                 select: {
                     id: true,
                     nama: true,

@@ -23,6 +23,7 @@ import { CreateFileKeluargaDto } from './dto/create.file.keluarga.dto';
 import { BlokCreateDto } from './dto/blok.create.dto';
 import { TypeCreateDto } from './dto/type.create.dto';
 import { TypeUpdateDto } from './dto/type.update.dto';
+import { CreateFileUserDto } from './dto/create.file.user.dto';
 
 @Controller('warga')
 export class WargaController {
@@ -46,7 +47,40 @@ export class WargaController {
         @Body() fileuploaddto: CreateFileDto
     ) {
         try {
-            return this.Warga.photoUpload(fileuploaddto, file);
+            return this.Warga.photoUploadWarga(fileuploaddto, file);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('photo/user')
+    @UseInterceptors(
+        FileInterceptor('file', {
+            storage: diskStorage({
+                filename: FileNameEditor,
+                destination: '../upload',
+            }),
+            limits: {
+                fileSize: 1000 * 1000 * 10,
+            },
+            fileFilter: ImageFileFilter,
+        })
+    )
+    async uploadPhotoUser(
+        @UploadedFile() file: Express.Multer.File,
+        @Body() fileuploaddto: CreateFileUserDto
+    ) {
+        try {
+            return this.Warga.photoUploadUser(fileuploaddto, file);
         } catch (error) {
             throw new HttpException(
                 {
@@ -79,7 +113,7 @@ export class WargaController {
         @Body() fileuploaddto: CreateFileDto
     ) {
         try {
-            return this.Warga.photoUpload(fileuploaddto, file);
+            return this.Warga.photoUploadWarga(fileuploaddto, file);
         } catch (error) {
             throw new HttpException(
                 {
