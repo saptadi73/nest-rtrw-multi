@@ -6,9 +6,10 @@ import { WargaModule } from './warga/warga.module';
 import { BayarModule } from './bayar/bayar.module';
 import { UserModule } from './user/user.module';
 import { MailerModule } from './mailer/mailer.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
-    imports: [WargaModule, BayarModule, UserModule, MailerModule],
+    imports: [WargaModule, BayarModule, UserModule, MailerModule, ProfileModule],
     controllers: [AppController],
     providers: [
         AppService,

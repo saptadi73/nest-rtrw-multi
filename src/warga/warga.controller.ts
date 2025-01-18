@@ -24,6 +24,7 @@ import { BlokCreateDto } from './dto/blok.create.dto';
 import { TypeCreateDto } from './dto/type.create.dto';
 import { TypeUpdateDto } from './dto/type.update.dto';
 import { CreateFileUserDto } from './dto/create.file.user.dto';
+import { CreateGpsLocationDto } from './dto/create.gps.location.dto';
 
 @Controller('warga')
 export class WargaController {
@@ -692,6 +693,44 @@ export class WargaController {
     async viewKtp(@Param('id') id: string) {
         try {
             return this.Warga.getPhotoKTP(id);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('new/gps')
+    @Header('Content-Type', 'application/json')
+    async buatPolygon(@Body() createEntity: CreateGpsLocationDto) {
+        try {
+            return this.Warga.createGPSLocationKK(createEntity);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('edit/gps')
+    @Header('Content-Type', 'application/json')
+    async editPolygon(@Body() createEntity: CreateGpsLocationDto) {
+        try {
+            return this.Warga.editGPSLocationKK(createEntity);
         } catch (error) {
             throw new HttpException(
                 {

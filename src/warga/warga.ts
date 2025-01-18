@@ -12,6 +12,7 @@ import { CreateFileKeluargaDto } from './dto/create.file.keluarga.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { BlokCreateDto } from './dto/blok.create.dto';
 import { CreateFileUserDto } from './dto/create.file.user.dto';
+import { CreateGpsLocationDto } from './dto/create.gps.location.dto';
 
 @Injectable()
 export class Warga {
@@ -1116,6 +1117,68 @@ export class Warga {
                 }
             }
             return { status: 'nok', message: 'gagal dapat data warganya, maaf', data: error };
+        }
+    }
+
+    async createGPSLocationKK(createGpsLocation: CreateGpsLocationDto) {
+        try {
+            const createGpsLocationKK = await this.prisma.gps_location.create({
+                data: {
+                    uuid: uuidv4(),
+                    longitude: createGpsLocation.longitude,
+                    latitude: createGpsLocation.latitude,
+                    id_kk: createGpsLocation.id_kk,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil membuat GPS Location KK',
+                result: createGpsLocationKK,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message: 'gagal buat GPS Location KK',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal buat GPS Location KK, maaf', data: error };
+        }
+    }
+
+    async editGPSLocationKK(createGpsLocation: CreateGpsLocationDto) {
+        try {
+            const createGpsLocationKK = await this.prisma.gps_location.update({
+                data: {
+                    longitude: createGpsLocation.longitude,
+                    latitude: createGpsLocation.latitude,
+                    id_kk: createGpsLocation.id_kk,
+                },
+                where: {
+                    id: createGpsLocation.id,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil Edit GPS Location KK',
+                result: createGpsLocationKK,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message: 'gagal buat GPS Location KK',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal Edit GPS Location KK, maaf', data: error };
         }
     }
 }
