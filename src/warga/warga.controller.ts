@@ -35,7 +35,7 @@ export class WargaController {
         FileInterceptor('file', {
             storage: diskStorage({
                 filename: FileNameEditor,
-                destination: '../upload',
+                destination: '../../upload',
             }),
             limits: {
                 fileSize: 1000 * 1000 * 10,
@@ -68,7 +68,7 @@ export class WargaController {
         FileInterceptor('file', {
             storage: diskStorage({
                 filename: FileNameEditor,
-                destination: '../upload',
+                destination: '../../upload',
             }),
             limits: {
                 fileSize: 1000 * 1000 * 10,
@@ -101,7 +101,7 @@ export class WargaController {
         FileInterceptor('file', {
             storage: diskStorage({
                 filename: FileNameEditor,
-                destination: '../upload',
+                destination: '../../upload',
             }),
             limits: {
                 fileSize: 1000 * 1000 * 10,
@@ -134,7 +134,7 @@ export class WargaController {
         FileInterceptor('file', {
             storage: diskStorage({
                 filename: FileNameEditor,
-                destination: '../upload',
+                destination: '../../upload',
             }),
             limits: {
                 fileSize: 1000 * 1000 * 10,
