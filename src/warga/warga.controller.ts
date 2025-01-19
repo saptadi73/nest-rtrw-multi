@@ -9,6 +9,7 @@ import {
     UploadedFile,
     UseInterceptors,
     Param,
+    UseFilters,
 } from '@nestjs/common';
 import { Warga } from './warga';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -25,17 +26,19 @@ import { TypeCreateDto } from './dto/type.create.dto';
 import { TypeUpdateDto } from './dto/type.update.dto';
 import { CreateFileUserDto } from './dto/create.file.user.dto';
 import { CreateGpsLocationDto } from './dto/create.gps.location.dto';
+import { MulterExceptionFilter } from './filter/multer.exception.filter';
 
 @Controller('warga')
 export class WargaController {
     constructor(private Warga: Warga) {}
 
     @Post('photo')
+    @UseFilters(MulterExceptionFilter)
     @UseInterceptors(
         FileInterceptor('file', {
             storage: diskStorage({
                 filename: FileNameEditor,
-                destination: '../../upload',
+                destination: './uploads',
             }),
             limits: {
                 fileSize: 1000 * 1000 * 10,
@@ -48,7 +51,11 @@ export class WargaController {
         @Body() fileuploaddto: CreateFileDto
     ) {
         try {
-            return this.Warga.photoUploadWarga(fileuploaddto, file);
+            if (!file) {
+                throw new Error('File upload failed');
+            } else {
+                return this.Warga.photoUploadWarga(fileuploaddto, file);
+            }
         } catch (error) {
             throw new HttpException(
                 {
@@ -64,11 +71,12 @@ export class WargaController {
     }
 
     @Post('photo/user')
+    @UseFilters(MulterExceptionFilter)
     @UseInterceptors(
         FileInterceptor('file', {
             storage: diskStorage({
                 filename: FileNameEditor,
-                destination: '../../upload',
+                destination: './uploads',
             }),
             limits: {
                 fileSize: 1000 * 1000 * 10,
@@ -81,7 +89,11 @@ export class WargaController {
         @Body() fileuploaddto: CreateFileUserDto
     ) {
         try {
-            return this.Warga.photoUploadUser(fileuploaddto, file);
+            if (!file) {
+                throw new Error('File upload failed');
+            } else {
+                return this.Warga.photoUploadUser(fileuploaddto, file);
+            }
         } catch (error) {
             throw new HttpException(
                 {
@@ -97,11 +109,12 @@ export class WargaController {
     }
 
     @Post('fotoktp')
+    @UseFilters(MulterExceptionFilter)
     @UseInterceptors(
         FileInterceptor('file', {
             storage: diskStorage({
                 filename: FileNameEditor,
-                destination: '../../upload',
+                destination: './uploads',
             }),
             limits: {
                 fileSize: 1000 * 1000 * 10,
@@ -114,7 +127,11 @@ export class WargaController {
         @Body() fileuploaddto: CreateFileDto
     ) {
         try {
-            return this.Warga.photoUploadWarga(fileuploaddto, file);
+            if (!file) {
+                throw new Error('File upload failed');
+            } else {
+                return this.Warga.photoUploadWarga(fileuploaddto, file);
+            }
         } catch (error) {
             throw new HttpException(
                 {
@@ -130,11 +147,12 @@ export class WargaController {
     }
 
     @Post('fotokk')
+    @UseFilters(MulterExceptionFilter)
     @UseInterceptors(
         FileInterceptor('file', {
             storage: diskStorage({
                 filename: FileNameEditor,
-                destination: '../../upload',
+                destination: './uploads',
             }),
             limits: {
                 fileSize: 1000 * 1000 * 10,
@@ -147,7 +165,11 @@ export class WargaController {
         @Body() fileuploaddto: CreateFileKeluargaDto
     ) {
         try {
-            return this.Warga.UploadKK(fileuploaddto, file);
+            if (!file) {
+                throw new Error('File upload failed');
+            } else {
+                return this.Warga.UploadKK(fileuploaddto, file);
+            }
         } catch (error) {
             throw new HttpException(
                 {
