@@ -1,7 +1,8 @@
-import { Body, Controller, Header, HttpException, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Get, Header, HttpException, HttpStatus, Post } from '@nestjs/common';
 import { Profile } from './profile';
 import { CreateEntityDto } from './dto/create.entity.dto';
 import { CreatePolygonDto } from './dto/create.polygon.dto';
+import { FindWilayahDto } from './dto/find.wilayah.dto';
 
 @Controller('profile')
 export class ProfileController {
@@ -69,6 +70,81 @@ export class ProfileController {
     async editPolygon(@Body() createEntity: CreatePolygonDto) {
         try {
             return this.profile.editPolygon(createEntity);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('provinsi')
+    async getProvinsi() {
+        try {
+            return this.profile.cariProvinsi();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('kabupaten')
+    @Header('Content-Type', 'application/json')
+    async getKabupaten(@Body() findWilayah: FindWilayahDto) {
+        try {
+            return this.profile.cariKabupaten(findWilayah);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('kecamatan')
+    @Header('Content-Type', 'application/json')
+    async getKecamatan(@Body() findWilayah: FindWilayahDto) {
+        try {
+            return this.profile.cariKecamatan(findWilayah);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('desa')
+    @Header('Content-Type', 'application/json')
+    async getDesa(@Body() findWilayah: FindWilayahDto) {
+        try {
+            return this.profile.cariDesa(findWilayah);
         } catch (error) {
             throw new HttpException(
                 {

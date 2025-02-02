@@ -38,6 +38,11 @@ model blok {
   kk kk[]
 }
 
+model wilayah {
+  kode String @id @unique
+  wilayah String
+}
+
 model entity {
   id                 Int          @id @default(autoincrement())
   uuid String @unique

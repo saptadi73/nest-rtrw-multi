@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { CreateEntityDto } from './dto/create.entity.dto';
 import { Prisma } from '@prisma/client';
 import { CreatePolygonDto } from './dto/create.polygon.dto';
+import { FindWilayahDto } from './dto/find.wilayah.dto';
 
 @Injectable()
 export class Profile {
@@ -130,6 +131,94 @@ export class Profile {
                 }
             }
             return { status: 'nok', message: 'gagal edit Polygon', data: error };
+        }
+    }
+
+    async cariProvinsi() {
+        try {
+            const cariWilayah = await this.prisma
+                .$queryRaw`select w.kode,w.wilayah from wilayah w where length(w.kode)=2`;
+            return { status: 'ok', message: 'berhasil cari provinsi', result: cariWilayah };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal cari data wilayah provinsi karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal cari data wilayah provinsi', data: error };
+        }
+    }
+
+    async cariKabupaten(findWilayah: FindWilayahDto) {
+        try {
+            const cariWilayah = await this.prisma
+                .$queryRaw`select w.kode,w.wilayah from wilayah w where length(w.kode)=4 and substring(w.kode,1,2)=${findWilayah.kode}`;
+            return {
+                status: 'ok',
+                message: 'berhasil cari kabupaten yang anda maksud',
+                result: cariWilayah,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal cari data wilayah kabupaten karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal cari data wilayah provinsi', data: error };
+        }
+    }
+
+    async cariKecamatan(findWilayah: FindWilayahDto) {
+        try {
+            const cariWilayah = await this.prisma
+                .$queryRaw`select w.kode,w.wilayah from wilayah w where length(w.kode)=6 and substring(w.kode,1,4)=${findWilayah.kode}`;
+            return { status: 'ok', message: 'berhasil cari data kecamatan', result: cariWilayah };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal cari data wilayah kecamatan karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal cari data wilayah kecamatan', data: error };
+        }
+    }
+
+    async cariDesa(findWilayah: FindWilayahDto) {
+        try {
+            const cariWilayah = await this.prisma
+                .$queryRaw`select w.kode,w.wilayah from wilayah w where length(w.kode)=10 and substring(w.kode,1,6)=${findWilayah.kode}`;
+            return { status: 'ok', message: 'berhasil cari provinsi', result: cariWilayah };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal cari data wilayah provinsi karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal cari data wilayah provinsi', data: error };
         }
     }
 }
