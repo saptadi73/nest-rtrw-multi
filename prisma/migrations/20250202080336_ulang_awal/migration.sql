@@ -5,10 +5,29 @@ CREATE TABLE "kk" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "no_kk" TEXT NOT NULL,
-    "no_blok" TEXT NOT NULL,
+    "id_blok" INTEGER NOT NULL,
     "no_rumah" INTEGER NOT NULL,
 
     CONSTRAINT "kk_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "blok" (
+    "id" SERIAL NOT NULL,
+    "uuid" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "blok" TEXT NOT NULL,
+
+    CONSTRAINT "blok_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "wilayah" (
+    "kode" TEXT NOT NULL,
+    "wilayah" TEXT NOT NULL,
+
+    CONSTRAINT "wilayah_pkey" PRIMARY KEY ("kode")
 );
 
 -- CreateTable
@@ -27,6 +46,31 @@ CREATE TABLE "entity" (
     "kode_wilayah" TEXT NOT NULL,
 
     CONSTRAINT "entity_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "polygon" (
+    "id" SERIAL NOT NULL,
+    "uuid" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "latitude" DOUBLE PRECISION NOT NULL,
+    "longitude" DOUBLE PRECISION NOT NULL,
+
+    CONSTRAINT "polygon_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "gps_location" (
+    "id" SERIAL NOT NULL,
+    "uuid" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "latitude" DOUBLE PRECISION NOT NULL,
+    "longitude" DOUBLE PRECISION NOT NULL,
+    "id_kk" INTEGER NOT NULL,
+
+    CONSTRAINT "gps_location_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -127,7 +171,7 @@ CREATE TABLE "type_anggaran" (
 );
 
 -- CreateTable
-CREATE TABLE "photo" (
+CREATE TABLE "photo_warga" (
     "id" SERIAL NOT NULL,
     "uuid" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -137,7 +181,7 @@ CREATE TABLE "photo" (
     "url" TEXT NOT NULL,
     "id_warga" INTEGER NOT NULL,
 
-    CONSTRAINT "photo_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "photo_warga_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -213,6 +257,7 @@ CREATE TABLE "token" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "token" VARCHAR(25) NOT NULL,
     "id_user" INTEGER NOT NULL,
+    "lastLogin" TIMESTAMP(3),
 
     CONSTRAINT "token_pkey" PRIMARY KEY ("id")
 );
@@ -231,11 +276,37 @@ CREATE TABLE "photo_user" (
     CONSTRAINT "photo_user_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "photo_kk" (
+    "id" SERIAL NOT NULL,
+    "uuid" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "nama" TEXT NOT NULL,
+    "keterangan" TEXT,
+    "url" TEXT NOT NULL,
+    "id_kk" INTEGER NOT NULL,
+
+    CONSTRAINT "photo_kk_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "kk_uuid_key" ON "kk"("uuid");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "blok_uuid_key" ON "blok"("uuid");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "wilayah_kode_key" ON "wilayah"("kode");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "entity_uuid_key" ON "entity"("uuid");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "polygon_uuid_key" ON "polygon"("uuid");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "gps_location_uuid_key" ON "gps_location"("uuid");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "warga_uuid_key" ON "warga"("uuid");
@@ -259,7 +330,7 @@ CREATE UNIQUE INDEX "jenis_anggaran_uuid_key" ON "jenis_anggaran"("uuid");
 CREATE UNIQUE INDEX "type_anggaran_uuid_key" ON "type_anggaran"("uuid");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "photo_uuid_key" ON "photo"("uuid");
+CREATE UNIQUE INDEX "photo_warga_uuid_key" ON "photo_warga"("uuid");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "bukti_uuid_key" ON "bukti"("uuid");
@@ -278,6 +349,15 @@ CREATE UNIQUE INDEX "token_token_key" ON "token"("token");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "photo_user_uuid_key" ON "photo_user"("uuid");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "photo_kk_uuid_key" ON "photo_kk"("uuid");
+
+-- AddForeignKey
+ALTER TABLE "kk" ADD CONSTRAINT "kk_id_blok_fkey" FOREIGN KEY ("id_blok") REFERENCES "blok"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "gps_location" ADD CONSTRAINT "gps_location_id_kk_fkey" FOREIGN KEY ("id_kk") REFERENCES "kk"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "warga" ADD CONSTRAINT "warga_id_type_fkey" FOREIGN KEY ("id_type") REFERENCES "type"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -304,7 +384,7 @@ ALTER TABLE "anggaran" ADD CONSTRAINT "anggaran_id_type_anggaran_fkey" FOREIGN K
 ALTER TABLE "jenis_anggaran" ADD CONSTRAINT "jenis_anggaran_id_type_anggaran_fkey" FOREIGN KEY ("id_type_anggaran") REFERENCES "type_anggaran"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "photo" ADD CONSTRAINT "photo_id_warga_fkey" FOREIGN KEY ("id_warga") REFERENCES "warga"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "photo_warga" ADD CONSTRAINT "photo_warga_id_warga_fkey" FOREIGN KEY ("id_warga") REFERENCES "warga"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "bukti" ADD CONSTRAINT "bukti_id_anggaran_fkey" FOREIGN KEY ("id_anggaran") REFERENCES "anggaran"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -323,3 +403,6 @@ ALTER TABLE "token" ADD CONSTRAINT "token_id_user_fkey" FOREIGN KEY ("id_user") 
 
 -- AddForeignKey
 ALTER TABLE "photo_user" ADD CONSTRAINT "photo_user_id_user_fkey" FOREIGN KEY ("id_user") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "photo_kk" ADD CONSTRAINT "photo_kk_id_kk_fkey" FOREIGN KEY ("id_kk") REFERENCES "kk"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

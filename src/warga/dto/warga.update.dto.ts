@@ -40,4 +40,12 @@ export class WargaUpdateDto {
     @IsInt()
     @IsOptional()
     id: number;
+
+    @IsInt()
+    @IsOptional()
+    id_pekerjaan: number;
+
+    @IsInt()
+    @IsOptional()
+    id_status_warga: number;
 }

@@ -35,4 +35,12 @@ export class WargaCreateDto {
     @IsString()
     @IsOptional()
     jenis_kelamin: string;
+
+    @IsInt()
+    @IsOptional()
+    id_pekerjaan: number;
+
+    @IsInt()
+    @IsOptional()
+    id_status_warga: number;
 }
