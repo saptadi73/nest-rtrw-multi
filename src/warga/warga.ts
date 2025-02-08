@@ -13,6 +13,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { BlokCreateDto } from './dto/blok.create.dto';
 import { CreateFileUserDto } from './dto/create.file.user.dto';
 import { CreateGpsLocationDto } from './dto/create.gps.location.dto';
+import { PekerjaanWargaDto } from './dto/pekerjaan.warga.dto';
+import { StatusWargaDto } from './dto/status.warga.dto';
 
 @Injectable()
 export class Warga {
@@ -240,6 +242,16 @@ export class Warga {
                     tempat_lahir: createWarga.tempat_lahir,
                     tanggal_lahir: isoDate,
                     jenis_kelamin: jk,
+                    status_warga: {
+                        connect: {
+                            id: createWarga.id_status_warga,
+                        },
+                    },
+                    pekerjaan: {
+                        connect: {
+                            id: createWarga.id_pekerjaan,
+                        },
+                    },
                     uuid: uuidv4(),
                     type: {
                         connect: {
@@ -302,6 +314,16 @@ export class Warga {
                             id: createWarga.id_type,
                         },
                     },
+                    status_warga: {
+                        connect: {
+                            id: createWarga.id_status_warga,
+                        },
+                    },
+                    pekerjaan: {
+                        connect: {
+                            id: createWarga.id_pekerjaan,
+                        },
+                    },
                 },
                 where: {
                     id: idku,
@@ -338,6 +360,8 @@ export class Warga {
                     tanggal_lahir: true,
                     jenis_kelamin: true,
                     id_kk: true,
+                    id_pekerjaan: true,
+                    id_status_warga: true,
                 },
                 where: {
                     id: idwargaku,
@@ -1179,6 +1203,92 @@ export class Warga {
                 }
             }
             return { status: 'nok', message: 'gagal Edit GPS Location KK, maaf', data: error };
+        }
+    }
+
+    async TambahPekerjaan(pekerjaan: PekerjaanWargaDto) {
+        try {
+            const createPekerjaan = await this.prisma.pekerjaan.create({
+                data: {
+                    uuid: uuidv4(),
+                    nama: pekerjaan.nama,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil tambah daftar pekerjaan',
+                result: createPekerjaan,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message: 'gagal tambah data pekerjaan',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal tambah data pekerjaan, maaf', data: error };
+        }
+    }
+
+    async updatePekerjaan(pekerjaan: PekerjaanWargaDto) {
+        try {
+            const editPekerjaan = await this.prisma.pekerjaan.update({
+                where: {
+                    id: pekerjaan.id,
+                },
+                data: {
+                    nama: pekerjaan.nama,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil update daftar pekerjaan',
+                result: editPekerjaan,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message: 'gagal tambah data pekerjaan',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal tambah data pekerjaan, maaf', data: error };
+        }
+    }
+
+    async tambahStatusWarga(statusWarga: StatusWargaDto) {
+        try {
+            const createStatusWarga = await this.prisma.status_warga.create({
+                data: {
+                    uuid: uuidv4(),
+                    status: statusWarga.status,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil tambah status warga',
+                result: createStatusWarga,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message: 'gagal tambah status warga',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal tambah status warga, maaf', data: error };
         }
     }
 }

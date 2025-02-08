@@ -27,6 +27,7 @@ import { TypeUpdateDto } from './dto/type.update.dto';
 import { CreateFileUserDto } from './dto/create.file.user.dto';
 import { CreateGpsLocationDto } from './dto/create.gps.location.dto';
 import { MulterExceptionFilter } from './filter/multer.exception.filter';
+import { PekerjaanWargaDto } from './dto/pekerjaan.warga.dto';
 
 @Controller('warga')
 export class WargaController {
@@ -753,6 +754,44 @@ export class WargaController {
     async editPolygon(@Body() createEntity: CreateGpsLocationDto) {
         try {
             return this.Warga.editGPSLocationKK(createEntity);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('tambah/pekerjaan')
+    @Header('Content-Type', 'application/json')
+    async tambahPekerjaan(pekerjaan: PekerjaanWargaDto) {
+        try {
+            return this.Warga.TambahPekerjaan(pekerjaan);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('update/pekerjaan')
+    @Header('Content-Type', 'application/json')
+    async updatePekerjaan(pekerjaan: PekerjaanWargaDto) {
+        try {
+            return this.Warga.updatePekerjaan(pekerjaan);
         } catch (error) {
             throw new HttpException(
                 {
