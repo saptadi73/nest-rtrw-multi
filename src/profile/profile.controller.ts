@@ -158,4 +158,22 @@ export class ProfileController {
             );
         }
     }
+
+    @Get('cek')
+    async cek() {
+        try {
+            return this.profile.cekProfile();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
 }

@@ -76,6 +76,40 @@ export class Profile {
         }
     }
 
+    async cekProfile() {
+        try {
+            const cekEntity = await this.prisma.entity.findUnique({
+                where: {
+                    id: 1,
+                },
+                select: {
+                    provinsi: true,
+                    kabupaten: true,
+                    kecamatan: true,
+                    desa: true,
+                    rt: true,
+                    rw: true,
+                    dusun: true,
+                    kode_wilayah: true,
+                },
+            });
+            return { status: 'ok', message: 'berhasil update profile', result: cekEntity };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal edit profile karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal edit profile', data: error };
+        }
+    }
+
     async createPolygon(createPolygon: CreatePolygonDto) {
         try {
             const createPolygonResult = await this.prisma.polygon.create({
@@ -213,12 +247,12 @@ export class Profile {
                     return {
                         status: 'nok',
                         message:
-                            'gagal cari data wilayah provinsi karena ada isian seharusnya unique, diisi berulang',
+                            'gagal cari data wilayah desa karena ada isian seharusnya unique, diisi berulang',
                         data: error,
                     };
                 }
             }
-            return { status: 'nok', message: 'gagal cari data wilayah provinsi', data: error };
+            return { status: 'nok', message: 'gagal cari data wilayah desa', data: error };
         }
     }
 }
