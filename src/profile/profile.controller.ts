@@ -176,4 +176,40 @@ export class ProfileController {
             );
         }
     }
+
+    @Get('polygon')
+    async getDataPolygon() {
+        try {
+            return this.profile.getDataPolygon();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('clear')
+    async clear() {
+        try {
+            return this.profile.hapusDataPolygon();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
 }

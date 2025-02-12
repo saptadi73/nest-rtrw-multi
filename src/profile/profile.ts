@@ -168,6 +168,54 @@ export class Profile {
         }
     }
 
+    async getDataPolygon() {
+        try {
+            const dataPolygon = await this.prisma.polygon.findMany({
+                select: {
+                    latitude: true,
+                    longitude: true,
+                },
+                orderBy: {
+                    id: 'asc',
+                },
+            });
+            return { status: 'ok', message: 'berhasil dapat data polygon', result: dataPolygon };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data polygon karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal dapat data Polygon', data: error };
+        }
+    }
+
+    async hapusDataPolygon() {
+        try {
+            const dataPolygon = await this.prisma.$queryRaw`TRUNCATE polygon`;
+            return { status: 'ok', message: 'berhasil delete data polygon', result: dataPolygon };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal hapus data polygon karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal hapus data Polygon', data: error };
+        }
+    }
+
     async cariProvinsi() {
         try {
             const cariWilayah = await this.prisma
