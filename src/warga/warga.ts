@@ -517,6 +517,15 @@ export class Warga {
                             id: true,
                             nama: true,
                             no_hp: true,
+                            tanggal_lahir: true,
+                            tempat_lahir: true,
+                            nik: true,
+                            jenis_kelamin: true,
+                            pekerjaan: {
+                                select: {
+                                    nama: true,
+                                },
+                            },
                             type: {
                                 select: {
                                     id: true,
