@@ -28,6 +28,7 @@ import { CreateFileUserDto } from './dto/create.file.user.dto';
 import { CreateGpsLocationDto } from './dto/create.gps.location.dto';
 import { MulterExceptionFilter } from './filter/multer.exception.filter';
 import { PekerjaanWargaDto } from './dto/pekerjaan.warga.dto';
+import { StatusWargaDto } from './dto/status.warga.dto';
 
 @Controller('warga')
 export class WargaController {
@@ -770,7 +771,7 @@ export class WargaController {
 
     @Post('tambah/pekerjaan')
     @Header('Content-Type', 'application/json')
-    async tambahPekerjaan(pekerjaan: PekerjaanWargaDto) {
+    async tambahPekerjaan(@Body() pekerjaan: PekerjaanWargaDto) {
         try {
             return this.Warga.TambahPekerjaan(pekerjaan);
         } catch (error) {
@@ -789,9 +790,64 @@ export class WargaController {
 
     @Post('update/pekerjaan')
     @Header('Content-Type', 'application/json')
-    async updatePekerjaan(pekerjaan: PekerjaanWargaDto) {
+    async updatePekerjaan(@Body() pekerjaan: PekerjaanWargaDto) {
         try {
             return this.Warga.updatePekerjaan(pekerjaan);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('tambah/status')
+    @Header('Content-Type', 'application/json')
+    async tambahStatus(@Body() status_warga: StatusWargaDto) {
+        try {
+            return this.Warga.tambahStatusWarga(status_warga);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('list/pekerjaan')
+    async listPekerjaan() {
+        try {
+            return this.Warga.listPekerjaan();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('list/status')
+    async listStatus() {
+        try {
+            return this.Warga.listStatusWarga();
         } catch (error) {
             throw new HttpException(
                 {

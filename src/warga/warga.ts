@@ -128,6 +128,16 @@ export class Warga {
 
     async createKK(createKK: KkCreateDto) {
         try {
+            const dateString = createKK.tanggal_lahir;
+            const date = new Date(dateString);
+            date.setHours(date.getHours() + 7);
+            const isoDate = date.toISOString();
+            let jk = true;
+            if (createKK.jenis_kelamin == '0') {
+                jk = false;
+            } else {
+                jk = true;
+            }
             const addWarga = await this.prisma.kk.create({
                 data: {
                     no_kk: createKK.no_kk,
@@ -136,6 +146,31 @@ export class Warga {
                     blok: {
                         connect: {
                             id: createKK.id_blok,
+                        },
+                    },
+                    warga: {
+                        create: {
+                            nama: createKK.nama,
+                            nik: createKK.nik,
+                            uuid: uuidv4(),
+                            tempat_lahir: createKK.tempat_lahir,
+                            tanggal_lahir: isoDate,
+                            jenis_kelamin: jk,
+                            type: {
+                                connect: {
+                                    id: 1,
+                                },
+                            },
+                            status_warga: {
+                                connect: {
+                                    id: createKK.id_status_warga,
+                                },
+                            },
+                            pekerjaan: {
+                                connect: {
+                                    id: createKK.id_pekerjaan,
+                                },
+                            },
                         },
                     },
                 },
@@ -1208,7 +1243,7 @@ export class Warga {
 
     async TambahPekerjaan(pekerjaan: PekerjaanWargaDto) {
         try {
-            const createPekerjaan = await this.prisma.pekerjaan.create({
+            const addPekerjaan = await this.prisma.pekerjaan.create({
                 data: {
                     uuid: uuidv4(),
                     nama: pekerjaan.nama,
@@ -1217,7 +1252,7 @@ export class Warga {
             return {
                 status: 'ok',
                 message: 'berhasil tambah daftar pekerjaan',
-                result: createPekerjaan,
+                result: addPekerjaan,
             };
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -1230,7 +1265,11 @@ export class Warga {
                     };
                 }
             }
-            return { status: 'nok', message: 'gagal tambah data pekerjaan, maaf', data: error };
+            return {
+                status: 'nok',
+                message: 'gagal tambah data pekerjaan warga, maaf',
+                data: error,
+            };
         }
     }
 
@@ -1289,6 +1328,70 @@ export class Warga {
                 }
             }
             return { status: 'nok', message: 'gagal tambah status warga, maaf', data: error };
+        }
+    }
+
+    async listPekerjaan() {
+        try {
+            const daftarKerjaan = await this.prisma.pekerjaan.findMany({
+                select: {
+                    id: true,
+                    nama: true,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat daftar pekerjaan',
+                result: daftarKerjaan,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message: 'gagal daftar pekerjaan warga',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal dapat data pekerjaan warga, maaf',
+                data: error,
+            };
+        }
+    }
+
+    async listStatusWarga() {
+        try {
+            const daftarStatus = await this.prisma.status_warga.findMany({
+                select: {
+                    id: true,
+                    status: true,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat daftar status',
+                result: daftarStatus,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message: 'gagal daftar status warga',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal dapat data status warga, maaf',
+                data: error,
+            };
         }
     }
 }
