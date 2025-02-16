@@ -822,6 +822,22 @@ export class Warga {
                         },
                         select: {
                             nama: true,
+                            tempat_lahir: true,
+                            tanggal_lahir: true,
+                            no_hp: true,
+                            nik: true,
+                            jenis_kelamin: true,
+                            pekerjaan: {
+                                select: {
+                                    id: true,
+                                    nama: true,
+                                },
+                            },
+                            status_warga: {
+                                select: {
+                                    status: true,
+                                },
+                            },
                         },
                     },
                 },
