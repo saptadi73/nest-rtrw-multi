@@ -228,16 +228,25 @@ export class Warga {
 
     async findKK(idkk: string) {
         try {
-            const idkkku = parseInt(idkk);
+            const idkkku = idkk;
             const CariKK = await this.prisma.kk.findFirst({
                 select: {
                     id: true,
                     blok: true,
                     no_kk: true,
                     no_rumah: true,
+                    warga: {
+                        select: {
+                            id: true,
+                            nama: true,
+                        },
+                        where: {
+                            id_type: 1,
+                        },
+                    },
                 },
                 where: {
-                    id: idkkku,
+                    uuid: idkkku,
                 },
             });
             return { status: 'ok', message: 'berhasil dapat data kk', result: CariKK };
@@ -383,7 +392,7 @@ export class Warga {
 
     async findWarga(idWarga: string) {
         try {
-            const idwargaku = parseInt(idWarga);
+            const idwargaku = idWarga;
             const cariWarga = await this.prisma.warga.findFirst({
                 select: {
                     id: true,
@@ -397,9 +406,21 @@ export class Warga {
                     id_kk: true,
                     id_pekerjaan: true,
                     id_status_warga: true,
+                    kk: {
+                        select: {
+                            id: true,
+                            no_rumah: true,
+                            blok: {
+                                select: {
+                                    blok: true,
+                                    id: true,
+                                },
+                            },
+                        },
+                    },
                 },
                 where: {
-                    id: idwargaku,
+                    uuid: idwargaku,
                 },
             });
             return { status: 'ok', message: 'berhasil cari data warga', result: cariWarga };
@@ -816,6 +837,7 @@ export class Warga {
                     no_rumah: true,
                     no_kk: true,
                     id: true,
+                    uuid: true,
                     warga: {
                         where: {
                             id_type: 1,
@@ -827,6 +849,7 @@ export class Warga {
                             no_hp: true,
                             nik: true,
                             jenis_kelamin: true,
+                            uuid: true,
                             pekerjaan: {
                                 select: {
                                     id: true,
