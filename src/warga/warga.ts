@@ -194,10 +194,10 @@ export class Warga {
 
     async updateKK(id: string, updateKk: KkUpdateDto) {
         try {
-            const idku = parseInt(id);
+            const idku = id;
             const editKK = await this.prisma.kk.update({
                 where: {
-                    id: idku,
+                    uuid: idku,
                 },
                 data: {
                     no_kk: updateKk.no_kk,
@@ -328,7 +328,7 @@ export class Warga {
 
     async updateWarga(id: string, createWarga: WargaUpdateDto) {
         try {
-            const idku = parseInt(id);
+            const idku = id;
             const dateString = createWarga.tanggal_lahir;
             const date = new Date(dateString);
             date.setHours(date.getHours() + 7);
@@ -370,7 +370,7 @@ export class Warga {
                     },
                 },
                 where: {
-                    id: idku,
+                    uuid: idku,
                 },
             });
             return { status: 'ok', message: 'berhasil update data warga', result: addWarga };
@@ -587,7 +587,7 @@ export class Warga {
 
     async listWargaPerKK(idKK) {
         try {
-            const idKKku = parseInt(idKK);
+            const idKKku = idKK;
             const listWargaKK = await this.prisma.warga.findMany({
                 select: {
                     id: true,
@@ -596,6 +596,19 @@ export class Warga {
                     tanggal_lahir: true,
                     no_hp: true,
                     nik: true,
+                    jenis_kelamin: true,
+                    pekerjaan: {
+                        select: {
+                            id: true,
+                            nama: true,
+                        },
+                    },
+                    status_warga: {
+                        select: {
+                            id: true,
+                            status: true,
+                        },
+                    },
                     type: {
                         select: {
                             nama: true,
@@ -615,7 +628,7 @@ export class Warga {
                 },
                 where: {
                     kk: {
-                        id: idKKku,
+                        uuid: idKKku,
                     },
                 },
                 orderBy: {
