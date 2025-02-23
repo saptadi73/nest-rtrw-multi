@@ -861,4 +861,41 @@ export class WargaController {
             );
         }
     }
+
+    @Get('delete/rumah/:id')
+    @Header('Content-Type', 'application/json')
+    async delRumah(@Param('id') id: string) {
+        try {
+            return this.Warga.delKK(id);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+    @Get('delete/wargakk/:id')
+    @Header('Content-Type', 'application/json')
+    async delRumahKK(@Param('id') id: string) {
+        try {
+            return this.Warga.delWargaKK(id);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
 }

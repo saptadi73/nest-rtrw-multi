@@ -239,6 +239,7 @@ export class Warga {
                         select: {
                             id: true,
                             nama: true,
+                            no_hp: true,
                         },
                         where: {
                             id_type: 1,
@@ -622,6 +623,7 @@ export class Warga {
                                     blok: true,
                                 },
                             },
+                            id: true,
                             no_rumah: true,
                         },
                     },
@@ -1451,6 +1453,68 @@ export class Warga {
             return {
                 status: 'nok',
                 message: 'gagal dapat data status warga, maaf',
+                data: error,
+            };
+        }
+    }
+
+    async delKK(id: string) {
+        try {
+            const delKK = await this.prisma.kk.delete({
+                where: {
+                    uuid: id,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil hapus Rumah Keluarga',
+                result: delKK,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message: 'gagal hapus warga',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal hapus rumah keluarga, maaf',
+                data: error,
+            };
+        }
+    }
+
+    async delWargaKK(id: string) {
+        try {
+            const delWargaKK = await this.prisma.warga.deleteMany({
+                where: {
+                    id_kk: parseInt(id),
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil hapus Rumah Keluarga',
+                result: delWargaKK,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message: 'gagal hapus warga',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal hapus rumah keluarga, maaf',
                 data: error,
             };
         }
