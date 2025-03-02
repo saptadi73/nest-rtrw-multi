@@ -1,9 +1,11 @@
-import { IsInt, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class TypeUpdateDto {
     @IsString()
+    @IsOptional()
     nama: string;
 
-    @IsInt()
+    @IsNumber()
+    @IsOptional()
     id: number;
 }

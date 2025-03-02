@@ -541,4 +541,23 @@ export class BayarController {
             );
         }
     }
+
+    @Post('delete/iuran')
+    @Header('Content-Type', 'application/json')
+    async hapusIuran(@Body() updateIuran: IuranUpdateDto) {
+        try {
+            return this.bayar.deleteIuran(updateIuran);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
 }

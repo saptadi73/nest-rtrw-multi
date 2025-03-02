@@ -297,7 +297,7 @@ export class WargaController {
         }
     }
 
-    @Post('add/type')
+    @Post('tambah/type')
     async addTyoe(@Body() data: TypeCreateDto) {
         try {
             return this.Warga.createType(data);
@@ -352,9 +352,29 @@ export class WargaController {
     }
 
     @Post('update/type')
-    async editTyoe(@Body() data: TypeUpdateDto) {
+    @Header('Content-Type', 'application/json')
+    async editType(@Body() data: TypeUpdateDto) {
         try {
             return this.Warga.updateType(data);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('hapus/type')
+    @Header('Content-Type', 'application/json')
+    async busekType(@Body() updateType: TypeUpdateDto) {
+        try {
+            return this.Warga.deleteType(updateType);
         } catch (error) {
             throw new HttpException(
                 {
@@ -812,6 +832,44 @@ export class WargaController {
     async tambahStatus(@Body() status_warga: StatusWargaDto) {
         try {
             return this.Warga.tambahStatusWarga(status_warga);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('update/status')
+    @Header('Content-Type', 'application/json')
+    async gantiStatus(@Body() status_warga: StatusWargaDto) {
+        try {
+            return this.Warga.updateStatusWarga(status_warga);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('hapus/status')
+    @Header('Content-Type', 'application/json')
+    async hapusStatus(@Body() status_warga: StatusWargaDto) {
+        try {
+            return this.Warga.deleteStatusWarga(status_warga);
         } catch (error) {
             throw new HttpException(
                 {

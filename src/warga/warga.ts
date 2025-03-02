@@ -493,6 +493,30 @@ export class Warga {
         }
     }
 
+    async deleteType(createType: TypeUpdateDto) {
+        try {
+            const addType = await this.prisma.type.delete({
+                where: {
+                    id: createType.id,
+                },
+            });
+            return { status: 'ok', message: 'berhasil hapus data type warga', result: addType };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal hapus data type warga karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal hapus data type warga', data: error };
+        }
+    }
+
     async findType(id: string) {
         try {
             const cariType = await this.prisma.type.findFirst({
@@ -1418,6 +1442,63 @@ export class Warga {
                 }
             }
             return { status: 'nok', message: 'gagal tambah status warga, maaf', data: error };
+        }
+    }
+
+    async updateStatusWarga(statusWarga: StatusWargaDto) {
+        try {
+            const editStatusWarga = await this.prisma.status_warga.update({
+                where: {
+                    id: statusWarga.id,
+                },
+                data: {
+                    status: statusWarga.status,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil update status warga',
+                result: editStatusWarga,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message: 'gagal update status warga',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal update status warga, maaf', data: error };
+        }
+    }
+
+    async deleteStatusWarga(statusWarga: StatusWargaDto) {
+        try {
+            const hapusStatusWarga = await this.prisma.status_warga.delete({
+                where: {
+                    id: statusWarga.id,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil hapus status warga',
+                result: hapusStatusWarga,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message: 'gagal hapus status warga',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal hapus status warga, maaf', data: error };
         }
     }
 

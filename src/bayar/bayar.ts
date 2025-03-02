@@ -128,6 +128,34 @@ export class Bayar {
         }
     }
 
+    async deleteIuran(createIuran: IuranUpdateDto) {
+        try {
+            const addIuran = await this.prisma.iuran.delete({
+                where: {
+                    id: createIuran.id,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil hapus jenis iuran',
+                result: addIuran,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal hapus jenis iuran karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal hapus jenis iuran', data: error };
+        }
+    }
+
     async editBayar(createBayar: SetorUpdateDto) {
         try {
             const dateString = createBayar.tanggal;
