@@ -560,4 +560,23 @@ export class BayarController {
             );
         }
     }
+
+    @Post('find/iuran')
+    @Header('Content-Type', 'application/json')
+    async findIuran(@Body() Iuran: IuranUpdateDto) {
+        try {
+            return this.bayar.findJenisIuran(Iuran);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
 }

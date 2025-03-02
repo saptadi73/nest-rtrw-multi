@@ -6,6 +6,7 @@ export class IuranUpdateDto {
     iuran: number;
 
     @IsInt()
+    @IsOptional()
     id: number;
 
     @IsString()

@@ -237,6 +237,41 @@ export class Bayar {
         }
     }
 
+    async findJenisIuran(iuranUpdate: IuranUpdateDto) {
+        try {
+            const cariJenisIuran = await this.prisma.iuran.findFirst({
+                where: {
+                    id: iuranUpdate.id,
+                },
+                select: {
+                    id: true,
+                    uuid: true,
+                    iuran: true,
+                    nama: true,
+                    keterangan: true,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data iuran',
+                result: cariJenisIuran,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data iuran karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal dapat data iuran', data: error };
+        }
+    }
+
     async listSetoran(laporanTanggal: LaporanSetoranDto) {
         try {
             const dateString_awal = laporanTanggal.tanggal_awal;
