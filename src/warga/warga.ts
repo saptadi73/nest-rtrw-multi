@@ -1366,6 +1366,33 @@ export class Warga {
         }
     }
 
+    async deletePekerjaan(pekerjaan: PekerjaanWargaDto) {
+        try {
+            const deletePekerjaan = await this.prisma.pekerjaan.delete({
+                where: {
+                    id: pekerjaan.id,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil delete pekerjaan',
+                result: deletePekerjaan,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message: 'gagal delete data pekerjaan',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal delete data pekerjaan, maaf', data: error };
+        }
+    }
+
     async tambahStatusWarga(statusWarga: StatusWargaDto) {
         try {
             const createStatusWarga = await this.prisma.status_warga.create({

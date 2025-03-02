@@ -898,4 +898,23 @@ export class WargaController {
             );
         }
     }
+
+    @Post('hapus/pekerjaan')
+    @Header('Content-Type', 'application/json')
+    async delPekerjaan(@Body() pekerjaan: PekerjaanWargaDto) {
+        try {
+            return this.Warga.deletePekerjaan(pekerjaan);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
 }
