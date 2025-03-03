@@ -99,6 +99,44 @@ export class BayarController {
         }
     }
 
+    @Post('update/jenis/anggaran')
+    @Header('Content-Type', 'application/json')
+    async ubahJenisAnggaran(@Body() tambahJenisAnggaran: JenisAnggaranCreateDto) {
+        try {
+            return this.bayar.updateJenisAnggaran(tambahJenisAnggaran);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('delete/jenis/anggaran')
+    @Header('Content-Type', 'application/json')
+    async ilanginJenisAnggaran(@Body() tambahJenisAnggaran: JenisAnggaranCreateDto) {
+        try {
+            return this.bayar.deleteJenisAnggaran(tambahJenisAnggaran);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
     @Post('list/jenis/anggaran/')
     @Header('Content-Type', 'application/json')
     async listJenisAnggaranPemasukan(@Body() jenisAnggaran: JenisAnggaranCreateDto) {
@@ -160,6 +198,25 @@ export class BayarController {
     async editAnggaran(@Body() updateAnggaran: AnggaranUpdateDto) {
         try {
             return this.bayar.tambahAnggaran(updateAnggaran);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('find/jenis/anggaran')
+    @Header('Content-Type', 'application/json')
+    async findAnggaran(@Body() updateJenisAnggaran: JenisAnggaranCreateDto) {
+        try {
+            return this.bayar.findJenisAnggaran(updateJenisAnggaran);
         } catch (error) {
             throw new HttpException(
                 {

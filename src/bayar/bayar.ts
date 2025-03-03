@@ -540,6 +540,123 @@ export class Bayar {
         }
     }
 
+    async findJenisAnggaran(updateJenisAnggaran: JenisAnggaranCreateDto) {
+        try {
+            const cariJenisAnggaran = await this.prisma.jenis_anggaran.findFirst({
+                where: {
+                    id: updateJenisAnggaran.id,
+                },
+                select: {
+                    id: true,
+                    nama: true,
+                    keterangan: true,
+                    uuid: true,
+                    type_anggaran: {
+                        select: {
+                            id: true,
+                            type: true,
+                        },
+                    },
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil ubah data jenis Anggaran',
+                result: cariJenisAnggaran,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal ubah data jenis anggaran karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal ubah data jenis anggaran',
+                data: error,
+            };
+        }
+    }
+
+    async updateJenisAnggaran(updateJenisAnggaran: JenisAnggaranCreateDto) {
+        try {
+            const editJenisAnggaran = await this.prisma.jenis_anggaran.update({
+                data: {
+                    nama: updateJenisAnggaran.nama,
+                    keterangan: updateJenisAnggaran.keterangan,
+                    type_anggaran: {
+                        connect: {
+                            id: updateJenisAnggaran.id_type_anggaran,
+                        },
+                    },
+                },
+                where: {
+                    id: updateJenisAnggaran.id,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil menambah Jenis Anggaran',
+                result: editJenisAnggaran,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal ubah jenis Anggaran karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal ubah Jenis Anggaran',
+                data: error,
+            };
+        }
+    }
+
+    async deleteJenisAnggaran(updateJenisAnggaran: JenisAnggaranCreateDto) {
+        try {
+            const editJenisAnggaran = await this.prisma.jenis_anggaran.delete({
+                where: {
+                    id: updateJenisAnggaran.id,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil hapus Jenis Anggaran',
+                result: editJenisAnggaran,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal hapus jenis Anggaran karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal hapus Jenis Anggaran',
+                data: error,
+            };
+        }
+    }
+
     async listTypeAnggaran() {
         try {
             const typeAnggaran = await this.prisma.type_anggaran.findMany({
