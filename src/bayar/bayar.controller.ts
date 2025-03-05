@@ -137,7 +137,7 @@ export class BayarController {
         }
     }
 
-    @Post('list/jenis/anggaran/')
+    @Post('list/jenis/anggaran')
     @Header('Content-Type', 'application/json')
     async listJenisAnggaranPemasukan(@Body() jenisAnggaran: JenisAnggaranCreateDto) {
         try {
@@ -623,6 +623,43 @@ export class BayarController {
     async findIuran(@Body() Iuran: IuranUpdateDto) {
         try {
             return this.bayar.findJenisIuran(Iuran);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('setor/kk/:id')
+    async setorKk(@Param('id') id: string) {
+        try {
+            return this.bayar.listSetoranKK(id);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('delete/setor')
+    @Header('Content-Type', 'application/json')
+    async hapusSetoran(@Body() setoran: SetorUpdateDto) {
+        try {
+            return this.bayar.deleteSetoran(setoran);
         } catch (error) {
             throw new HttpException(
                 {

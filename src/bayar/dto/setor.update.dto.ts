@@ -1,19 +1,24 @@
-import { IsDateString, IsInt, IsOptional, IsString } from 'class-validator';
+import { IsDateString, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class SetorUpdateDto {
-    @IsInt()
+    @IsNumber()
+    @IsOptional()
     id_kk: number;
 
     @IsInt()
+    @IsOptional()
     nilai: number;
 
-    @IsInt()
+    @IsNumber()
+    @IsOptional()
     id: number;
 
-    @IsInt()
+    @IsNumber()
+    @IsOptional()
     id_iuran: number;
 
     @IsDateString()
+    @IsOptional()
     tanggal: string;
 
     @IsString()

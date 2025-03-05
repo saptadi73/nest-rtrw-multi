@@ -360,6 +360,75 @@ export class Bayar {
         }
     }
 
+    async listSetoranKK(id: string) {
+        try {
+            const listSetoran = await this.prisma.setor.findMany({
+                select: {
+                    id: true,
+                    kk: {
+                        select: {
+                            id: true,
+                            blok: {
+                                select: {
+                                    id: true,
+                                    blok: true,
+                                },
+                            },
+                            no_rumah: true,
+                            warga: {
+                                select: {
+                                    id: true,
+                                    nama: true,
+                                },
+                                where: {
+                                    type: {
+                                        id: 1,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    nilai: true,
+                    tanggal: true,
+                    iuran: {
+                        select: {
+                            id: true,
+                            iuran: true,
+                            keterangan: true,
+                            nama: true,
+                        },
+                    },
+                },
+                where: {
+                    kk: {
+                        id: parseInt(id),
+                    },
+                },
+                orderBy: {
+                    tanggal: 'desc',
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data setoran',
+                result: listSetoran,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data setoran karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal dapat data setoran', data: error };
+        }
+    }
+
     async listBelumBayar(hutang: HitungHutangDto) {
         try {
             const month = hutang.bulan; // September
@@ -888,6 +957,38 @@ export class Bayar {
             return {
                 status: 'nok',
                 message: 'gagal update data Setor',
+                data: error,
+            };
+        }
+    }
+
+    async deleteSetoran(setoran: SetorUpdateDto) {
+        try {
+            const hapusSetor = await this.prisma.setor.delete({
+                where: {
+                    id: setoran.id,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil hapus data setoran',
+                result: hapusSetor,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal hapus data setoran karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal hapus data Setoran, Maaf Sekali',
                 data: error,
             };
         }
