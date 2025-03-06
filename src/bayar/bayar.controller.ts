@@ -673,4 +673,23 @@ export class BayarController {
             );
         }
     }
+
+    @Post('del/setor/anggaran')
+    @Header('Content-Type', 'application/json')
+    async hapusSetoranAnggaran(@Body() setoran: SetorUpdateDto) {
+        try {
+            return this.bayar.deleteSetorAnggaran(setoran);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
 }
