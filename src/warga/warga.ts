@@ -775,8 +775,12 @@ export class Warga {
                     nama: uploadfile.nama,
                     keterangan: uploadfile.keterangan,
                     url: fileku.filename,
-                    id_warga: parseInt(uploadfile.id_warga),
                     uuid: uuidv4(),
+                    warga: {
+                        connect: {
+                            id: parseInt(uploadfile.id_warga),
+                        },
+                    },
                 },
             });
             return {
@@ -1280,7 +1284,7 @@ export class Warga {
                     },
                 },
                 where: {
-                    id_warga: parseInt(id),
+                    id: parseInt(id),
                 },
             });
             return {
