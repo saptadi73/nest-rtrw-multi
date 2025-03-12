@@ -96,7 +96,8 @@ model warga {
   tanggal_lahir DateTime?
   no_hp String?
   anggaran anggaran[]
-  photo_warga photo_warga[]
+  photo_warga photo_warga? @relation(references: [id], fields: [id_photo_warga])
+  id_photo_warga Int?
   filewarga filewarga[]
   status_warga status_warga? @relation(fields: [id_status_warga], references: [id])
  id_status_warga Int? 
@@ -205,8 +206,7 @@ model photo_warga {
   nama String
   keterangan String?
   url String
-  warga warga? @relation(references: [id], fields: [id_warga])
-  id_warga Int
+  warga warga[]
 }
 
 model bukti {
