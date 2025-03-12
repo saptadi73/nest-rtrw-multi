@@ -22,11 +22,12 @@ model kk {
   blok blok @relation(references: [id], fields: [id_blok])
   id_blok Int
   no_rumah Int
+  photo_kk photo_kk? @relation(references: [id], fields: [id_photo_kk])
+  id_photo_kk Int?
   warga warga[]
   setor setor[]
   filekeluarga filekeluarga[]
   gps_location gps_location[]
-  photo_kk photo_kk[]
 }
 
 model blok {
@@ -296,7 +297,6 @@ model photo_kk {
   nama String
   keterangan String?
   url String
-  kk kk @relation(fields: [id_kk], references: [id])
-  id_kk Int
+  kk kk[]
 }
 

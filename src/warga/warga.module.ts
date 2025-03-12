@@ -14,7 +14,7 @@ import { MulterExceptionFilter } from './filter/multer.exception.filter';
         MulterModule.register({
             dest: FILE_UPLOAD_DIR,
             limits: {
-                fieldNameSize: 1000 * 1000 * 10,
+                fieldNameSize: 1024 * 1024,
             },
         }),
         ServeStaticModule.forRoot({

@@ -15,6 +15,7 @@ import { CreateFileUserDto } from './dto/create.file.user.dto';
 import { CreateGpsLocationDto } from './dto/create.gps.location.dto';
 import { PekerjaanWargaDto } from './dto/pekerjaan.warga.dto';
 import { StatusWargaDto } from './dto/status.warga.dto';
+import { CreateFileBuktiDto } from './dto/create.file.bukti.dto';
 
 @Injectable()
 export class Warga {
@@ -860,6 +861,42 @@ export class Warga {
                 }
             }
             return { status: 'nok', message: 'gagal upload photo', data: error };
+        }
+    }
+
+    async UploadBuktiAnggaran(uploadBukti: CreateFileBuktiDto, fileku) {
+        try {
+            const fileKK = await this.prisma.bukti.create({
+                data: {
+                    nama: uploadBukti.nama,
+                    keterangan: uploadBukti.keterangan,
+                    id_anggaran: parseInt(uploadBukti.id_anggaran),
+                    url: fileku.filename,
+                    uuid: uuidv4(),
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil upload bukti pengeluaran/pemasukan',
+                result: fileKK,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal upload bukti pemasukan/pengeluaran karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal upload bukti pengeluaran/pemasukan',
+                data: error,
+            };
         }
     }
 

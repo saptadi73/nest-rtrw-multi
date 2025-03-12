@@ -10,6 +10,8 @@ import {
     UseInterceptors,
     Param,
     UseFilters,
+    Delete,
+    NotFoundException,
 } from '@nestjs/common';
 import { Warga } from './warga';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -29,6 +31,9 @@ import { CreateGpsLocationDto } from './dto/create.gps.location.dto';
 import { MulterExceptionFilter } from './filter/multer.exception.filter';
 import { PekerjaanWargaDto } from './dto/pekerjaan.warga.dto';
 import { StatusWargaDto } from './dto/status.warga.dto';
+import { CreateFileBuktiDto } from './dto/create.file.bukti.dto';
+import { join } from 'path';
+import * as fs from 'fs';
 
 @Controller('warga')
 export class WargaController {
@@ -157,7 +162,7 @@ export class WargaController {
                 destination: './uploads',
             }),
             limits: {
-                fileSize: 1000 * 1000 * 10,
+                fileSize: 1024 * 1024,
             },
             fileFilter: ImageFileFilter,
         })
@@ -171,6 +176,44 @@ export class WargaController {
                 throw new Error('File upload failed');
             } else {
                 return this.Warga.UploadKK(fileuploaddto, file);
+            }
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('bukti')
+    @UseFilters(MulterExceptionFilter)
+    @UseInterceptors(
+        FileInterceptor('file', {
+            storage: diskStorage({
+                filename: FileNameEditor,
+                destination: './uploads',
+            }),
+            limits: {
+                fileSize: 1000 * 1000 * 10,
+            },
+            fileFilter: ImageFileFilter,
+        })
+    )
+    async uploadBukti(
+        @UploadedFile() file: Express.Multer.File,
+        @Body() fileuploaddto: CreateFileBuktiDto
+    ) {
+        try {
+            if (!file) {
+                throw new Error('File upload failed');
+            } else {
+                return this.Warga.UploadBuktiAnggaran(fileuploaddto, file);
             }
         } catch (error) {
             throw new HttpException(
@@ -974,5 +1017,24 @@ export class WargaController {
                 }
             );
         }
+    }
+
+    @Delete(':filename')
+    deleteFile(@Param('filename') filename: string) {
+        const filePath = join(process.cwd(), 'uploads', filename);
+
+        // Check if the file exists
+        if (!fs.existsSync(filePath)) {
+            throw new NotFoundException('File not found');
+        }
+
+        // Delete the file
+        fs.unlink(filePath, (err) => {
+            if (err) {
+                throw new NotFoundException('Failed to delete file');
+            }
+        });
+
+        return { message: 'File deleted successfully' };
     }
 }

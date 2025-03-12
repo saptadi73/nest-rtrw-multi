@@ -1183,6 +1183,13 @@ export class Bayar {
                         },
                         tanggal: true,
                         type_anggaran: true,
+                        bukti: {
+                            select: {
+                                id: true,
+                                url: true,
+                                nama: true,
+                            },
+                        },
                     },
                     where: {
                         AND: [
