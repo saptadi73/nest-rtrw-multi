@@ -212,4 +212,40 @@ export class ProfileController {
             );
         }
     }
+
+    @Get('cari')
+    async cariProfile() {
+        try {
+            return this.profile.getProfile();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('hapus')
+    async hapusProfile() {
+        try {
+            return this.profile.hapusDataProfile();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
 }

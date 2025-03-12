@@ -303,4 +303,56 @@ export class Profile {
             return { status: 'nok', message: 'gagal cari data wilayah desa', data: error };
         }
     }
+
+    async getProfile() {
+        try {
+            const cariProfile = await this.prisma.entity.findFirst({
+                select: {
+                    id: true,
+                    provinsi: true,
+                    kabupaten: true,
+                    kecamatan: true,
+                    desa: true,
+                    kode_wilayah: true,
+                    rt: true,
+                    rw: true,
+                    dusun: true,
+                },
+            });
+            return { status: 'ok', message: 'berhasil get profile', result: cariProfile };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal cari data wilayah desa karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal cari data wilayah desa', data: error };
+        }
+    }
+
+    async hapusDataProfile() {
+        try {
+            const dataPolygon = await this.prisma.$queryRaw`TRUNCATE entity`;
+            return { status: 'ok', message: 'berhasil delete data entity', result: dataPolygon };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal hapus data entity karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal hapus data entity', data: error };
+        }
+    }
 }
