@@ -7,9 +7,10 @@ import { BayarModule } from './bayar/bayar.module';
 import { UserModule } from './user/user.module';
 import { MailerModule } from './mailer/mailer.module';
 import { ProfileModule } from './profile/profile.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-    imports: [WargaModule, BayarModule, UserModule, MailerModule, ProfileModule],
+    imports: [WargaModule, BayarModule, UserModule, MailerModule, ProfileModule, AuthModule],
     controllers: [AppController],
     providers: [
         AppService,

@@ -16,4 +16,8 @@ export class KkUpdateDto {
     @IsInt()
     @IsOptional()
     id: number;
+
+    @IsInt()
+    @IsOptional()
+    id_photo_kk: number;
 }

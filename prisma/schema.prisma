@@ -249,11 +249,12 @@ model user {
   uuid String @unique
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
-  userid String
+  email String @unique
   password String
   level level @relation(fields: [id_level],references: [id])
   id_level Int
   status Boolean @default(false)
+  refresh String?
   photo_user photo_user[]
   token token[]
 }

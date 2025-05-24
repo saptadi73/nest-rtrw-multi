@@ -20,11 +20,12 @@ export class UserService {
 
     async createNewUser(userCreate: CreateUserDto) {
         try {
+            const uuidku = uuidv4();
             const tambahUser = await this.prisma.user.create({
                 data: {
-                    userid: userCreate.userid,
+                    email: userCreate.email,
                     password: this.hashMD5(userCreate.password),
-                    uuid: uuidv4(),
+                    uuid: uuidku,
                     level: {
                         connect: {
                             id: userCreate.id_level,
@@ -32,7 +33,13 @@ export class UserService {
                     },
                 },
             });
-            return { status: 'ok', message: 'berhasil tambah user id', result: tambahUser };
+            return {
+                status: 'ok',
+                message: 'berhasil tambah user id',
+                result: tambahUser,
+                uuid: uuidku,
+                email: userCreate.email,
+            };
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 if (error.code === 'P2002') {
@@ -85,17 +92,18 @@ export class UserService {
 
     async loginUser(loginUser: LoginUserDto) {
         try {
-            const loginsaya = await this.prisma.user.findMany({
+            const loginsaya = await this.prisma.user.findFirst({
                 select: {
-                    userid: true,
+                    email: true,
                     password: true,
                     level: true,
                     id: true,
+                    uuid: true,
                 },
                 where: {
                     AND: [
                         {
-                            userid: loginUser.userid,
+                            email: loginUser.email,
                         },
                         {
                             password: this.hashMD5(loginUser.password),
@@ -112,7 +120,7 @@ export class UserService {
             const createTokenku = await this.prisma.token.create({
                 data: {
                     token: randomnya,
-                    id_user: loginsaya[0].id,
+                    id_user: loginsaya.id,
                     lastLogin: waktuNow,
                 },
             });
@@ -120,8 +128,9 @@ export class UserService {
             return {
                 status: 'ok',
                 message: 'berhasil login',
-                data: loginsaya[0].id,
+                data: loginsaya.id,
                 data2: createTokenku,
+                data3: loginsaya,
             };
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -142,11 +151,133 @@ export class UserService {
         }
     }
 
+    async logoutUser(uuid: string) {
+        try {
+            const logOutUser = await this.prisma.user.update({
+                where: {
+                    uuid: uuid,
+                    refresh: {
+                        not: null,
+                    },
+                },
+                data: {
+                    refresh: null,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil logout',
+                data: logOutUser,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message: 'gagal logout',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal logout',
+                data: error,
+            };
+        }
+    }
+
+    async refreshTokenAsli(uuid: string, refreshToken: string) {
+        try {
+            const refreshTokenku = await this.prisma.user.findUnique({
+                where: {
+                    uuid: uuid,
+                },
+                select: {
+                    refresh: true,
+                    email: true,
+                    uuid: true,
+                    level: {
+                        select: {
+                            id: true,
+                            nama: true,
+                        },
+                    },
+                },
+            });
+            if (refreshTokenku.refresh === refreshToken) {
+                return {
+                    status: 'ok',
+                    message: 'berhasil refresh',
+                    data: refreshTokenku,
+                };
+            } else {
+                return {
+                    status: 'nok',
+                    message: 'gagal refresh',
+                    data: refreshTokenku,
+                };
+            }
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message: 'gagal refresh',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal refresh',
+                data: error,
+            };
+        }
+    }
+
+    async updateRefreshToken(uuid: string, token: string) {
+        try {
+            const refreshToken = await this.prisma.user.update({
+                data: {
+                    refresh: token,
+                },
+                where: {
+                    uuid: uuid,
+                },
+            });
+
+            return {
+                status: 'ok',
+                message: 'berhasil update refresh token',
+                data: refreshToken,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message: 'gagal ganti password',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal update Refresh Token',
+                data: error,
+            };
+        }
+    }
+
     async gantiPassword(editPassword: CreateUserDto) {
         try {
             const gantiPassword = await this.prisma.user.update({
                 data: {
-                    userid: editPassword.userid,
+                    email: editPassword.email,
                     password: this.hashMD5(editPassword.password),
                 },
                 where: {
