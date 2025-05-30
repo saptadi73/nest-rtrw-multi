@@ -9,6 +9,7 @@ import { differenceInHours } from 'date-fns';
 import { FindTokenDto } from './dto/find.token.dto';
 import { CreatePhotoUserDto } from './dto/create.photo.user.dto';
 import { CreateLevelDto } from './dto/create.level.dto';
+import { AktifUserDto } from './dto/aktif.user.dto';
 
 @Injectable()
 export class UserService {
@@ -28,7 +29,7 @@ export class UserService {
                     uuid: uuidku,
                     level: {
                         connect: {
-                            id: userCreate.id_level,
+                            id: parseInt(userCreate.id_level),
                         },
                     },
                 },
@@ -225,14 +226,14 @@ export class UserService {
                     console.log('failed unique constraint');
                     return {
                         status: 'nok',
-                        message: 'gagal refresh',
+                        message: 'gagal refresh failed unique constraint Prisma Client',
                         data: error,
                     };
                 }
             }
             return {
                 status: 'nok',
-                message: 'gagal refresh',
+                message: 'gagal refresh karena error input',
                 data: error,
             };
         }
@@ -484,6 +485,64 @@ export class UserService {
                 }
             }
             return { status: 'nok', message: 'gagal create level', data: error };
+        }
+    }
+
+    async listUser() {
+        try {
+            const listUserku = await this.prisma.user.findMany({
+                select: {
+                    id: true,
+                    email: true,
+                    uuid: true,
+                    id_level: true,
+                    status: true,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data user',
+                result: listUserku,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message: 'gagal dapat data user',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal dapat data', data: error };
+        }
+    }
+
+    async deleteUser(deleteUser: AktifUserDto) {
+        try {
+            const deleteUserku = await this.prisma.user.delete({
+                where: {
+                    uuid: deleteUser.uuid,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil hapus data user',
+                result: deleteUserku,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message: 'gagal delete data user',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal delete data user', data: error };
         }
     }
 }

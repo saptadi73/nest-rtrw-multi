@@ -9,9 +9,9 @@ export class CreateUserDto {
     @IsNotEmpty()
     password: string;
 
-    @IsInt()
+    @IsString()
     @IsOptional()
-    id_level: number;
+    id_level: string;
 
     @IsInt()
     @IsOptional()

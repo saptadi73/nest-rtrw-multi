@@ -1,8 +1,7 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from 'src/user/dto/create.user.dto';
 import { UserService } from 'src/user/user.service';
 import { LoginUserDto } from '../user/dto/login.user.dto';
-import { Tokens } from './types/token.types';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -39,37 +38,88 @@ export class AuthService {
         return { access_token: at, refresh_token: rt };
     }
 
-    async SignUp(createUser: CreateUserDto): Promise<Tokens> {
+    async SignUp(createUser: CreateUserDto) {
         const user = await this.userService.createNewUser(createUser);
 
-        if (user.status == 'nok') throw new ForbiddenException(user.message);
-        const tokens = await this.getTokens(user.uuid, user.email);
-        this.userService.updateRefreshToken(user.uuid, tokens.refresh_token);
+        if (user.status == 'nok') {
+            return {
+                status: 'nok',
+                message: user.message,
+                access_token: '',
+                refresh_token: '',
+                data: user.data,
+            };
+        } else {
+            const tokens = await this.getTokens(user.uuid, user.email);
+            this.userService.updateRefreshToken(user.uuid, tokens.refresh_token);
 
-        return tokens;
+            return {
+                status: 'ok',
+                message: user.message,
+                access_token: tokens.access_token,
+                refresh_token: tokens.refresh_token,
+                data: user.data,
+            };
+        }
     }
 
-    async SignIn(loginUserDto: LoginUserDto): Promise<Tokens> {
+    async SignIn(loginUserDto: LoginUserDto) {
         const user = await this.userService.loginUser(loginUserDto);
 
-        if (user.status == 'nok') throw new ForbiddenException(user.message);
-        const tokens = await this.getTokens(user.data3.uuid, user.data3.email);
-        this.userService.updateRefreshToken(user.data3.uuid, tokens.refresh_token);
+        if (user.status == 'nok') {
+            return {
+                status: 'nok',
+                message: user.message,
+                access_token: '',
+                refresh_token: '',
+                data: user.data3,
+            };
+        } else {
+            const tokens = await this.getTokens(user.data3.uuid, user.data3.email);
+            this.userService.updateRefreshToken(user.data3.uuid, tokens.refresh_token);
 
-        return tokens;
+            return {
+                status: 'ok',
+                message: user.message,
+                access_token: tokens.access_token,
+                refresh_token: tokens.refresh_token,
+                data: user.data,
+            };
+        }
     }
 
     async SignOut(uuid: string) {
         const logOut = await this.userService.logoutUser(uuid);
-        return logOut;
+        return {
+            status: logOut.status,
+            user: logOut.message,
+            access_token: '',
+            refresh_token: '',
+            data: logOut.data,
+        };
     }
 
-    async refreshToken(uuid: string, refreshToken: string): Promise<Tokens> {
+    async refreshToken(uuid: string, refreshToken: string) {
         const user = await this.userService.refreshTokenAsli(uuid, refreshToken);
-        if (user.status == 'nok') throw new ForbiddenException(user.message);
-        const tokens = await this.getTokens(user.data.uuid, user.data.email);
-        this.userService.updateRefreshToken(user.data.uuid, tokens.refresh_token);
+        if (user.status == 'nok') {
+            return {
+                status: 'nok',
+                user: user.message,
+                access_token: '',
+                refresh_token: '',
+                data: user.data,
+            };
+        } else {
+            const tokens = await this.getTokens(user.data.uuid, user.data.email);
+            this.userService.updateRefreshToken(user.data.uuid, tokens.refresh_token);
 
-        return tokens;
+            return {
+                status: 'ok',
+                user: user.message,
+                access_token: tokens.access_token,
+                refresh_token: tokens.refresh_token,
+                data: user.data,
+            };
+        }
     }
 }

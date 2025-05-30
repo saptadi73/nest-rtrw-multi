@@ -19,6 +19,7 @@ import { diskStorage } from 'multer';
 import { FileNameEditor, ImageFileFilter } from './file.utils';
 import { CreatePhotoUserDto } from './dto/create.photo.user.dto';
 import { CreateLevelDto } from './dto/create.level.dto';
+import { AktifUserDto } from './dto/aktif.user.dto';
 
 @Controller('user')
 export class UserController {
@@ -155,6 +156,43 @@ export class UserController {
     async getLevelUser() {
         try {
             return this.User.daftarLevelUser();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: error,
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('list/user')
+    async getUser() {
+        try {
+            return this.User.listUser();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: error,
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('delete/user')
+    @Header('Content-Type', 'application/json')
+    async deleteUser(@Body() createLevel: AktifUserDto) {
+        try {
+            return this.User.deleteUser(createLevel);
         } catch (error) {
             throw new HttpException(
                 {

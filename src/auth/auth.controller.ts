@@ -37,6 +37,6 @@ export class AuthController {
     signRefreshLocal(@Req() req: Request) {
         const user = req.user;
 
-        return user;
+        return this.authService.refreshToken(user['sub'], user['refreshTokens']);
     }
 }
