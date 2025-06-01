@@ -8,9 +8,20 @@ import { UserModule } from './user/user.module';
 import { MailerModule } from './mailer/mailer.module';
 import { ProfileModule } from './profile/profile.module';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-    imports: [WargaModule, BayarModule, UserModule, MailerModule, ProfileModule, AuthModule],
+    imports: [
+        WargaModule,
+        BayarModule,
+        UserModule,
+        MailerModule,
+        ProfileModule,
+        AuthModule,
+        ConfigModule.forRoot({
+            isGlobal: true, // agar bisa digunakan di semua modul
+        }),
+    ],
     controllers: [AppController],
     providers: [
         AppService,
