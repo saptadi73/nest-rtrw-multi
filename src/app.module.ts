@@ -9,6 +9,7 @@ import { MailerModule } from './mailer/mailer.module';
 import { ProfileModule } from './profile/profile.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { TrailModule } from './trail/trail.module';
 
 @Module({
     imports: [
@@ -21,6 +22,7 @@ import { ConfigModule } from '@nestjs/config';
         ConfigModule.forRoot({
             isGlobal: true, // agar bisa digunakan di semua modul
         }),
+        TrailModule,
     ],
     controllers: [AppController],
     providers: [

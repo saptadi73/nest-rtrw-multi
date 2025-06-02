@@ -30,6 +30,14 @@ model kk {
   gps_location gps_location[]
 }
 
+model trail {
+  id                 Int          @id @default(autoincrement())
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  email String
+  activity String
+}
+
 model blok {
   id                 Int          @id @default(autoincrement())
   uuid String @unique

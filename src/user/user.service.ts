@@ -69,7 +69,7 @@ export class UserService {
             });
             return {
                 status: 'ok',
-                message: 'berhasil aktifkan user',
+                message: 'Berhasil aktifkan user',
                 data: aktifkan,
             };
         } catch (error) {
