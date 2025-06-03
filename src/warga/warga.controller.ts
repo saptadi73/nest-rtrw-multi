@@ -191,6 +191,42 @@ export class WargaController {
         }
     }
 
+    @Post('delete/fotokk')
+    async deleteKk(@Body() filedelete: CreateFileKeluargaDto) {
+        try {
+            return this.Warga.deleteFileKK(filedelete);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('delete/fotoktp')
+    async deleteKtp(@Body() filedelete: CreateFileKeluargaDto) {
+        try {
+            return this.Warga.deleteFileKTP(filedelete);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
     @Post('bukti')
     @UseFilters(MulterExceptionFilter)
     @UseInterceptors(

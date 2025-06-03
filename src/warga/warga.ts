@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaWargaService } from './prisma.warga.service';
 import { KkCreateDto } from './dto/kk.create.dto';
 import { Prisma } from '@prisma/client';
@@ -16,6 +16,8 @@ import { CreateGpsLocationDto } from './dto/create.gps.location.dto';
 import { PekerjaanWargaDto } from './dto/pekerjaan.warga.dto';
 import { StatusWargaDto } from './dto/status.warga.dto';
 import { CreateFileBuktiDto } from './dto/create.file.bukti.dto';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class Warga {
@@ -157,6 +159,7 @@ export class Warga {
                             tempat_lahir: createKK.tempat_lahir,
                             tanggal_lahir: isoDate,
                             jenis_kelamin: jk,
+                            no_hp: createKK.no_hp,
                             type: {
                                 connect: {
                                     id: 1,
@@ -943,6 +946,14 @@ export class Warga {
                             },
                         },
                     },
+                    filekeluarga: {
+                        select: {
+                            keterangan: true,
+                            id: true,
+                            id_kk: true,
+                            nama: true,
+                        },
+                    },
                 },
                 orderBy: [
                     {
@@ -1665,6 +1676,66 @@ export class Warga {
                 status: 'nok',
                 message: 'gagal hapus rumah keluarga, maaf',
                 data: error,
+            };
+        }
+    }
+
+    async deleteFileKK(createFile: CreateFileKeluargaDto) {
+        const filename = createFile.url;
+        if (filename.includes('..') || filename.includes('/')) {
+            throw new BadRequestException('Invalid filename');
+        }
+
+        const filePath = path.join(__dirname, '..', '..', 'uploads', filename);
+
+        try {
+            const deleteFile = await fs.promises.unlink(filePath);
+            const deleteFileDB = await this.prisma.filekeluarga.deleteMany({
+                where: {
+                    url: filename,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil hapus file Keluarga',
+                data1: deleteFile,
+                data2: deleteFileDB,
+            };
+        } catch (err) {
+            return {
+                status: 'Nok',
+                message: 'Gagal hapus file Keluarga',
+                result: err,
+            };
+        }
+    }
+
+    async deleteFileKTP(createFile: CreateFileKeluargaDto) {
+        const filename = createFile.url;
+        if (filename.includes('..') || filename.includes('/')) {
+            throw new BadRequestException('Invalid filename');
+        }
+
+        const filePath = path.join(__dirname, '..', '..', 'uploads', filename);
+
+        try {
+            const deleteFile = await fs.promises.unlink(filePath);
+            const deleteFileDB = await this.prisma.photo_warga.deleteMany({
+                where: {
+                    url: filename,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil hapus file warga',
+                data1: deleteFile,
+                data2: deleteFileDB,
+            };
+        } catch (err) {
+            return {
+                status: 'Nok',
+                message: 'Gagal hapus file warga',
+                result: err,
             };
         }
     }

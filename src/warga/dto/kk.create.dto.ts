@@ -17,6 +17,10 @@ export class KkCreateDto {
 
     @IsString()
     @Optional()
+    no_hp: string;
+
+    @IsString()
+    @Optional()
     nik: string;
 
     @IsDateString()
