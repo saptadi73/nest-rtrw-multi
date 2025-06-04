@@ -614,6 +614,25 @@ export class WargaController {
         }
     }
 
+    @Post('del/warga')
+    @Header('Content-Type', 'application/json')
+    async hapusWargaSatu(@Body() update: WargaUpdateDto) {
+        try {
+            return this.Warga.deleteWarga(update);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
     @Get('jumlah/kk')
     async jumlahKKku() {
         try {

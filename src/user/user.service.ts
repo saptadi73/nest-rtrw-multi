@@ -405,7 +405,11 @@ export class UserService {
                     nama: uploadfile.nama,
                     keterangan: uploadfile.keterangan,
                     url: fileku.filename,
-                    id_user: parseInt(uploadfile.id_user),
+                    user: {
+                        connect: {
+                            id: parseInt(uploadfile.id_user),
+                        },
+                    },
                     uuid: uuidv4(),
                 },
             });

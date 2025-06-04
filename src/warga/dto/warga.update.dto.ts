@@ -37,6 +37,10 @@ export class WargaUpdateDto {
     @IsOptional()
     jenis_kelamin: string;
 
+    @IsString()
+    @IsOptional()
+    uuid: string;
+
     @IsInt()
     @IsOptional()
     id: number;

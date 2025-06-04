@@ -239,6 +239,14 @@ export class Warga {
                     blok: true,
                     no_kk: true,
                     no_rumah: true,
+                    filekeluarga: {
+                        select: {
+                            id: true,
+                            nama: true,
+                            keterangan: true,
+                            url: true,
+                        },
+                    },
                     warga: {
                         select: {
                             id: true,
@@ -411,6 +419,14 @@ export class Warga {
                     id_kk: true,
                     id_pekerjaan: true,
                     id_status_warga: true,
+                    photo_warga: {
+                        select: {
+                            id: true,
+                            url: true,
+                            nama: true,
+                            keterangan: true,
+                        },
+                    },
                     kk: {
                         select: {
                             id: true,
@@ -626,6 +642,7 @@ export class Warga {
                     no_hp: true,
                     nik: true,
                     jenis_kelamin: true,
+                    uuid: true,
                     pekerjaan: {
                         select: {
                             id: true,
@@ -653,6 +670,7 @@ export class Warga {
                             },
                             id: true,
                             no_rumah: true,
+                            uuid: true,
                         },
                     },
                 },
@@ -814,7 +832,11 @@ export class Warga {
                     nama: uploadfile.nama,
                     keterangan: uploadfile.keterangan,
                     url: fileku.filename,
-                    id_user: parseInt(uploadfile.id_user),
+                    user: {
+                        connect: {
+                            id: parseInt(uploadfile.id_user),
+                        },
+                    },
                     uuid: uuidv4(),
                 },
             });
@@ -845,9 +867,13 @@ export class Warga {
                 data: {
                     nama: uploadKK.nama,
                     keterangan: uploadKK.keterangan,
-                    id_kk: parseInt(uploadKK.id_kk),
                     url: fileku.filename,
                     uuid: uuidv4(),
+                    kk: {
+                        connect: {
+                            id: parseInt(uploadKK.id_kk),
+                        },
+                    },
                 },
             });
             return {
@@ -877,7 +903,11 @@ export class Warga {
                 data: {
                     nama: uploadBukti.nama,
                     keterangan: uploadBukti.keterangan,
-                    id_anggaran: parseInt(uploadBukti.id_anggaran),
+                    anggaran: {
+                        connect: {
+                            id: parseInt(uploadBukti.id_anggaran),
+                        },
+                    },
                     url: fileku.filename,
                     uuid: uuidv4(),
                 },
@@ -907,6 +937,35 @@ export class Warga {
         }
     }
 
+    async listKeluarga() {
+        try {
+            const listKKsemua = await this.prisma.kk.findMany({
+                select: {
+                    id: true,
+                    no_kk: true,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data KK',
+                result: listKKsemua,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data Keluarga karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal dapat data Keluarga', data: error };
+        }
+    }
+
     async listKK() {
         try {
             const listKKsemua = await this.prisma.kk.findMany({
@@ -921,6 +980,14 @@ export class Warga {
                     no_kk: true,
                     id: true,
                     uuid: true,
+                    filekeluarga: {
+                        select: {
+                            id: true,
+                            nama: true,
+                            keterangan: true,
+                            url: true,
+                        },
+                    },
                     warga: {
                         where: {
                             id_type: 1,
@@ -944,14 +1011,6 @@ export class Warga {
                                     status: true,
                                 },
                             },
-                        },
-                    },
-                    filekeluarga: {
-                        select: {
-                            keterangan: true,
-                            id: true,
-                            id_kk: true,
-                            nama: true,
                         },
                     },
                 },
@@ -1115,6 +1174,14 @@ export class Warga {
                     tanggal_lahir: true,
                     no_hp: true,
                     nik: true,
+                    photo_warga: {
+                        select: {
+                            id: true,
+                            url: true,
+                            nama: true,
+                            keterangan: true,
+                        },
+                    },
                     kk: {
                         select: {
                             blok: {
@@ -1244,7 +1311,7 @@ export class Warga {
                     },
                 },
                 where: {
-                    id_kk: parseInt(id),
+                    id: parseInt(id),
                 },
             });
             return {
@@ -1736,6 +1803,37 @@ export class Warga {
                 status: 'Nok',
                 message: 'Gagal hapus file warga',
                 result: err,
+            };
+        }
+    }
+
+    async deleteWarga(update: WargaUpdateDto) {
+        try {
+            const hapusWarga = await this.prisma.warga.delete({
+                where: {
+                    uuid: update.uuid,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil hapus data Warga',
+                result: hapusWarga,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message: 'gagal hapus data warga',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal hapus data warga, maaf',
+                data: error,
             };
         }
     }

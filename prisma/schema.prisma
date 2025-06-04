@@ -22,11 +22,10 @@ model kk {
   blok blok @relation(references: [id], fields: [id_blok])
   id_blok Int
   no_rumah Int
-  photo_kk photo_kk? @relation(references: [id], fields: [id_photo_kk])
-  id_photo_kk Int?
+  filekeluarga filekeluarga? @relation(references: [id], fields: [id_filekeluarga])
+  id_filekeluarga Int?
   warga warga[]
   setor setor[]
-  filekeluarga filekeluarga[]
   gps_location gps_location[]
 }
 
@@ -181,7 +180,8 @@ model anggaran {
   keterangan String?
   type_anggaran type_anggaran @relation(fields: [id_type_anggaran], references: [id])
   id_type_anggaran Int
-  bukti bukti[]
+  bukti bukti? @relation(fields: [id_bukti], references: [id])
+  id_bukti Int?
 }
 
 model jenis_anggaran {
@@ -225,8 +225,7 @@ model bukti {
   nama String
   keterangan String?
   url String
-  anggaran anggaran? @relation(references: [id], fields: [id_anggaran])
-  id_anggaran Int
+  anggaran anggaran[]
 }
 
 model filekeluarga {
@@ -237,8 +236,7 @@ model filekeluarga {
   nama String
   keterangan String?
   url String
-  kk kk @relation(references: [id], fields: [id_kk])
-  id_kk Int
+  kk kk[]
 }
 
 model filewarga {
@@ -263,8 +261,8 @@ model user {
   id_level Int
   status Boolean @default(false)
   refresh String?
-  photo_user photo_user[]
-  token token[]
+  photo_user photo_user? @relation(fields: [id_photo_user], references: [id])
+  id_photo_user Int
 }
 
 model level {
@@ -275,17 +273,6 @@ model level {
   deskripsi String?
   user user[]
 }
-
-model token {
-  id                 Int          @id @default(autoincrement())
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  token String @unique @db.VarChar(25)
-  user user @relation(fields: [id_user], references: [id])
-  id_user Int
-  lastLogin DateTime?
-}
-
 model photo_user {
   id                 Int          @id @default(autoincrement())
   uuid String @unique
@@ -294,8 +281,7 @@ model photo_user {
   nama String
   keterangan String?
   url String
-  user user @relation(fields: [id_user], references: [id])
-  id_user Int
+  user user[]
 }
 
 model photo_kk {
@@ -306,6 +292,5 @@ model photo_kk {
   nama String
   keterangan String?
   url String
-  kk kk[]
 }
 
