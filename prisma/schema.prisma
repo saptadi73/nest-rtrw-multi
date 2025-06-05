@@ -262,7 +262,7 @@ model user {
   status Boolean @default(false)
   refresh String?
   photo_user photo_user? @relation(fields: [id_photo_user], references: [id])
-  id_photo_user Int
+  id_photo_user Int?
 }
 
 model level {

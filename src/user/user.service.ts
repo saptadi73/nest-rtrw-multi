@@ -5,8 +5,6 @@ import * as crypto from 'crypto';
 import { Prisma } from '@prisma/client';
 import { LoginUserDto } from './dto/login.user.dto';
 import { v4 as uuidv4 } from 'uuid';
-import { differenceInHours } from 'date-fns';
-import { FindTokenDto } from './dto/find.token.dto';
 import { CreatePhotoUserDto } from './dto/create.photo.user.dto';
 import { CreateLevelDto } from './dto/create.level.dto';
 import { AktifUserDto } from './dto/aktif.user.dto';
@@ -115,22 +113,10 @@ export class UserService {
                     ],
                 },
             });
-            const randomnya = this.randomChar();
-            const waktuNow = new Date();
-
-            const createTokenku = await this.prisma.token.create({
-                data: {
-                    token: randomnya,
-                    id_user: loginsaya.id,
-                    lastLogin: waktuNow,
-                },
-            });
-
             return {
                 status: 'ok',
                 message: 'berhasil login',
                 data: loginsaya.id,
-                data2: createTokenku,
                 data3: loginsaya,
             };
         } catch (error) {
@@ -314,88 +300,6 @@ export class UserService {
         }
 
         return result;
-    }
-
-    async findToken(token: FindTokenDto) {
-        try {
-            const cariToken = await this.prisma.token.findFirst({
-                where: {
-                    token: token.token,
-                },
-            });
-
-            // return {
-            //     status: 'ok',
-            //     message: 'berhasil dapat token',
-            //     data: cariToken,
-            // };
-
-            const TimeNow = new Date();
-            const TimeToken = new Date(cariToken.lastLogin);
-
-            const durasi = differenceInHours(TimeNow, TimeToken);
-
-            if (durasi < 7) {
-                const updateLogin = await this.prisma.token.update({
-                    where: {
-                        id: cariToken.id,
-                    },
-                    data: {
-                        lastLogin: TimeNow,
-                    },
-                });
-                return {
-                    status: 'ok',
-                    message: 'berhasil dapat Token',
-                    data: updateLogin,
-                };
-            } else {
-                return {
-                    status: 'nok',
-                    message: 'token kadaluwarsa',
-                    data: durasi,
-                };
-            }
-        } catch (error) {
-            if (error instanceof Prisma.PrismaClientKnownRequestError) {
-                if (error.code === 'P2002') {
-                    console.log('failed unique constraint');
-                    return {
-                        status: 'nok',
-                        message: 'gagal dapat token',
-                        data: error,
-                    };
-                }
-            }
-            return { status: 'nok', message: 'gagal dapat token', data: error };
-        }
-    }
-
-    async delToken(id_token: number) {
-        try {
-            const hapusToken = await this.prisma.token.delete({
-                where: {
-                    id: id_token,
-                },
-            });
-            return {
-                status: 'ok',
-                message: 'berhasil delete Token',
-                data: hapusToken,
-            };
-        } catch (error) {
-            if (error instanceof Prisma.PrismaClientKnownRequestError) {
-                if (error.code === 'P2002') {
-                    console.log('failed unique constraint');
-                    return {
-                        status: 'nok',
-                        message: 'gagal delete token',
-                        data: error,
-                    };
-                }
-            }
-            return { status: 'nok', message: 'gagal delete token', data: error };
-        }
     }
 
     async photoUpload(uploadfile: CreatePhotoUserDto, fileku) {

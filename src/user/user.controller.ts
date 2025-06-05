@@ -13,7 +13,6 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create.user.dto';
 import { LoginUserDto } from './dto/login.user.dto';
-import { FindTokenDto } from './dto/find.token.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { FileNameEditor, ImageFileFilter } from './file.utils';
@@ -49,25 +48,6 @@ export class UserController {
     async loginUser(@Body() login: LoginUserDto) {
         try {
             return this.User.loginUser(login);
-        } catch (error) {
-            throw new HttpException(
-                {
-                    status: HttpStatus.FORBIDDEN,
-                    message: error,
-                },
-                HttpStatus.FORBIDDEN,
-                {
-                    cause: error,
-                }
-            );
-        }
-    }
-
-    @Post('token')
-    @Header('Content-Type', 'application/json')
-    async findTokenku(@Body() tokenku: FindTokenDto) {
-        try {
-            return this.User.findToken(tokenku);
         } catch (error) {
             throw new HttpException(
                 {

@@ -643,6 +643,14 @@ export class Warga {
                     nik: true,
                     jenis_kelamin: true,
                     uuid: true,
+                    photo_warga: {
+                        select: {
+                            id: true,
+                            url: true,
+                            keterangan: true,
+                            nama: true,
+                        },
+                    },
                     pekerjaan: {
                         select: {
                             id: true,
