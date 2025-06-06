@@ -274,6 +274,7 @@ export class Bayar {
 
     async listSetoran(laporanTanggal: LaporanSetoranDto) {
         try {
+            console.log(laporanTanggal);
             const dateString_awal = laporanTanggal.tanggal_awal;
             const date_awal = new Date(dateString_awal);
             date_awal.setHours(date_awal.getHours() + 7);
@@ -426,6 +427,78 @@ export class Bayar {
                 }
             }
             return { status: 'nok', message: 'gagal dapat data setoran', data: error };
+        }
+    }
+
+    async listSudahBayar(hutang: HitungHutangDto) {
+        try {
+            const month = hutang.bulan; // September
+            const year = hutang.tahun;
+            // Create start and end date for the month
+            const startDate = new Date(year, month - 1, 1); // September 1, 2023
+            const endDate = new Date(year, month, 1); // October 1, 2023
+            const wargaBayarBulan = await this.prisma.setor.findMany({
+                select: {
+                    kk: {
+                        select: {
+                            id: true,
+                            warga: {
+                                select: {
+                                    id: true,
+                                    nama: true,
+                                },
+                                where: {
+                                    type: {
+                                        id: 1,
+                                    },
+                                },
+                            },
+                            blok: {
+                                select: {
+                                    blok: true,
+                                },
+                            },
+                            no_rumah: true,
+                        },
+                    },
+                    tanggal: true,
+                },
+                where: {
+                    AND: [
+                        {
+                            tanggal: {
+                                gte: startDate,
+                                lt: endDate,
+                            },
+                        },
+                        {
+                            id_iuran: hutang.iuran,
+                        },
+                    ],
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data warga bayar',
+                result: wargaBayarBulan,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal berhasil dapat data warga bayar karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal dapat berhasil dapat data warga bayar',
+                data: error,
+            };
         }
     }
 

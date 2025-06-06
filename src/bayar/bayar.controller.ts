@@ -362,6 +362,25 @@ export class BayarController {
         }
     }
 
+    @Post('list/sudah')
+    @Header('Content-Type', 'application/json')
+    async sudahBayarIuran(@Body() hutangHitung: HitungHutangDto) {
+        try {
+            return this.bayar.listSudahBayar(hutangHitung);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
     @Get('jumlah/iuran')
     async jmLIuranAll() {
         try {

@@ -1290,31 +1290,14 @@ export class Warga {
 
     async getPhotoKK(id: string) {
         try {
-            const dataKK = await this.prisma.filekeluarga.findFirst({
+            const dataKK = await this.prisma.kk.findFirst({
                 select: {
                     id: true,
-                    nama: true,
-                    keterangan: true,
-                    url: true,
-                    kk: {
+                    no_kk: true,
+                    filekeluarga: {
                         select: {
                             id: true,
-                            blok: {
-                                select: {
-                                    id: true,
-                                    blok: true,
-                                },
-                            },
-                            no_rumah: true,
-                            warga: {
-                                select: {
-                                    id: true,
-                                    nama: true,
-                                },
-                                where: {
-                                    id_type: 1,
-                                },
-                            },
+                            url: true,
                         },
                     },
                 },
@@ -1344,28 +1327,15 @@ export class Warga {
 
     async getPhotoKTP(id: string) {
         try {
-            const dataKK = await this.prisma.photo_warga.findFirst({
+            const dataKK = await this.prisma.warga.findFirst({
                 select: {
                     id: true,
                     nama: true,
-                    keterangan: true,
-                    url: true,
-                    warga: {
+                    photo_warga: {
                         select: {
                             id: true,
                             nama: true,
-                            kk: {
-                                select: {
-                                    id: true,
-                                    blok: {
-                                        select: {
-                                            id: true,
-                                            blok: true,
-                                        },
-                                    },
-                                    no_rumah: true,
-                                },
-                            },
+                            url: true,
                         },
                     },
                 },
