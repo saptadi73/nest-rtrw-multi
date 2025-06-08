@@ -1,9 +1,11 @@
-import { IsDateString, IsInt, IsString } from 'class-validator';
+import { IsInt, IsString, IsOptional } from 'class-validator';
 
 export class LaporanAnggaranDto {
-    @IsDateString()
+    @IsOptional()
+    @IsString()
     tanggal_awal: string;
 
+    @IsOptional()
     @IsString()
     tanggal_akhir: string;
 

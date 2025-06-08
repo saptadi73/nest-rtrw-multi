@@ -343,8 +343,6 @@ export class Bayar {
                 message: 'berhasil dapat data setoran',
                 result: listSetoran,
             };
-            console.log(isoDate_awal);
-            console.log(isoDate_akhir);
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 if (error.code === 'P2002') {
@@ -1210,134 +1208,165 @@ export class Bayar {
         }
     }
 
+    async findAnggaranWarga(idAnggaran) {
+        try {
+            const idAnggaranku = parseInt(idAnggaran);
+            const golekAnggaran = await this.prisma.anggaran.findFirst({
+                select: {
+                    warga: {
+                        select: {
+                            id: true,
+                            nama: true,
+                            no_hp: true,
+                        },
+                    },
+                    nilai: true,
+                    tanggal: true,
+                    keterangan: true,
+                    type_anggaran: true,
+                    jenis_anggaran: {
+                        select: {
+                            id: true,
+                            nama: true,
+                            keterangan: true,
+                        },
+                    },
+                },
+                where: {
+                    id_warga: idAnggaranku,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data anggaran',
+                result: golekAnggaran,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data anggaran karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal dapat data anggaran',
+                data: error,
+            };
+        }
+    }
+
     async listAnggaran(laporanAnggaran: LaporanAnggaranDto) {
         try {
-            const dateString_awal = laporanAnggaran.tanggal_awal;
-            const date_awal = new Date(dateString_awal);
+            let date_awal: Date;
+            let date_akhir: Date;
+
+            // Initialize both dates
+            if (!laporanAnggaran.tanggal_awal || laporanAnggaran.tanggal_awal.trim() === '') {
+                date_awal = new Date();
+                date_awal.setDate(date_awal.getDate() - 7);
+            } else {
+                date_awal = new Date(laporanAnggaran.tanggal_awal);
+            }
+
+            if (!laporanAnggaran.tanggal_akhir || laporanAnggaran.tanggal_akhir.trim() === '') {
+                date_akhir = new Date();
+            } else {
+                date_akhir = new Date(laporanAnggaran.tanggal_akhir);
+            }
+
+            // If both dates are today, set date_awal to 7 days ago
+            const today = new Date();
+            if (
+                date_awal.toDateString() === today.toDateString() &&
+                date_akhir.toDateString() === today.toDateString()
+            ) {
+                date_awal.setDate(date_awal.getDate() - 7);
+            }
+
+            // Adjust for timezone
             date_awal.setHours(date_awal.getHours() + 7);
-
-            const isoDate_awal = date_awal.toISOString();
-
-            const dateString_akhir = laporanAnggaran.tanggal_akhir;
-            const date_akhir = new Date(dateString_akhir);
             date_akhir.setHours(date_akhir.getHours() + 7);
 
+            const isoDate_awal = date_awal.toISOString();
             const isoDate_akhir = date_akhir.toISOString();
-            const id_jenis_anggaran = laporanAnggaran.id_jenis_anggaran;
 
-            if (id_jenis_anggaran == 9999) {
-                const LaporanAnggaran = await this.prisma.anggaran.findMany({
-                    select: {
-                        warga: {
-                            select: {
-                                id: true,
-                                nama: true,
-                                kk: {
-                                    select: {
-                                        id: true,
-                                        blok: {
-                                            select: {
-                                                id: true,
-                                                blok: true,
-                                            },
-                                        },
-                                        no_rumah: true,
-                                    },
-                                },
-                            },
-                        },
-                        nilai: true,
-                        id: true,
-                        jenis_anggaran: {
-                            select: {
-                                id: true,
-                                nama: true,
-                            },
-                        },
-                        tanggal: true,
-                        type_anggaran: true,
-                        bukti: {
-                            select: {
-                                id: true,
-                                url: true,
-                                nama: true,
-                            },
-                        },
+            // Build where conditions
+            const whereConditions: any[] = [
+                {
+                    tanggal: {
+                        gte: isoDate_awal,
+                        lte: isoDate_akhir,
                     },
-                    where: {
-                        AND: [
-                            {
-                                tanggal: {
-                                    gte: isoDate_awal,
-                                    lte: isoDate_akhir,
-                                },
-                            },
-                            {
-                                id_type_anggaran: laporanAnggaran.id_type_anggaran,
-                            },
-                        ],
-                    },
+                },
+            ];
+
+            // Add type anggaran condition if not 0
+            if (laporanAnggaran.id_type_anggaran !== 0) {
+                whereConditions.push({
+                    id_type_anggaran: laporanAnggaran.id_type_anggaran,
                 });
-                return {
-                    status: 'ok',
-                    message: 'berhasil dapat data anggaran',
-                    result: LaporanAnggaran,
-                };
-            } else {
-                const LaporanAnggaran = await this.prisma.anggaran.findMany({
-                    select: {
-                        warga: {
-                            select: {
-                                id: true,
-                                nama: true,
-                                kk: {
-                                    select: {
-                                        id: true,
-                                        blok: {
-                                            select: {
-                                                id: true,
-                                                blok: true,
-                                            },
-                                        },
-                                        no_rumah: true,
-                                    },
-                                },
-                            },
-                        },
-                        nilai: true,
-                        id: true,
-                        jenis_anggaran: {
-                            select: {
-                                id: true,
-                                nama: true,
-                            },
-                        },
-                        tanggal: true,
-                        type_anggaran: true,
-                    },
-                    where: {
-                        AND: [
-                            {
-                                tanggal: {
-                                    gte: isoDate_awal,
-                                    lte: isoDate_akhir,
-                                },
-                            },
-                            {
-                                id_type_anggaran: laporanAnggaran.id_type_anggaran,
-                            },
-                            {
-                                id_jenis_anggaran: laporanAnggaran.id_jenis_anggaran,
-                            },
-                        ],
-                    },
-                });
-                return {
-                    status: 'ok',
-                    message: 'berhasil dapat data anggaran',
-                    result: LaporanAnggaran,
-                };
             }
+
+            // Add jenis anggaran condition if not 0
+            if (laporanAnggaran.id_jenis_anggaran !== 0) {
+                whereConditions.push({
+                    id_jenis_anggaran: laporanAnggaran.id_jenis_anggaran,
+                });
+            }
+
+            const LaporanAnggaran = await this.prisma.anggaran.findMany({
+                select: {
+                    warga: {
+                        select: {
+                            id: true,
+                            nama: true,
+                            kk: {
+                                select: {
+                                    id: true,
+                                    blok: {
+                                        select: {
+                                            id: true,
+                                            blok: true,
+                                        },
+                                    },
+                                    no_rumah: true,
+                                },
+                            },
+                        },
+                    },
+                    nilai: true,
+                    id: true,
+                    jenis_anggaran: {
+                        select: {
+                            id: true,
+                            nama: true,
+                        },
+                    },
+                    tanggal: true,
+                    type_anggaran: true,
+                    bukti: {
+                        select: {
+                            id: true,
+                            url: true,
+                            nama: true,
+                        },
+                    },
+                },
+                where: {
+                    AND: whereConditions,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data anggaran',
+                result: LaporanAnggaran,
+            };
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 if (error.code === 'P2002') {

@@ -305,6 +305,24 @@ export class BayarController {
         }
     }
 
+    @Get('find/anggaran/warga/:id')
+    async cariAnggaranWarga(@Param('id') id: string) {
+        try {
+            return this.bayar.findAnggaranWarga(id);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
     @Post('list/setoran')
     @Header('Content-Type', 'application/json')
     async daftarSetoran(@Body() laporanTanggal: LaporanSetoranDto) {
