@@ -13,4 +13,12 @@ export class CreateFileBuktiDto {
     @IsString()
     @IsOptional()
     id_anggaran: string;
+
+    @IsString()
+    @IsOptional()
+    id: string;
+
+    @IsString()
+    @IsOptional()
+    url: string;
 }

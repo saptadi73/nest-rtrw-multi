@@ -1755,6 +1755,36 @@ export class Warga {
         }
     }
 
+    async deleteFileBukti(createFile: CreateFileBuktiDto) {
+        const filename = createFile.url;
+        if (filename.includes('..') || filename.includes('/')) {
+            throw new BadRequestException('Invalid filename');
+        }
+
+        const filePath = path.join(__dirname, '..', '..', 'uploads', filename);
+
+        try {
+            const deleteFile = await fs.promises.unlink(filePath);
+            const deleteFileDB = await this.prisma.bukti.deleteMany({
+                where: {
+                    url: filename,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil hapus file Keluarga',
+                data1: deleteFile,
+                data2: deleteFileDB,
+            };
+        } catch (err) {
+            return {
+                status: 'Nok',
+                message: 'Gagal hapus file Keluarga',
+                result: err,
+            };
+        }
+    }
+
     async deleteFileKTP(createFile: CreateFileKeluargaDto) {
         const filename = createFile.url;
         if (filename.includes('..') || filename.includes('/')) {

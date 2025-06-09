@@ -1171,6 +1171,14 @@ export class Bayar {
                     tanggal: true,
                     keterangan: true,
                     type_anggaran: true,
+                    bukti: {
+                        select: {
+                            id: true,
+                            nama: true,
+                            url: true,
+                            keterangan: true,
+                        },
+                    },
                     jenis_anggaran: {
                         select: {
                             id: true,
@@ -1946,6 +1954,161 @@ export class Bayar {
             return {
                 status: 'nok',
                 message: 'gagal dapat data pengeluaran',
+                data: error,
+            };
+        }
+    }
+
+    async totalKabeh() {
+        try {
+            const totalIuranKabeh = await this.prisma
+                .$queryRaw`select sum(s.nilai)::bigint as iuran from setor s`;
+            const totalMasukKabeh = await this.prisma
+                .$queryRaw`select sum(a.nilai)::bigint as masuk from anggaran a where a.id_type_anggaran = 1`;
+            const totalKeluarKabeh = await this.prisma
+                .$queryRaw`select sum(a.nilai)::bigint as keluar from anggaran a where a.id_type_anggaran = 2`;
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data total data keuangan',
+                totalIuranKabeh: totalIuranKabeh[0].iuran?.toString() ?? '0',
+                totalMasukKabeh: totalMasukKabeh[0].masuk?.toString() ?? '0',
+                totalKeluarKabeh: totalKeluarKabeh[0].keluar?.toString() ?? '0',
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data total keuangan karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal dapat data keuangan',
+                data: error,
+            };
+        }
+    }
+
+    async totalIuranBulanan() {
+        try {
+            // return {
+            //     status: 'ok',
+            //     message: 'berhasil dapat data total iuran bulanan',
+            //     result: 'hehehe',
+            // };
+            const bulanIuran = await this.prisma.$queryRaw<
+                { bulan: Date; total: bigint }[]
+            >`SELECT DATE_TRUNC('month', tanggal) AS bulan, SUM(nilai)::bigint AS total FROM setor GROUP BY bulan ORDER BY bulan ASC`;
+            const mapped = bulanIuran.map((row) => ({
+                bulan: row.bulan.toISOString().substring(0, 7), // YYYY-MM
+                total: row.total.toString(), // or use Number(row.total) if safe
+            }));
+
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data total iuran bulanan',
+                result: mapped,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data total keuangan bulanan karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal dapat data keuangan bulanan',
+                data: error,
+            };
+        }
+    }
+
+    async totalMasukBulanan() {
+        try {
+            // return {
+            //     status: 'ok',
+            //     message: 'berhasil dapat data total iuran bulanan',
+            //     result: 'hehehe',
+            // };
+            const bulanIuran = await this.prisma.$queryRaw<
+                { bulan: Date; total: bigint }[]
+            >`SELECT DATE_TRUNC('month', tanggal) AS bulan, SUM(nilai)::bigint AS total FROM anggaran WHERE id_type_anggaran = 1 GROUP BY bulan ORDER BY bulan ASC`;
+            const mapped = bulanIuran.map((row) => ({
+                bulan: row.bulan.toISOString().substring(0, 7), // YYYY-MM
+                total: row.total.toString(), // or use Number(row.total) if safe
+            }));
+
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data total iuran bulanan',
+                result: mapped,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data total keuangan bulanan karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal dapat data keuangan bulanan',
+                data: error,
+            };
+        }
+    }
+
+    async totalKeluarBulanan() {
+        try {
+            // return {
+            //     status: 'ok',
+            //     message: 'berhasil dapat data total iuran bulanan',
+            //     result: 'hehehe',
+            // };
+            const bulanIuran = await this.prisma.$queryRaw<
+                { bulan: Date; total: bigint }[]
+            >`SELECT DATE_TRUNC('month', tanggal) AS bulan, SUM(nilai)::bigint AS total FROM anggaran WHERE id_type_anggaran = 2 GROUP BY bulan ORDER BY bulan ASC`;
+            const mapped = bulanIuran.map((row) => ({
+                bulan: row.bulan.toISOString().substring(0, 7), // YYYY-MM
+                total: row.total.toString(), // or use Number(row.total) if safe
+            }));
+
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data total iuran bulanan',
+                result: mapped,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data total keuangan bulanan karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal dapat data keuangan bulanan',
                 data: error,
             };
         }

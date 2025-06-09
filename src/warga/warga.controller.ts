@@ -209,6 +209,24 @@ export class WargaController {
         }
     }
 
+    @Post('delete/bukti')
+    async deleteBukti(@Body() filedelete: CreateFileKeluargaDto) {
+        try {
+            return this.Warga.deleteFileKK(filedelete);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
     @Post('delete/fotoktp')
     async deleteKtp(@Body() filedelete: CreateFileKeluargaDto) {
         try {
