@@ -9,9 +9,9 @@ export class KkUpdateDto {
     @IsOptional()
     id_blok: number;
 
-    @IsInt()
+    @IsString()
     @IsOptional()
-    no_rumah: number;
+    no_rumah: string;
 
     @IsInt()
     @IsOptional()

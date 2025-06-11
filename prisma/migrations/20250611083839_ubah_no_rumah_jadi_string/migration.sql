@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "kk" ALTER COLUMN "no_rumah" SET DATA TYPE TEXT;

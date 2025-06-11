@@ -489,6 +489,24 @@ export class BayarController {
         }
     }
 
+    @Get('daftar/belum/setor')
+    async daftarWargaBelumSetor() {
+        try {
+            return this.bayar.listBelumBayarIuran();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
     @Get('daftar/pemasukan')
     async daftarPemasukan() {
         try {
@@ -788,6 +806,24 @@ export class BayarController {
     async keluarDeretBulan() {
         try {
             return this.bayar.totalKeluarBulanan();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('keluar/group')
+    async keluarGroup() {
+        try {
+            return this.bayar.groupPengeluaran();
         } catch (error) {
             throw new HttpException(
                 {

@@ -8,8 +8,8 @@ export class KkCreateDto {
     @IsInt()
     id_blok: number;
 
-    @IsInt()
-    no_rumah: number;
+    @IsString()
+    no_rumah: string;
 
     @IsString()
     @Optional()

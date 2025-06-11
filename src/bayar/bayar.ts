@@ -585,6 +585,93 @@ export class Bayar {
         }
     }
 
+    async listBelumBayarIuran() {
+        try {
+            const tanggal = new Date();
+            const month = tanggal.getMonth(); // September
+            const year = tanggal.getFullYear();
+
+            // Create start and end date for the month
+            const startDate = new Date(year, month - 1, 1); // September 1, 2023
+            const endDate = new Date(year, month, 1); // October 1, 2023
+            const wargaBayarBulan = await this.prisma.setor.findMany({
+                select: {
+                    kk: {
+                        select: {
+                            id: true,
+                        },
+                    },
+                },
+                where: {
+                    AND: [
+                        {
+                            tanggal: {
+                                gte: startDate,
+                                lt: endDate,
+                            },
+                        },
+                        {
+                            id_iuran: 1,
+                        },
+                    ],
+                },
+            });
+
+            const listIDBayar = wargaBayarBulan.map((setor) => setor.kk.id);
+
+            const WargaGakBayar = await this.prisma.kk.findMany({
+                select: {
+                    id: true,
+                    blok: {
+                        select: {
+                            id: true,
+                            blok: true,
+                        },
+                    },
+                    no_rumah: true,
+                    warga: {
+                        select: {
+                            id: true,
+                            nama: true,
+                        },
+                        where: {
+                            type: {
+                                id: 1,
+                            },
+                        },
+                    },
+                },
+                where: {
+                    id: {
+                        notIn: listIDBayar,
+                    },
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data warga gak bayar',
+                result: WargaGakBayar,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal berhasil dapat data warga gak bayar karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal dapat berhasil dapat data warga gak bayar',
+                data: error,
+            };
+        }
+    }
+
     async findWarga(id_kk) {
         try {
             const id_kkku = parseInt(id_kk);
@@ -1666,6 +1753,12 @@ export class Bayar {
 
     async listWargaIuran() {
         try {
+            const tanggal = new Date();
+            const month = tanggal.getMonth(); // September
+            const year = tanggal.getFullYear();
+
+            const startDate = new Date(year, month, 1); // September 1, 2023
+            const endDate = new Date(year, month + 1, 1);
             const listIuranAll = await this.prisma.setor.findMany({
                 select: {
                     id: true,
@@ -1699,6 +1792,19 @@ export class Bayar {
                             nama: true,
                         },
                     },
+                },
+                where: {
+                    AND: [
+                        {
+                            tanggal: {
+                                gte: startDate,
+                                lte: endDate,
+                            },
+                        },
+                        {
+                            id_iuran: 1,
+                        },
+                    ],
                 },
                 orderBy: {
                     id: 'asc',
@@ -1835,10 +1941,8 @@ export class Bayar {
 
     async iuranBulan() {
         try {
-            const tanggal = new Date();
-            const tahun = tanggal.getFullYear();
             const iuranBulanan = await this.prisma
-                .$queryRaw`SELECT sum(nilai) as jumlah, month(tanggal) as bulan FROM setor WHERE YEAR(tanggal)=${tahun} group by month(tanggal);`;
+                .$queryRaw`SELECT SUM(nilai)::int AS jumlah, EXTRACT(MONTH FROM tanggal) AS bulan FROM setor WHERE EXTRACT(YEAR FROM tanggal) = EXTRACT(YEAR FROM CURRENT_DATE) AND EXTRACT(MONTH FROM tanggal) = EXTRACT(MONTH FROM CURRENT_DATE) GROUP BY EXTRACT(MONTH FROM tanggal)`;
             return {
                 status: 'ok',
                 message: 'berhasil dapat data iuran',
@@ -1866,10 +1970,8 @@ export class Bayar {
 
     async pemasukanBulan() {
         try {
-            const tanggal = new Date();
-            const tahun = tanggal.getFullYear();
             const iuranBulanan = await this.prisma
-                .$queryRaw`SELECT sum(nilai)::int as jumlah, extract(month from tanggal) as bulan FROM anggaran WHERE id_type_anggaran=1 AND extract(YEAR from tanggal)=${tahun} GROUP BY extract(month from tanggal)`;
+                .$queryRaw`SELECT SUM(nilai)::int AS jumlah, EXTRACT(MONTH FROM tanggal) AS bulan FROM anggaran WHERE id_type_anggaran = 1 AND EXTRACT(YEAR FROM tanggal) = EXTRACT(YEAR FROM CURRENT_DATE) AND EXTRACT(MONTH FROM tanggal) = EXTRACT(MONTH FROM CURRENT_DATE) GROUP BY EXTRACT(MONTH FROM tanggal)`;
             return {
                 status: 'ok',
                 message: 'berhasil dapat data bulanan pemasukan anggaran',
@@ -1897,10 +1999,10 @@ export class Bayar {
 
     async pengeluaranBulan() {
         try {
-            const tanggal = new Date();
-            const tahun = tanggal.getFullYear();
+            // const tanggal = new Date();
+            // const tahun = tanggal.getFullYear();
             const iuranBulanan = await this.prisma
-                .$queryRaw`SELECT sum(nilai)::int as jumlah, extract(month from tanggal) as bulan FROM anggaran where extract(month from tanggal)=1 and id_type_anggaran=2 and extract(year from tanggal)=${tahun} group by bulan;`;
+                .$queryRaw`SELECT SUM(nilai)::int AS jumlah, EXTRACT(MONTH FROM tanggal) AS bulan FROM anggaran WHERE id_type_anggaran = 2 AND EXTRACT(YEAR FROM tanggal) = EXTRACT(YEAR FROM CURRENT_DATE) AND EXTRACT(MONTH FROM tanggal) = EXTRACT(MONTH FROM CURRENT_DATE) GROUP BY EXTRACT(MONTH FROM tanggal);`;
             return {
                 status: 'ok',
                 message: 'berhasil dapat data bulanan pengeluaran anggaran',
@@ -2001,12 +2103,14 @@ export class Bayar {
             //     message: 'berhasil dapat data total iuran bulanan',
             //     result: 'hehehe',
             // };
-            const bulanIuran = await this.prisma.$queryRaw<
-                { bulan: Date; total: bigint }[]
-            >`SELECT DATE_TRUNC('month', tanggal) AS bulan, SUM(nilai)::bigint AS total FROM setor GROUP BY bulan ORDER BY bulan ASC`;
+            const bulanIuran = await this.prisma.$queryRawUnsafe<
+                { bulan: Date; total: bigint | null }[]
+            >(
+                `WITH months AS ( SELECT generate_series(DATE_TRUNC('month', (SELECT MIN(tanggal) FROM setor WHERE tanggal IS NOT NULL)), DATE_TRUNC('month', (SELECT MAX(tanggal) FROM setor WHERE tanggal IS NOT NULL)), interval '1 month') AS bulan) SELECT m.bulan, SUM(s.nilai)::bigint AS total FROM months m LEFT JOIN setor s ON DATE_TRUNC('month', s.tanggal) = m.bulan GROUP BY m.bulan ORDER BY m.bulan ASC`
+            );
             const mapped = bulanIuran.map((row) => ({
                 bulan: row.bulan.toISOString().substring(0, 7), // YYYY-MM
-                total: row.total.toString(), // or use Number(row.total) if safe
+                total: row.total ? row.total.toString() : 0, // or use Number(row.total) if safe
             }));
 
             return {
@@ -2041,12 +2145,14 @@ export class Bayar {
             //     message: 'berhasil dapat data total iuran bulanan',
             //     result: 'hehehe',
             // };
-            const bulanIuran = await this.prisma.$queryRaw<
-                { bulan: Date; total: bigint }[]
-            >`SELECT DATE_TRUNC('month', tanggal) AS bulan, SUM(nilai)::bigint AS total FROM anggaran WHERE id_type_anggaran = 1 GROUP BY bulan ORDER BY bulan ASC`;
+            const bulanIuran = await this.prisma.$queryRawUnsafe<
+                { bulan: Date; total: bigint | null }[]
+            >(
+                `WITH months AS (SELECT generate_series(DATE_TRUNC('month', (SELECT MIN(tanggal) FROM anggaran)),DATE_TRUNC('month',(SELECT MAX(tanggal) FROM anggaran)),interval '1 month') AS bulan) SELECT m.bulan, SUM(a.nilai)::bigint AS total FROM months m LEFT JOIN anggaran a ON DATE_TRUNC('month', a.tanggal) = m.bulan AND a.id_type_anggaran = 1 GROUP BY m.bulan ORDER BY m.bulan ASC`
+            );
             const mapped = bulanIuran.map((row) => ({
                 bulan: row.bulan.toISOString().substring(0, 7), // YYYY-MM
-                total: row.total.toString(), // or use Number(row.total) if safe
+                total: row.total ? row.total.toString() : 0, // or use Number(row.total) if safe
             }));
 
             return {
@@ -2081,12 +2187,14 @@ export class Bayar {
             //     message: 'berhasil dapat data total iuran bulanan',
             //     result: 'hehehe',
             // };
-            const bulanIuran = await this.prisma.$queryRaw<
-                { bulan: Date; total: bigint }[]
-            >`SELECT DATE_TRUNC('month', tanggal) AS bulan, SUM(nilai)::bigint AS total FROM anggaran WHERE id_type_anggaran = 2 GROUP BY bulan ORDER BY bulan ASC`;
+            const bulanIuran = await this.prisma.$queryRawUnsafe<
+                { bulan: Date; total: bigint | null }[]
+            >(
+                `WITH months AS (SELECT generate_series(DATE_TRUNC('month', (SELECT MIN(tanggal) FROM anggaran WHERE id_type_anggaran = 2 AND tanggal IS NOT NULL)),DATE_TRUNC('month', (SELECT MAX(tanggal) FROM anggaran WHERE id_type_anggaran = 2 AND tanggal IS NOT NULL)),interval '1 month') AS bulan) SELECT m.bulan, SUM(a.nilai)::bigint AS total FROM months m LEFT JOIN anggaran a ON DATE_TRUNC('month', a.tanggal) = m.bulan AND a.id_type_anggaran = 2 GROUP BY m.bulan ORDER BY m.bulan ASC`
+            );
             const mapped = bulanIuran.map((row) => ({
                 bulan: row.bulan.toISOString().substring(0, 7), // YYYY-MM
-                total: row.total.toString(), // or use Number(row.total) if safe
+                total: row.total ? row.total.toString() : 0, // or use Number(row.total) if safe
             }));
 
             return {
@@ -2109,6 +2217,41 @@ export class Bayar {
             return {
                 status: 'nok',
                 message: 'gagal dapat data keuangan bulanan',
+                data: error,
+            };
+        }
+    }
+
+    async groupPengeluaran() {
+        try {
+            const bulanIuran = await this.prisma.$queryRaw<
+                { nama: string; total: bigint }[]
+            >`select sum(a.nilai)::bigint as total, ja.nama as nama from anggaran a,jenis_anggaran ja  where a.id_type_anggaran = 2 and a.id_jenis_anggaran = ja.id group by ja.nama`;
+            const mapped = bulanIuran.map((row) => ({
+                nama: row.nama, // YYYY-MM
+                total: row.total.toString(), // or use Number(row.total) if safe
+            }));
+
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data total iuran bulanan',
+                result: mapped,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data total pengeluaran karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal dapat data pengeluaran',
                 data: error,
             };
         }

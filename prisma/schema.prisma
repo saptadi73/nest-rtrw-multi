@@ -21,7 +21,7 @@ model kk {
   no_kk String
   blok blok @relation(references: [id], fields: [id_blok])
   id_blok Int
-  no_rumah Int
+  no_rumah String
   filekeluarga filekeluarga? @relation(references: [id], fields: [id_filekeluarga])
   id_filekeluarga Int?
   warga warga[]
