@@ -51,7 +51,11 @@ export class UserService {
                     };
                 }
             }
-            return { status: 'nok', message: 'gagal tambah userid', data: error };
+            return {
+                status: 'nok',
+                message: 'gagal tambah userid atau coba relogin sebelum tambah user',
+                data: error,
+            };
         }
     }
 
@@ -371,6 +375,7 @@ export class UserService {
         try {
             const listLevel = await this.prisma.level.findMany({
                 select: {
+                    id: true,
                     nama: true,
                     deskripsi: true,
                 },
