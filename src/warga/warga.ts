@@ -352,7 +352,6 @@ export class Warga {
             } else {
                 jk = true;
             }
-            console.log(isoDate);
             const addWarga = await this.prisma.warga.update({
                 data: {
                     nama: createWarga.nama,

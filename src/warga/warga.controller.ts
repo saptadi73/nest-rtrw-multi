@@ -12,6 +12,7 @@ import {
     UseFilters,
     Delete,
     NotFoundException,
+    UseGuards,
 } from '@nestjs/common';
 import { Warga } from './warga';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -34,11 +35,13 @@ import { StatusWargaDto } from './dto/status.warga.dto';
 import { CreateFileBuktiDto } from './dto/create.file.bukti.dto';
 import { join } from 'path';
 import * as fs from 'fs';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('warga')
 export class WargaController {
     constructor(private Warga: Warga) {}
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('photo')
     @UseFilters(MulterExceptionFilter)
     @UseInterceptors(
@@ -77,6 +80,7 @@ export class WargaController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('photo/user')
     @UseFilters(MulterExceptionFilter)
     @UseInterceptors(
@@ -115,6 +119,7 @@ export class WargaController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('fotoktp')
     @UseFilters(MulterExceptionFilter)
     @UseInterceptors(
@@ -153,6 +158,7 @@ export class WargaController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('fotokk')
     @UseFilters(MulterExceptionFilter)
     @UseInterceptors(
@@ -191,6 +197,7 @@ export class WargaController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('delete/fotokk')
     async deleteKk(@Body() filedelete: CreateFileKeluargaDto) {
         try {
@@ -209,6 +216,7 @@ export class WargaController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('delete/bukti')
     async deleteBukti(@Body() filedelete: CreateFileKeluargaDto) {
         try {
@@ -227,6 +235,7 @@ export class WargaController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('delete/fotoktp')
     async deleteKtp(@Body() filedelete: CreateFileKeluargaDto) {
         try {
@@ -245,6 +254,7 @@ export class WargaController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('bukti')
     @UseFilters(MulterExceptionFilter)
     @UseInterceptors(
@@ -283,6 +293,7 @@ export class WargaController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('add/kk')
     @Header('Content-Type', 'application/json')
     async tambahKK(@Body() createKK: KkCreateDto) {
@@ -320,6 +331,7 @@ export class WargaController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('add/blok')
     @Header('Content-Type', 'application/json')
     async tambahBlok(@Body() createBlok: BlokCreateDto) {
@@ -339,6 +351,7 @@ export class WargaController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('edit/blok')
     @Header('Content-Type', 'application/json')
     async ubahBlok(@Body() createBlok: BlokCreateDto) {
@@ -394,6 +407,7 @@ export class WargaController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('tambah/type')
     async addTyoe(@Body() data: TypeCreateDto) {
         try {
@@ -448,6 +462,7 @@ export class WargaController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('update/type')
     @Header('Content-Type', 'application/json')
     async editType(@Body() data: TypeUpdateDto) {
@@ -467,6 +482,7 @@ export class WargaController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('hapus/type')
     @Header('Content-Type', 'application/json')
     async busekType(@Body() updateType: TypeUpdateDto) {
@@ -504,6 +520,7 @@ export class WargaController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('add/warga')
     @Header('Content-Type', 'application/json')
     async tambahWarga(@Body() createWarga: WargaCreateDto) {
@@ -576,6 +593,8 @@ export class WargaController {
             );
         }
     }
+
+    @UseGuards(AuthGuard('jwt'))
     @Post('update/kk/:id')
     @Header('Content-Type', 'application/json')
     async updateKK(@Param('id') id: string, @Body() updateKK: KkUpdateDto) {
@@ -595,6 +614,7 @@ export class WargaController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('update/warga/:id')
     @Header('Content-Type', 'application/json')
     async updateWarga(@Param('id') id: string, @Body() updateWarga: WargaUpdateDto) {
@@ -632,6 +652,7 @@ export class WargaController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('del/warga')
     @Header('Content-Type', 'application/json')
     async hapusWargaSatu(@Body() update: WargaUpdateDto) {
@@ -867,6 +888,7 @@ export class WargaController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('new/gps')
     @Header('Content-Type', 'application/json')
     async buatPolygon(@Body() createEntity: CreateGpsLocationDto) {
@@ -886,6 +908,7 @@ export class WargaController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('edit/gps')
     @Header('Content-Type', 'application/json')
     async editPolygon(@Body() createEntity: CreateGpsLocationDto) {
@@ -905,6 +928,7 @@ export class WargaController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('tambah/pekerjaan')
     @Header('Content-Type', 'application/json')
     async tambahPekerjaan(@Body() pekerjaan: PekerjaanWargaDto) {
@@ -924,6 +948,7 @@ export class WargaController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('update/pekerjaan')
     @Header('Content-Type', 'application/json')
     async updatePekerjaan(@Body() pekerjaan: PekerjaanWargaDto) {
@@ -943,6 +968,7 @@ export class WargaController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('tambah/status')
     @Header('Content-Type', 'application/json')
     async tambahStatus(@Body() status_warga: StatusWargaDto) {

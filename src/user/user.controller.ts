@@ -9,6 +9,7 @@ import {
     Post,
     UploadedFile,
     UseInterceptors,
+    UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create.user.dto';
@@ -19,11 +20,13 @@ import { FileNameEditor, ImageFileFilter } from './file.utils';
 import { CreatePhotoUserDto } from './dto/create.photo.user.dto';
 import { CreateLevelDto } from './dto/create.level.dto';
 import { AktifUserDto } from './dto/aktif.user.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('user')
 export class UserController {
     constructor(private User: UserService) {}
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('add')
     @Header('Content-Type', 'application/json')
     async addUser(@Body() userCreate: CreateUserDto) {
@@ -80,6 +83,7 @@ export class UserController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('photo')
     @UseInterceptors(
         FileInterceptor('file', {
@@ -113,6 +117,7 @@ export class UserController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('add/level')
     @Header('Content-Type', 'application/json')
     async nambahLevelUser(@Body() createLevel: CreateLevelDto) {
@@ -168,6 +173,7 @@ export class UserController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('delete/user')
     @Header('Content-Type', 'application/json')
     async deleteUser(@Body() createLevel: AktifUserDto) {

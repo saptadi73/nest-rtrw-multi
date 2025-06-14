@@ -672,7 +672,7 @@ export class Bayar {
         }
     }
 
-    async findWarga(id_kk) {
+    async findWarga(id_kk: string) {
         try {
             const id_kkku = parseInt(id_kk);
 
@@ -1184,7 +1184,7 @@ export class Bayar {
         }
     }
 
-    async FindSetoran(idSetoran) {
+    async FindSetoran(idSetoran: string) {
         try {
             const idSetoranku = parseInt(idSetoran);
 
@@ -1242,7 +1242,7 @@ export class Bayar {
             };
         }
     }
-    async findAnggaran(idAnggaran) {
+    async findAnggaran(idAnggaran: string) {
         try {
             const idAnggaranku = parseInt(idAnggaran);
             const golekAnggaran = await this.prisma.anggaran.findFirst({
@@ -1303,7 +1303,7 @@ export class Bayar {
         }
     }
 
-    async findAnggaranWarga(idAnggaran) {
+    async findAnggaranWarga(idAnggaran: string) {
         try {
             const idAnggaranku = parseInt(idAnggaran);
             const golekAnggaran = await this.prisma.anggaran.findFirst({
@@ -2252,6 +2252,96 @@ export class Bayar {
             return {
                 status: 'nok',
                 message: 'gagal dapat data pengeluaran',
+                data: error,
+            };
+        }
+    }
+
+    async laporanRt() {
+        try {
+            const hasilIuransampaiBulanLalu = await this.prisma.$queryRawUnsafe<any>(
+                `SELECT SUM(s.nilai)::bigint AS iuran 
+             FROM setor s 
+             WHERE EXTRACT(MONTH FROM s.tanggal) <= EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '1 month') 
+             AND EXTRACT(YEAR FROM s.tanggal) <= EXTRACT(YEAR FROM CURRENT_DATE - INTERVAL '1 month')`
+            );
+
+            const hasilPemasukanSampaiBulanLalu = await this.prisma.$queryRawUnsafe<any>(
+                `SELECT SUM(a.nilai)::bigint AS pemasukan 
+             FROM anggaran a 
+             WHERE EXTRACT(MONTH FROM a.tanggal) <= EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '1 month') 
+             AND EXTRACT(YEAR FROM a.tanggal) <= EXTRACT(YEAR FROM CURRENT_DATE - INTERVAL '1 month') 
+             AND a.id_type_anggaran = 1`
+            );
+
+            const hasilPengeluaranSampaiBulanLalu = await this.prisma.$queryRawUnsafe<any>(
+                `SELECT SUM(a.nilai)::bigint AS pengeluaran 
+             FROM anggaran a 
+             WHERE EXTRACT(MONTH FROM a.tanggal) <= EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '1 month') 
+             AND EXTRACT(YEAR FROM a.tanggal) <= EXTRACT(YEAR FROM CURRENT_DATE - INTERVAL '1 month') 
+             AND a.id_type_anggaran = 2`
+            );
+
+            const hasilIuranBulanIni = await this.prisma.$queryRawUnsafe<any>(
+                `SELECT SUM(s.nilai)::bigint AS iuran 
+             FROM setor s 
+             WHERE EXTRACT(MONTH FROM s.tanggal) = EXTRACT(MONTH FROM CURRENT_DATE) 
+             AND EXTRACT(YEAR FROM s.tanggal) = EXTRACT(YEAR FROM CURRENT_DATE)`
+            );
+
+            const hasilPemasukanBulanIni = await this.prisma.$queryRawUnsafe<any>(
+                `SELECT SUM(a.nilai)::bigint AS pemasukan, ja.nama 
+             FROM anggaran a 
+             RIGHT JOIN jenis_anggaran ja ON ja.id = a.id_jenis_anggaran 
+             WHERE EXTRACT(MONTH FROM a.tanggal) = EXTRACT(MONTH FROM CURRENT_DATE) 
+             AND EXTRACT(YEAR FROM a.tanggal) = EXTRACT(YEAR FROM CURRENT_DATE) 
+             AND a.id_type_anggaran = 1 
+             GROUP BY ja.nama`
+            );
+
+            const hasilPengeluaranBulanIni = await this.prisma.$queryRawUnsafe<any>(
+                `SELECT SUM(a.nilai)::bigint AS pengeluaran, ja.nama 
+             FROM anggaran a 
+             LEFT JOIN jenis_anggaran ja ON a.id_jenis_anggaran = ja.id 
+             WHERE EXTRACT(MONTH FROM a.tanggal) = EXTRACT(MONTH FROM CURRENT_DATE) 
+             AND EXTRACT(YEAR FROM a.tanggal) = EXTRACT(YEAR FROM CURRENT_DATE) 
+             AND a.id_type_anggaran = 2 
+             GROUP BY ja.nama`
+            );
+
+            const dataLaporan = {
+                IuranBulanLalu: hasilIuransampaiBulanLalu[0]?.iuran?.toString() || '0',
+                PemasukanBulanLalu: hasilPemasukanSampaiBulanLalu[0]?.pemasukan?.toString() || '0',
+                PengeluaranBulanLalu:
+                    hasilPengeluaranSampaiBulanLalu[0]?.pengeluaran?.toString() || '0',
+                IuranBulanIni: hasilIuranBulanIni[0]?.iuran?.toString() || '0',
+                PemasukanBulanIni: hasilPemasukanBulanIni.map((row: any) => ({
+                    nama: row.nama,
+                    pemasukan: row.pemasukan?.toString() || '0',
+                })),
+                PengeluaranBulanIni: hasilPengeluaranBulanIni.map((row: any) => ({
+                    nama: row.nama,
+                    pengeluaran: row.pengeluaran?.toString() || '0',
+                })),
+            };
+
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data laporan',
+                result: dataLaporan,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+                return {
+                    status: 'nok',
+                    message: 'Gagal dapat data laporan RT karena ada isian unique yang duplikat',
+                    data: error,
+                };
+            }
+
+            return {
+                status: 'nok',
+                message: 'Gagal dapat data laporan RT',
                 data: error,
             };
         }

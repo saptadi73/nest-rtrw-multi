@@ -1,13 +1,24 @@
-import { Body, Controller, Get, Header, HttpException, HttpStatus, Post } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    Header,
+    UseGuards,
+    HttpException,
+    HttpStatus,
+    Post,
+} from '@nestjs/common';
 import { Profile } from './profile';
 import { CreateEntityDto } from './dto/create.entity.dto';
 import { CreatePolygonDto } from './dto/create.polygon.dto';
 import { FindWilayahDto } from './dto/find.wilayah.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('profile')
 export class ProfileController {
     constructor(private profile: Profile) {}
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('create')
     @Header('Content-Type', 'application/json')
     async buatEntity(@Body() createEntity: CreateEntityDto) {
@@ -27,6 +38,7 @@ export class ProfileController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('edit')
     @Header('Content-Type', 'application/json')
     async editEntity(@Body() createEntity: CreateEntityDto) {
@@ -46,6 +58,7 @@ export class ProfileController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('new/polygon')
     @Header('Content-Type', 'application/json')
     async buatPolygon(@Body() createEntity: CreatePolygonDto) {
@@ -65,6 +78,7 @@ export class ProfileController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('edit/polygon')
     @Header('Content-Type', 'application/json')
     async editPolygon(@Body() createEntity: CreatePolygonDto) {
@@ -102,6 +116,7 @@ export class ProfileController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('kabupaten')
     @Header('Content-Type', 'application/json')
     async getKabupaten(@Body() findWilayah: FindWilayahDto) {
@@ -121,6 +136,7 @@ export class ProfileController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('kecamatan')
     @Header('Content-Type', 'application/json')
     async getKecamatan(@Body() findWilayah: FindWilayahDto) {
@@ -140,6 +156,7 @@ export class ProfileController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('desa')
     @Header('Content-Type', 'application/json')
     async getDesa(@Body() findWilayah: FindWilayahDto) {

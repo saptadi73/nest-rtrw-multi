@@ -7,6 +7,7 @@ import {
     HttpStatus,
     Param,
     Post,
+    UseGuards,
 } from '@nestjs/common';
 import { Bayar } from './bayar';
 import { SetorCreateDto } from './dto/setor.create.dto';
@@ -20,6 +21,7 @@ import { HitungHutangDto } from './dto/hitung.hutang.dto';
 import { TypeAnggaranCreateDto } from './dto/type.anggaran.create.dto';
 import { IuranUpdateDto } from './dto/iuran.update.dto';
 import { IuranCreateDto } from './dto/iuran.create.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('bayar')
 export class BayarController {
@@ -43,6 +45,7 @@ export class BayarController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('add/setor')
     @Header('Content-Type', 'application/json')
     async tambahBayar(@Body() createBayar: SetorCreateDto) {
@@ -654,6 +657,7 @@ export class BayarController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('delete/iuran')
     @Header('Content-Type', 'application/json')
     async hapusIuran(@Body() updateIuran: IuranUpdateDto) {
@@ -824,6 +828,24 @@ export class BayarController {
     async keluarGroup() {
         try {
             return this.bayar.groupPengeluaran();
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('laporan/rt')
+    async LaporanRt() {
+        try {
+            return this.bayar.laporanRt();
         } catch (error) {
             throw new HttpException(
                 {
