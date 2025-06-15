@@ -51,7 +51,7 @@ export class WargaController {
                 destination: './uploads',
             }),
             limits: {
-                fileSize: 500 * 1024,
+                fileSize: 300 * 1024,
             },
             fileFilter: ImageFileFilter,
         })
@@ -90,7 +90,7 @@ export class WargaController {
                 destination: './uploads',
             }),
             limits: {
-                fileSize: 500 * 1024,
+                fileSize: 300 * 1024,
             },
             fileFilter: ImageFileFilter,
         })
@@ -129,7 +129,7 @@ export class WargaController {
                 destination: './uploads',
             }),
             limits: {
-                fileSize: 500 * 1024,
+                fileSize: 300 * 1024,
             },
             fileFilter: ImageFileFilter,
         })
@@ -168,7 +168,7 @@ export class WargaController {
                 destination: './uploads',
             }),
             limits: {
-                fileSize: 500 * 1024,
+                fileSize: 300 * 1024,
             },
             fileFilter: ImageFileFilter,
         })
@@ -264,7 +264,7 @@ export class WargaController {
                 destination: './uploads',
             }),
             limits: {
-                fileSize: 500 * 1024,
+                fileSize: 300 * 1024,
             },
             fileFilter: ImageFileFilter,
         })
