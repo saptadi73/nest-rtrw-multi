@@ -1000,6 +1000,7 @@ export class Warga {
                             id_type: 1,
                         },
                         select: {
+                            id: true,
                             nama: true,
                             tempat_lahir: true,
                             tanggal_lahir: true,
