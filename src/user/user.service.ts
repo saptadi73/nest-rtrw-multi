@@ -408,8 +408,13 @@ export class UserService {
                     id: true,
                     email: true,
                     uuid: true,
-                    id_level: true,
                     status: true,
+                    level: {
+                        select: {
+                            id: true,
+                            nama: true,
+                        },
+                    },
                 },
             });
             return {
