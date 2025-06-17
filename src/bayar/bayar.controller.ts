@@ -859,4 +859,22 @@ export class BayarController {
             );
         }
     }
+
+    @Get('get/nominal/:id')
+    async getNominal(@Param('id') id: string) {
+        try {
+            return this.bayar.getNominal(id);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
 }

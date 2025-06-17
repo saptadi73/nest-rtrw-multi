@@ -2346,4 +2346,37 @@ export class Bayar {
             };
         }
     }
+
+    async getNominal(id: string) {
+        try {
+            const getNominalnya = await this.prisma.iuran.findFirst({
+                where: {
+                    id: parseInt(id),
+                },
+                select: {
+                    nama: true,
+                    iuran: true,
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat nominal',
+                result: getNominalnya,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+                return {
+                    status: 'nok',
+                    message: 'Gagal dapat data nominal karena ada isian unique yang duplikat',
+                    data: error,
+                };
+            }
+
+            return {
+                status: 'nok',
+                message: 'Gagal dapat data nominal',
+                data: error,
+            };
+        }
+    }
 }
