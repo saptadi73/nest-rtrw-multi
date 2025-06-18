@@ -16,4 +16,8 @@ export class CreateFileKeluargaDto {
     @IsString()
     @IsOptional()
     url: string;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }

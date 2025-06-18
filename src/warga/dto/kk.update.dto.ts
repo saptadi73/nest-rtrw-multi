@@ -20,4 +20,8 @@ export class KkUpdateDto {
     @IsInt()
     @IsOptional()
     id_photo_kk: number;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }

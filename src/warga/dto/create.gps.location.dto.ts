@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateGpsLocationDto {
     @IsNumber()
@@ -16,4 +16,8 @@ export class CreateGpsLocationDto {
     @IsNumber()
     @IsOptional()
     id: number;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }

@@ -8,4 +8,8 @@ export class StatusWargaDto {
     @IsOptional()
     @IsNumber()
     id: number;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }

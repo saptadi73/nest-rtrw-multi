@@ -29,6 +29,11 @@ export class Warga {
                 data: {
                     uuid: uuidv4(),
                     blok: createBlok.blok,
+                    tenant: {
+                        connect: {
+                            id: createBlok.id_tenant,
+                        },
+                    },
                 },
             });
             return { status: 'ok', message: 'berhasil tambah data blok', result: tambahBlok };
@@ -75,12 +80,17 @@ export class Warga {
         }
     }
 
-    async listBlok() {
+    async listBlok(id_tenant: string) {
         try {
             const daftarBlok = await this.prisma.blok.findMany({
                 select: {
                     id: true,
                     blok: true,
+                },
+                where: {
+                    tenant: {
+                        id: id_tenant,
+                    },
                 },
             });
             return { status: 'ok', message: 'berhasil ambil data blok', result: daftarBlok };
@@ -146,6 +156,11 @@ export class Warga {
                     no_kk: createKK.no_kk,
                     no_rumah: createKK.no_rumah,
                     uuid: uuidv4(),
+                    tenant: {
+                        connect: {
+                            id: createKK.id_tenant,
+                        },
+                    },
                     blok: {
                         connect: {
                             id: createKK.id_blok,
@@ -160,9 +175,14 @@ export class Warga {
                             tanggal_lahir: isoDate,
                             jenis_kelamin: jk,
                             no_hp: createKK.no_hp,
+                            tenant: {
+                                connect: {
+                                    id: createKK.id_tenant,
+                                },
+                            },
                             type: {
                                 connect: {
-                                    id: 1,
+                                    id: createKK.id_type,
                                 },
                             },
                             status_warga: {
@@ -299,6 +319,11 @@ export class Warga {
                     tempat_lahir: createWarga.tempat_lahir,
                     tanggal_lahir: isoDate,
                     jenis_kelamin: jk,
+                    tenant: {
+                        connect: {
+                            id: createWarga.id_tenant,
+                        },
+                    },
                     status_warga: {
                         connect: {
                             id: createWarga.id_status_warga,
@@ -466,6 +491,11 @@ export class Warga {
                 data: {
                     nama: createType.nama,
                     uuid: uuidv4(),
+                    tenant: {
+                        connect: {
+                            id: createType.id_tenant,
+                        },
+                    },
                 },
             });
             return { status: 'ok', message: 'berhasil tambah data type warga', result: addType };
@@ -564,7 +594,7 @@ export class Warga {
         }
     }
 
-    async listIdKk() {
+    async listIdKk(id: string) {
         try {
             const daftarKk = await this.prisma.kk.findMany({
                 select: {
@@ -599,9 +629,18 @@ export class Warga {
                             },
                         },
                         where: {
-                            type: {
-                                id: 1,
-                            },
+                            AND: [
+                                {
+                                    type: {
+                                        id: 1,
+                                    },
+                                },
+                                {
+                                    tenant: {
+                                        id: id,
+                                    },
+                                },
+                            ],
                         },
                     },
                 },
@@ -629,7 +668,7 @@ export class Warga {
         }
     }
 
-    async listWargaPerKK(idKK) {
+    async listWargaPerKK(idKK: string) {
         try {
             const idKKku = idKK;
             const listWargaKK = await this.prisma.warga.findMany({
@@ -713,7 +752,7 @@ export class Warga {
         }
     }
 
-    async listAllWarga() {
+    async listAllWarga(id_tenant: string) {
         try {
             const listWarga = await this.prisma.warga.findMany({
                 select: {
@@ -733,6 +772,11 @@ export class Warga {
                             },
                             no_rumah: true,
                         },
+                    },
+                },
+                where: {
+                    tenant: {
+                        id: id_tenant,
                     },
                 },
                 orderBy: {
@@ -764,12 +808,17 @@ export class Warga {
         }
     }
 
-    async listType() {
+    async listType(id_tenant: string) {
         try {
             const listType = await this.prisma.type.findMany({
                 select: {
                     id: true,
                     nama: true,
+                },
+                where: {
+                    tenant: {
+                        id: id_tenant,
+                    },
                 },
                 orderBy: {
                     id: 'asc',
@@ -804,6 +853,11 @@ export class Warga {
                     keterangan: uploadfile.keterangan,
                     url: fileku.filename,
                     uuid: uuidv4(),
+                    tenant: {
+                        connect: {
+                            id: uploadfile.id_tenant,
+                        },
+                    },
                     warga: {
                         connect: {
                             id: parseInt(uploadfile.id_warga),
@@ -839,6 +893,11 @@ export class Warga {
                     nama: uploadfile.nama,
                     keterangan: uploadfile.keterangan,
                     url: fileku.filename,
+                    tenant: {
+                        connect: {
+                            id: uploadfile.id_tenant,
+                        },
+                    },
                     user: {
                         connect: {
                             id: parseInt(uploadfile.id_user),
@@ -876,6 +935,11 @@ export class Warga {
                     keterangan: uploadKK.keterangan,
                     url: fileku.filename,
                     uuid: uuidv4(),
+                    tenant: {
+                        connect: {
+                            id: uploadKK.id_tenant,
+                        },
+                    },
                     kk: {
                         connect: {
                             id: parseInt(uploadKK.id_kk),
@@ -910,6 +974,11 @@ export class Warga {
                 data: {
                     nama: uploadBukti.nama,
                     keterangan: uploadBukti.keterangan,
+                    tenant: {
+                        connect: {
+                            id: uploadBukti.id_tenant,
+                        },
+                    },
                     anggaran: {
                         connect: {
                             id: parseInt(uploadBukti.id_anggaran),
@@ -944,12 +1013,17 @@ export class Warga {
         }
     }
 
-    async listKeluarga() {
+    async listKeluarga(id_tenant: string) {
         try {
             const listKKsemua = await this.prisma.kk.findMany({
                 select: {
                     id: true,
                     no_kk: true,
+                },
+                where: {
+                    tenant: {
+                        id: id_tenant,
+                    },
                 },
             });
             return {
@@ -973,7 +1047,7 @@ export class Warga {
         }
     }
 
-    async listKK() {
+    async listKK(id_tenant: string) {
         try {
             const listKKsemua = await this.prisma.kk.findMany({
                 select: {
@@ -1028,6 +1102,11 @@ export class Warga {
                         },
                     },
                 },
+                where: {
+                    tenant: {
+                        id: id_tenant,
+                    },
+                },
                 orderBy: [
                     {
                         blok: {
@@ -1060,11 +1139,16 @@ export class Warga {
         }
     }
 
-    async jumlahKK() {
+    async jumlahKK(id_tenant: string) {
         try {
             const jumlahSemuaKK = await this.prisma.kk.aggregate({
                 _count: {
                     id: true,
+                },
+                where: {
+                    tenant: {
+                        id: id_tenant,
+                    },
                 },
             });
             return {
@@ -1088,42 +1172,16 @@ export class Warga {
         }
     }
 
-    async jumlahWarga() {
-        try {
-            const jumlahWarga = await this.prisma.warga.aggregate({
-                _count: {
-                    id: true,
-                },
-            });
-            return {
-                status: 'ok',
-                message: 'berhasil dapat data jumlah warga',
-                result: jumlahWarga,
-            };
-        } catch (error) {
-            if (error instanceof Prisma.PrismaClientKnownRequestError) {
-                if (error.code === 'P2002') {
-                    console.log('failed unique constraint');
-                    return {
-                        status: 'nok',
-                        message:
-                            'gagal dapat data jumlah KK karena ada isian seharusnya unique, diisi berulang',
-                        data: error,
-                    };
-                }
-            }
-            return { status: 'nok', message: 'gagal dapat data jumlah Warga', data: error };
-        }
-    }
-
-    async jumlahWargaLk() {
+    async jumlahWarga(id_tenant: string) {
         try {
             const jumlahWarga = await this.prisma.warga.aggregate({
                 _count: {
                     id: true,
                 },
                 where: {
-                    jenis_kelamin: true,
+                    tenant: {
+                        id: id_tenant,
+                    },
                 },
             });
             return {
@@ -1147,14 +1205,23 @@ export class Warga {
         }
     }
 
-    async jumlahWargaPr() {
+    async jumlahWargaLk(id_tenant: string) {
         try {
             const jumlahWarga = await this.prisma.warga.aggregate({
                 _count: {
                     id: true,
                 },
                 where: {
-                    jenis_kelamin: false,
+                    AND: [
+                        {
+                            tenant: {
+                                id: id_tenant,
+                            },
+                        },
+                        {
+                            jenis_kelamin: true,
+                        },
+                    ],
                 },
             });
             return {
@@ -1178,7 +1245,47 @@ export class Warga {
         }
     }
 
-    async listAllWargaLk() {
+    async jumlahWargaPr(id_tenant: string) {
+        try {
+            const jumlahWarga = await this.prisma.warga.aggregate({
+                _count: {
+                    id: true,
+                },
+                where: {
+                    AND: [
+                        {
+                            tenant: {
+                                id: id_tenant,
+                            },
+                        },
+                        {
+                            jenis_kelamin: false,
+                        },
+                    ],
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil dapat data jumlah warga',
+                result: jumlahWarga,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data jumlah KK karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal dapat data jumlah Warga', data: error };
+        }
+    }
+
+    async listAllWargaLk(id_tenant: string) {
         try {
             const listWarga = await this.prisma.warga.findMany({
                 select: {
@@ -1209,7 +1316,16 @@ export class Warga {
                     },
                 },
                 where: {
-                    jenis_kelamin: true,
+                    AND: [
+                        {
+                            jenis_kelamin: true,
+                        },
+                        {
+                            tenant: {
+                                id: id_tenant,
+                            },
+                        },
+                    ],
                 },
                 orderBy: {
                     kk: {
@@ -1240,7 +1356,7 @@ export class Warga {
         }
     }
 
-    async listAllWargaPr() {
+    async listAllWargaPr(id_tenant: string) {
         try {
             const listWarga = await this.prisma.warga.findMany({
                 select: {
@@ -1263,7 +1379,16 @@ export class Warga {
                     },
                 },
                 where: {
-                    jenis_kelamin: false,
+                    AND: [
+                        {
+                            jenis_kelamin: false,
+                        },
+                        {
+                            tenant: {
+                                id: id_tenant,
+                            },
+                        },
+                    ],
                 },
                 orderBy: {
                     kk: {
@@ -1376,7 +1501,16 @@ export class Warga {
                     uuid: uuidv4(),
                     longitude: createGpsLocation.longitude,
                     latitude: createGpsLocation.latitude,
-                    id_kk: createGpsLocation.id_kk,
+                    kk: {
+                        connect: {
+                            id: createGpsLocation.id_kk,
+                        },
+                    },
+                    tenant: {
+                        connect: {
+                            id: createGpsLocation.id_tenant,
+                        },
+                    },
                 },
             });
             return {
@@ -1437,6 +1571,11 @@ export class Warga {
                 data: {
                     uuid: uuidv4(),
                     nama: pekerjaan.nama,
+                    tenant: {
+                        connect: {
+                            id: pekerjaan.id_tenant,
+                        },
+                    },
                 },
             });
             return {
@@ -1526,6 +1665,11 @@ export class Warga {
                 data: {
                     uuid: uuidv4(),
                     status: statusWarga.status,
+                    tenant: {
+                        connect: {
+                            id: statusWarga.id_tenant,
+                        },
+                    },
                 },
             });
             return {
@@ -1605,12 +1749,17 @@ export class Warga {
         }
     }
 
-    async listPekerjaan() {
+    async listPekerjaan(id_tenant: string) {
         try {
             const daftarKerjaan = await this.prisma.pekerjaan.findMany({
                 select: {
                     id: true,
                     nama: true,
+                },
+                where: {
+                    tenant: {
+                        id: id_tenant,
+                    },
                 },
             });
             return {
@@ -1637,12 +1786,17 @@ export class Warga {
         }
     }
 
-    async listStatusWarga() {
+    async listStatusWarga(id_tenant: string) {
         try {
             const daftarStatus = await this.prisma.status_warga.findMany({
                 select: {
                     id: true,
                     status: true,
+                },
+                where: {
+                    tenant: {
+                        id: id_tenant,
+                    },
                 },
             });
             return {

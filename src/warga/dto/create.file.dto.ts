@@ -13,4 +13,8 @@ export class CreateFileDto {
     @IsString()
     @IsOptional()
     id_warga: string;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }

@@ -13,4 +13,8 @@ export class CreateFileUserDto {
     @IsString()
     @IsOptional()
     id_user: string;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }

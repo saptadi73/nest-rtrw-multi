@@ -14,354 +14,351 @@ datasource db {
 }
 
 model tenant {
-  id       String   @id @default(uuid())
-  nama String
-  keterangan String?
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  kk kk[]
-  trail trail[]
-  blok blok[]
-  entity entity[]
-  polygon polygon[]
-  gps_location gps_location[]
-  warga warga[]
-  status_warga status_warga[]
-  pekerjaan pekerjaan[]
-  type type[]
-  iuran iuran[]
-  setor setor[]
-  anggaran anggaran[]
+  id             String           @id @default(uuid())
+  nama           String
+  keterangan     String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  kk             kk[]
+  trail          trail[]
+  blok           blok[]
+  entity         entity[]
+  polygon        polygon[]
+  gps_location   gps_location[]
+  warga          warga[]
+  status_warga   status_warga[]
+  pekerjaan      pekerjaan[]
+  type           type[]
+  iuran          iuran[]
+  setor          setor[]
+  anggaran       anggaran[]
   jenis_anggaran jenis_anggaran[]
-  photo_warga photo_warga[]
-  bukti bukti[]
-  filekeluarga filekeluarga[]
-  filewarga filewarga[]
-  user user[]
-  photo_user photo_user[]
-  photo_kk photo_kk[]
+  photo_warga    photo_warga[]
+  bukti          bukti[]
+  filekeluarga   filekeluarga[]
+  filewarga      filewarga[]
+  user           user[]
+  photo_user     photo_user[]
+  photo_kk       photo_kk[]
 }
 
 model kk {
-  id                 Int          @id @default(autoincrement())
-  uuid String @unique
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  no_kk String
-  blok blok @relation(references: [id], fields: [id_blok])
-  id_blok Int
-  no_rumah String
-  filekeluarga filekeluarga? @relation(references: [id], fields: [id_filekeluarga])
+  id              Int            @id @default(autoincrement())
+  uuid            String         @unique
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  no_kk           String
+  blok            blok           @relation(references: [id], fields: [id_blok])
+  id_blok         Int
+  no_rumah        String
+  filekeluarga    filekeluarga?  @relation(references: [id], fields: [id_filekeluarga])
   id_filekeluarga Int?
-  tenant tenant @relation(fields: [id_tenant], references: [id])
-  id_tenant String
-  warga warga[]
-  setor setor[]
-  gps_location gps_location[]
+  tenant          tenant         @relation(fields: [id_tenant], references: [id])
+  id_tenant       String
+  warga           warga[]
+  setor           setor[]
+  gps_location    gps_location[]
 }
 
 model trail {
-  id                 Int          @id @default(autoincrement())
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  email String
-  activity String
-  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  email     String
+  activity  String
+  tenant    tenant   @relation(fields: [id_tenant], references: [id])
   id_tenant String
 }
 
 model blok {
-  id                 Int          @id @default(autoincrement())
-  uuid String @unique
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  blok String
-  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id        Int      @id @default(autoincrement())
+  uuid      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  blok      String
+  tenant    tenant   @relation(fields: [id_tenant], references: [id])
   id_tenant String
-  kk kk[]
+  kk        kk[]
 }
 
 model wilayah {
-  kode String @id @unique
+  kode    String @id @unique
   wilayah String
 }
 
 model entity {
-  id                 Int          @id @default(autoincrement())
-  uuid String @unique
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  dusun String
-  desa String
-  kecamatan String
-  kabupaten String
-  provinsi String
-  rt Int
-  rw Int
+  id           Int      @id @default(autoincrement())
+  uuid         String   @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  dusun        String
+  desa         String
+  kecamatan    String
+  kabupaten    String
+  provinsi     String
+  rt           Int
+  rw           Int
   kode_wilayah String
-  tenant tenant @relation(fields: [id_tenant], references: [id])
-  id_tenant String
+  tenant       tenant   @relation(fields: [id_tenant], references: [id])
+  id_tenant    String
 }
 
 model polygon {
-  id                 Int          @id @default(autoincrement())
-  uuid String @unique
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  latitude Float
+  id        Int      @id @default(autoincrement())
+  uuid      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  latitude  Float
   longitude Float
-  tenant tenant @relation(fields: [id_tenant], references: [id])
+  tenant    tenant   @relation(fields: [id_tenant], references: [id])
   id_tenant String
 }
 
 model gps_location {
-  id                 Int          @id @default(autoincrement())
-  uuid String @unique
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  latitude Float
+  id        Int      @id @default(autoincrement())
+  uuid      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  latitude  Float
   longitude Float
-  kk kk @relation(fields: [id_kk], references: [id])
-  id_kk Int
-  tenant tenant @relation(fields: [id_tenant], references: [id])
+  kk        kk       @relation(fields: [id_kk], references: [id])
+  id_kk     Int
+  tenant    tenant   @relation(fields: [id_tenant], references: [id])
   id_tenant String
 }
 
-
 model warga {
-  id                 Int          @id @default(autoincrement())
-  uuid String @unique
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  nama String
-  type type @relation(fields: [id_type],references: [id])
-  id_type Int
-  kk kk? @relation(fields: [id_kk], references: [id])
-  id_kk Int?
-  nik String?
-  jenis_kelamin Boolean? @default(true)
-  tempat_lahir String?
-  tanggal_lahir DateTime?
-  no_hp String?
-  anggaran anggaran[]
-  photo_warga photo_warga? @relation(references: [id], fields: [id_photo_warga])
-  id_photo_warga Int?
-  filewarga filewarga[]
-  status_warga status_warga? @relation(fields: [id_status_warga], references: [id])
- id_status_warga Int? 
- pekerjaan pekerjaan? @relation(fields: [id_pekerjaan], references: [id])
- id_pekerjaan Int?
- tenant tenant @relation(fields: [id_tenant], references: [id])
-  id_tenant String
+  id              Int           @id @default(autoincrement())
+  uuid            String        @unique
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  nama            String
+  type            type?          @relation(fields: [id_type], references: [id])
+  id_type         Int
+  kk              kk?           @relation(fields: [id_kk], references: [id])
+  id_kk           Int?
+  nik             String?
+  jenis_kelamin   Boolean?      @default(true)
+  tempat_lahir    String?
+  tanggal_lahir   DateTime?
+  no_hp           String?
+  anggaran        anggaran[]
+  photo_warga     photo_warga?  @relation(references: [id], fields: [id_photo_warga])
+  id_photo_warga  Int?
+  filewarga       filewarga[]
+  status_warga    status_warga? @relation(fields: [id_status_warga], references: [id])
+  id_status_warga Int?
+  pekerjaan       pekerjaan?    @relation(fields: [id_pekerjaan], references: [id])
+  id_pekerjaan    Int?
+  tenant          tenant        @relation(fields: [id_tenant], references: [id])
+  id_tenant       String
 }
 
 model status_warga {
-    id                 Int          @id @default(autoincrement())
-  uuid String @unique
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  status  String
-  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id        Int      @id @default(autoincrement())
+  uuid      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status    String
+  tenant    tenant   @relation(fields: [id_tenant], references: [id])
   id_tenant String
-  warga warga[]
-  
+  warga     warga[]
 }
 
 model pekerjaan {
-    id                 Int          @id @default(autoincrement())
-  uuid String @unique
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  nama  String
-  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id        Int      @id @default(autoincrement())
+  uuid      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  nama      String
+  tenant    tenant   @relation(fields: [id_tenant], references: [id])
   id_tenant String
-  warga warga[]
+  warga     warga[]
 }
 
-
-
 model type {
-  id                 Int          @id @default(autoincrement())
-  uuid String @unique
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  nama String
-  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id        Int      @id @default(autoincrement())
+  uuid      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  nama      String
+  tenant    tenant   @relation(fields: [id_tenant], references: [id])
   id_tenant String
-  warga warga[]
+  warga     warga[]
 }
 
 model iuran {
-  id                 Int          @id @default(autoincrement())
-  uuid String @unique
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  nama String
-  iuran Int?
+  id         Int      @id @default(autoincrement())
+  uuid       String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  nama       String
+  iuran      Int?
   keterangan String?
-  tenant tenant @relation(fields: [id_tenant], references: [id])
-  id_tenant String
-  setor setor[]
+  tenant     tenant   @relation(fields: [id_tenant], references: [id])
+  id_tenant  String
+  setor      setor[]
 }
 
 model setor {
-  id                 Int          @id @default(autoincrement())
-  uuid String @unique
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  kk kk @relation(fields: [id_kk], references: [id])
-  id_kk Int
-  nilai Int
-  iuran iuran @relation(fields: [id_iuran], references: [id])
-  id_iuran Int
+  id         Int      @id @default(autoincrement())
+  uuid       String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  kk         kk       @relation(fields: [id_kk], references: [id])
+  id_kk      Int
+  nilai      Int
+  iuran      iuran    @relation(fields: [id_iuran], references: [id])
+  id_iuran   Int
   keterangan String?
-  tenant tenant @relation(fields: [id_tenant], references: [id])
-  id_tenant String
-  tanggal DateTime
+  tenant     tenant   @relation(fields: [id_tenant], references: [id])
+  id_tenant  String
+  tanggal    DateTime
 }
+
 model anggaran {
-  id                 Int          @id @default(autoincrement())
-  uuid String @unique
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  warga warga @relation(fields: [id_warga], references: [id])
-  id_warga Int
-  nilai Int
-  jenis_anggaran jenis_anggaran @relation(fields: [id_jenis_anggaran], references: [id])
+  id                Int            @id @default(autoincrement())
+  uuid              String         @unique
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  warga             warga          @relation(fields: [id_warga], references: [id])
+  id_warga          Int
+  nilai             Int
+  jenis_anggaran    jenis_anggaran @relation(fields: [id_jenis_anggaran], references: [id])
   id_jenis_anggaran Int
-  tanggal DateTime
-  keterangan String?
-  type_anggaran type_anggaran @relation(fields: [id_type_anggaran], references: [id])
-  id_type_anggaran Int
-  bukti bukti? @relation(fields: [id_bukti], references: [id])
-  id_bukti Int?
-  tenant tenant @relation(fields: [id_tenant], references: [id])
-  id_tenant String
+  tanggal           DateTime
+  keterangan        String?
+  type_anggaran     type_anggaran  @relation(fields: [id_type_anggaran], references: [id])
+  id_type_anggaran  Int
+  bukti             bukti?         @relation(fields: [id_bukti], references: [id])
+  id_bukti          Int?
+  tenant            tenant         @relation(fields: [id_tenant], references: [id])
+  id_tenant         String
 }
 
 model jenis_anggaran {
-  id                 Int          @id @default(autoincrement())
-  uuid String @unique
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  nama String
-  type_anggaran type_anggaran @relation(fields: [id_type_anggaran], references: [id])
+  id               Int           @id @default(autoincrement())
+  uuid             String        @unique
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  nama             String
+  type_anggaran    type_anggaran @relation(fields: [id_type_anggaran], references: [id])
   id_type_anggaran Int
-  keterangan String?
-  tenant tenant @relation(fields: [id_tenant], references: [id])
-  id_tenant String
-  anggaran anggaran[]
+  keterangan       String?
+  tenant           tenant        @relation(fields: [id_tenant], references: [id])
+  id_tenant        String
+  anggaran         anggaran[]
 }
 
 model type_anggaran {
-  id                 Int          @id @default(autoincrement())
-  uuid String @unique
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  type String
+  id             Int              @id @default(autoincrement())
+  uuid           String           @unique
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  type           String
   jenis_anggaran jenis_anggaran[]
-  anggaran anggaran[]
+  anggaran       anggaran[]
 }
 
 model photo_warga {
-  id                 Int          @id @default(autoincrement())
-  uuid String @unique
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  nama String
+  id         Int      @id @default(autoincrement())
+  uuid       String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  nama       String
   keterangan String?
-  url String
-  tenant tenant @relation(fields: [id_tenant], references: [id])
-  id_tenant String
-  warga warga[]
+  url        String
+  tenant     tenant   @relation(fields: [id_tenant], references: [id])
+  id_tenant  String
+  warga      warga[]
 }
 
 model bukti {
-  id                 Int          @id @default(autoincrement())
-  uuid String @unique
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  nama String
+  id         Int        @id @default(autoincrement())
+  uuid       String     @unique
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  nama       String
   keterangan String?
-  url String
-  tenant tenant @relation(fields: [id_tenant], references: [id])
-  id_tenant String
-  anggaran anggaran[]
+  url        String
+  tenant     tenant     @relation(fields: [id_tenant], references: [id])
+  id_tenant  String
+  anggaran   anggaran[]
 }
 
 model filekeluarga {
-  id                 Int          @id @default(autoincrement())
-  uuid String @unique
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  nama String
+  id         Int      @id @default(autoincrement())
+  uuid       String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  nama       String
   keterangan String?
-  url String
-  tenant tenant @relation(fields: [id_tenant], references: [id])
-  id_tenant String
-  kk kk[]
+  url        String
+  tenant     tenant   @relation(fields: [id_tenant], references: [id])
+  id_tenant  String
+  kk         kk[]
 }
 
 model filewarga {
-  id                 Int          @id @default(autoincrement())
-  uuid String @unique
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  nama String
+  id         Int      @id @default(autoincrement())
+  uuid       String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  nama       String
   keterangan String?
-  warga warga @relation(references: [id], fields: [id_warga])
-  id_warga Int
-  tenant tenant @relation(fields: [id_tenant], references: [id])
-  id_tenant String
+  warga      warga    @relation(references: [id], fields: [id_warga])
+  id_warga   Int
+  tenant     tenant   @relation(fields: [id_tenant], references: [id])
+  id_tenant  String
 }
 
 model user {
-  id                 Int          @id @default(autoincrement())
-  uuid String @unique
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  email String @unique
-  password String
-  level level @relation(fields: [id_level],references: [id])
-  id_level Int
-  status Boolean @default(false)
-  refresh String?
-  photo_user photo_user? @relation(fields: [id_photo_user], references: [id])
+  id            Int         @id @default(autoincrement())
+  uuid          String      @unique
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  email         String      @unique
+  password      String
+  level         level       @relation(fields: [id_level], references: [id])
+  id_level      Int
+  status        Boolean     @default(false)
+  refresh       String?
+  photo_user    photo_user? @relation(fields: [id_photo_user], references: [id])
   id_photo_user Int?
-  tenant tenant @relation(fields: [id_tenant], references: [id])
-  id_tenant String
+  tenant        tenant      @relation(fields: [id_tenant], references: [id])
+  id_tenant     String
 }
 
 model level {
-  id                 Int          @id @default(autoincrement())
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  nama String
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  nama      String
   deskripsi String?
-  user user[]
+  user      user[]
 }
+
 model photo_user {
-  id                 Int          @id @default(autoincrement())
-  uuid String @unique
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  nama String
+  id         Int      @id @default(autoincrement())
+  uuid       String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  nama       String
   keterangan String?
-  url String
-  tenant tenant @relation(fields: [id_tenant], references: [id])
-  id_tenant String
-  user user[]
+  url        String
+  tenant     tenant   @relation(fields: [id_tenant], references: [id])
+  id_tenant  String
+  user       user[]
 }
 
 model photo_kk {
-  id                 Int          @id @default(autoincrement())
-  uuid String @unique
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  nama String
+  id         Int      @id @default(autoincrement())
+  uuid       String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  nama       String
   keterangan String?
-  url String
-  tenant tenant @relation(fields: [id_tenant], references: [id])
-  id_tenant String
+  url        String
+  tenant     tenant   @relation(fields: [id_tenant], references: [id])
+  id_tenant  String
 }
-

@@ -8,4 +8,8 @@ export class BlokCreateDto {
     @IsString()
     @IsOptional()
     blok: string;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }

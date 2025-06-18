@@ -8,4 +8,8 @@ export class TypeUpdateDto {
     @IsNumber()
     @IsOptional()
     id: number;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }

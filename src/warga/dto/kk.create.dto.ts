@@ -46,4 +46,8 @@ export class KkCreateDto {
     @IsInt()
     @IsOptional()
     id_status_warga: number;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }

@@ -8,4 +8,8 @@ export class PekerjaanWargaDto {
     @IsString()
     @IsOptional()
     nama: string;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }

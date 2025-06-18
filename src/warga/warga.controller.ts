@@ -313,10 +313,10 @@ export class WargaController {
         }
     }
 
-    @Get('list/kk')
-    async listKK() {
+    @Get('list/kk/:id')
+    async listKK(@Param('id') id: string) {
         try {
-            return this.Warga.listKK();
+            return this.Warga.listKK(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -371,10 +371,10 @@ export class WargaController {
         }
     }
 
-    @Get('daftar/blok')
-    async listBlok() {
+    @Get('daftar/blok/:id')
+    async listBlok(@Param('id') id: string) {
         try {
-            return this.Warga.listBlok();
+            return this.Warga.listBlok(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -426,10 +426,10 @@ export class WargaController {
         }
     }
 
-    @Get('daftar/type')
-    async daftarType() {
+    @Get('daftar/type/:id')
+    async daftarType(@Param('id') id: string) {
         try {
-            return this.Warga.listType();
+            return this.Warga.listType(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -502,10 +502,10 @@ export class WargaController {
         }
     }
 
-    @Get('list/type')
-    async listType() {
+    @Get('list/type/:id')
+    async listType(@Param('id') id: string) {
         try {
-            return this.Warga.listType();
+            return this.Warga.listType(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -558,10 +558,10 @@ export class WargaController {
         }
     }
 
-    @Get('list/all')
-    async listWargaAll() {
+    @Get('list/all/:id')
+    async listWargaAll(@Param('id') id: string) {
         try {
-            return this.Warga.listAllWarga();
+            return this.Warga.listAllWarga(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -672,10 +672,10 @@ export class WargaController {
         }
     }
 
-    @Get('jumlah/kk')
-    async jumlahKKku() {
+    @Get('jumlah/kk/:id')
+    async jumlahKKku(@Param('id') id: string) {
         try {
-            return this.Warga.jumlahKK();
+            return this.Warga.jumlahKK(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -690,10 +690,10 @@ export class WargaController {
         }
     }
 
-    @Get('jumlah/warga')
-    async jumlahwargaku() {
+    @Get('jumlah/warga/:id')
+    async jumlahwargaku(@Param('id') id: string) {
         try {
-            return this.Warga.jumlahWarga();
+            return this.Warga.jumlahWarga(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -708,10 +708,10 @@ export class WargaController {
         }
     }
 
-    @Get('jumlah/warga/lk')
-    async jumlahWargaLk() {
+    @Get('jumlah/warga/lk/:id')
+    async jumlahWargaLk(@Param('id') id: string) {
         try {
-            return this.Warga.jumlahWargaLk();
+            return this.Warga.jumlahWargaLk(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -726,10 +726,10 @@ export class WargaController {
         }
     }
 
-    @Get('jumlahwarga/pr')
-    async jumlahWargaPr() {
+    @Get('jumlahwarga/pr/:id')
+    async jumlahWargaPr(@Param('id') id: string) {
         try {
-            return this.Warga.jumlahWargaPr();
+            return this.Warga.jumlahWargaPr(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -744,10 +744,10 @@ export class WargaController {
         }
     }
 
-    @Get('jumlah/kk/all')
-    async jumlahKKAll() {
+    @Get('jumlah/kk/all/:id')
+    async jumlahKKAll(@Param('id') id: string) {
         try {
-            return this.Warga.jumlahKK();
+            return this.Warga.jumlahKK(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -762,10 +762,10 @@ export class WargaController {
         }
     }
 
-    @Get('jumlah/warga/all')
-    async jumlahWargaAll() {
+    @Get('jumlah/warga/all/:id')
+    async jumlahWargaAll(@Param('id') id: string) {
         try {
-            return this.Warga.jumlahWarga();
+            return this.Warga.jumlahWarga(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -780,10 +780,10 @@ export class WargaController {
         }
     }
 
-    @Get('jumlah/warga/lk')
-    async jumlahLK() {
+    @Get('jumlah/warga/lk/:id')
+    async jumlahLK(@Param('id') id: string) {
         try {
-            return this.Warga.jumlahWargaLk();
+            return this.Warga.jumlahWargaLk(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -798,10 +798,10 @@ export class WargaController {
         }
     }
 
-    @Get('jumlah/warga/pr')
-    async jumlahWargaWn() {
+    @Get('jumlah/warga/pr/:id')
+    async jumlahWargaWn(@Param('id') id: string) {
         try {
-            return this.Warga.jumlahWargaPr();
+            return this.Warga.jumlahWargaPr(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -816,10 +816,10 @@ export class WargaController {
         }
     }
 
-    @Get('daftar/warga/lk')
-    async WargaLk() {
+    @Get('daftar/warga/lk/:id')
+    async WargaLk(@Param('id') id: string) {
         try {
-            return this.Warga.listAllWargaLk();
+            return this.Warga.listAllWargaLk(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -834,10 +834,10 @@ export class WargaController {
         }
     }
 
-    @Get('daftar/warga/pr')
-    async WargaPr() {
+    @Get('daftar/warga/pr/:id')
+    async WargaPr(@Param('id') id: string) {
         try {
-            return this.Warga.listAllWargaPr();
+            return this.Warga.listAllWargaPr(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -1026,10 +1026,10 @@ export class WargaController {
         }
     }
 
-    @Get('list/pekerjaan')
-    async listPekerjaan() {
+    @Get('list/pekerjaan/:id')
+    async listPekerjaan(@Param('id') id: string) {
         try {
-            return this.Warga.listPekerjaan();
+            return this.Warga.listPekerjaan(id);
         } catch (error) {
             throw new HttpException(
                 {

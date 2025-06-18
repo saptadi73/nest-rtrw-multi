@@ -21,4 +21,8 @@ export class CreateFileBuktiDto {
     @IsString()
     @IsOptional()
     url: string;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }
