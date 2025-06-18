@@ -13,6 +13,35 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model tenant {
+  id       String   @id @default(uuid())
+  nama String
+  keterangan String?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  kk kk[]
+  trail trail[]
+  blok blok[]
+  entity entity[]
+  polygon polygon[]
+  gps_location gps_location[]
+  warga warga[]
+  status_warga status_warga[]
+  pekerjaan pekerjaan[]
+  type type[]
+  iuran iuran[]
+  setor setor[]
+  anggaran anggaran[]
+  jenis_anggaran jenis_anggaran[]
+  photo_warga photo_warga[]
+  bukti bukti[]
+  filekeluarga filekeluarga[]
+  filewarga filewarga[]
+  user user[]
+  photo_user photo_user[]
+  photo_kk photo_kk[]
+}
+
 model kk {
   id                 Int          @id @default(autoincrement())
   uuid String @unique
@@ -24,6 +53,8 @@ model kk {
   no_rumah String
   filekeluarga filekeluarga? @relation(references: [id], fields: [id_filekeluarga])
   id_filekeluarga Int?
+  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id_tenant String
   warga warga[]
   setor setor[]
   gps_location gps_location[]
@@ -35,6 +66,8 @@ model trail {
   updatedAt          DateTime        @updatedAt
   email String
   activity String
+  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id_tenant String
 }
 
 model blok {
@@ -43,6 +76,8 @@ model blok {
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
   blok String
+  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id_tenant String
   kk kk[]
 }
 
@@ -64,6 +99,8 @@ model entity {
   rt Int
   rw Int
   kode_wilayah String
+  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id_tenant String
 }
 
 model polygon {
@@ -73,6 +110,8 @@ model polygon {
   updatedAt          DateTime        @updatedAt
   latitude Float
   longitude Float
+  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id_tenant String
 }
 
 model gps_location {
@@ -84,6 +123,8 @@ model gps_location {
   longitude Float
   kk kk @relation(fields: [id_kk], references: [id])
   id_kk Int
+  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id_tenant String
 }
 
 
@@ -110,6 +151,8 @@ model warga {
  id_status_warga Int? 
  pekerjaan pekerjaan? @relation(fields: [id_pekerjaan], references: [id])
  id_pekerjaan Int?
+ tenant tenant @relation(fields: [id_tenant], references: [id])
+  id_tenant String
 }
 
 model status_warga {
@@ -118,6 +161,8 @@ model status_warga {
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
   status  String
+  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id_tenant String
   warga warga[]
   
 }
@@ -128,6 +173,8 @@ model pekerjaan {
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
   nama  String
+  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id_tenant String
   warga warga[]
 }
 
@@ -139,6 +186,8 @@ model type {
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
   nama String
+  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id_tenant String
   warga warga[]
 }
 
@@ -150,6 +199,8 @@ model iuran {
   nama String
   iuran Int?
   keterangan String?
+  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id_tenant String
   setor setor[]
 }
 
@@ -164,6 +215,8 @@ model setor {
   iuran iuran @relation(fields: [id_iuran], references: [id])
   id_iuran Int
   keterangan String?
+  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id_tenant String
   tanggal DateTime
 }
 model anggaran {
@@ -182,6 +235,8 @@ model anggaran {
   id_type_anggaran Int
   bukti bukti? @relation(fields: [id_bukti], references: [id])
   id_bukti Int?
+  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id_tenant String
 }
 
 model jenis_anggaran {
@@ -193,6 +248,8 @@ model jenis_anggaran {
   type_anggaran type_anggaran @relation(fields: [id_type_anggaran], references: [id])
   id_type_anggaran Int
   keterangan String?
+  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id_tenant String
   anggaran anggaran[]
 }
 
@@ -214,6 +271,8 @@ model photo_warga {
   nama String
   keterangan String?
   url String
+  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id_tenant String
   warga warga[]
 }
 
@@ -225,6 +284,8 @@ model bukti {
   nama String
   keterangan String?
   url String
+  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id_tenant String
   anggaran anggaran[]
 }
 
@@ -236,6 +297,8 @@ model filekeluarga {
   nama String
   keterangan String?
   url String
+  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id_tenant String
   kk kk[]
 }
 
@@ -248,6 +311,8 @@ model filewarga {
   keterangan String?
   warga warga @relation(references: [id], fields: [id_warga])
   id_warga Int
+  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id_tenant String
 }
 
 model user {
@@ -263,6 +328,8 @@ model user {
   refresh String?
   photo_user photo_user? @relation(fields: [id_photo_user], references: [id])
   id_photo_user Int?
+  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id_tenant String
 }
 
 model level {
@@ -281,6 +348,8 @@ model photo_user {
   nama String
   keterangan String?
   url String
+  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id_tenant String
   user user[]
 }
 
@@ -292,5 +361,7 @@ model photo_kk {
   nama String
   keterangan String?
   url String
+  tenant tenant @relation(fields: [id_tenant], references: [id])
+  id_tenant String
 }
 
