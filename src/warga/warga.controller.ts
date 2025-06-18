@@ -1045,9 +1045,9 @@ export class WargaController {
     }
 
     @Get('list/status')
-    async listStatus() {
+    async listStatus(@Param('id') id: string) {
         try {
-            return this.Warga.listStatusWarga();
+            return this.Warga.listStatusWarga(id);
         } catch (error) {
             throw new HttpException(
                 {
