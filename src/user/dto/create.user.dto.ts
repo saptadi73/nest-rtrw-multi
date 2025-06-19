@@ -20,4 +20,8 @@ export class CreateUserDto {
     @IsBoolean()
     @IsOptional()
     status: boolean;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }

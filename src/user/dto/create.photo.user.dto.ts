@@ -16,4 +16,8 @@ export class CreatePhotoUserDto {
     @IsString()
     @IsOptional()
     url: string;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }

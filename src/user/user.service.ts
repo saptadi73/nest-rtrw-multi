@@ -25,6 +25,11 @@ export class UserService {
                     email: userCreate.email,
                     password: this.hashMD5(userCreate.password),
                     uuid: uuidku,
+                    tenant: {
+                        connect: {
+                            id: userCreate.id_tenant,
+                        },
+                    },
                     level: {
                         connect: {
                             id: parseInt(userCreate.id_level),
@@ -102,6 +107,13 @@ export class UserService {
                     level: true,
                     id: true,
                     uuid: true,
+                    tenant: {
+                        select: {
+                            id: true,
+                            keterangan: true,
+                            nama: true,
+                        },
+                    },
                 },
                 where: {
                     AND: [
@@ -313,6 +325,11 @@ export class UserService {
                     nama: uploadfile.nama,
                     keterangan: uploadfile.keterangan,
                     url: fileku.filename,
+                    tenant: {
+                        connect: {
+                            id: uploadfile.id_tenant,
+                        },
+                    },
                     user: {
                         connect: {
                             id: parseInt(uploadfile.id_user),
@@ -401,7 +418,7 @@ export class UserService {
         }
     }
 
-    async listUser() {
+    async listUser(id_tenant: string) {
         try {
             const listUserku = await this.prisma.user.findMany({
                 select: {
@@ -414,6 +431,11 @@ export class UserService {
                             id: true,
                             nama: true,
                         },
+                    },
+                },
+                where: {
+                    tenant: {
+                        id: id_tenant,
                     },
                 },
             });

@@ -155,10 +155,10 @@ export class UserController {
         }
     }
 
-    @Get('list/user')
-    async getUser() {
+    @Get('list/user/:id')
+    async getUser(@Param('id') id: string) {
         try {
-            return this.User.listUser();
+            return this.User.listUser(id);
         } catch (error) {
             throw new HttpException(
                 {
