@@ -1,4 +1,4 @@
-import { IsDateString, IsInt } from 'class-validator';
+import { IsDateString, IsInt, IsOptional, IsString } from 'class-validator';
 
 export class LaporanSetoranDto {
     @IsDateString()
@@ -9,4 +9,8 @@ export class LaporanSetoranDto {
 
     @IsInt()
     iuran: number;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }

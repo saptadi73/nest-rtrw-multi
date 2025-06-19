@@ -16,4 +16,8 @@ export class IuranUpdateDto {
     @IsString()
     @IsOptional()
     nama: string;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }

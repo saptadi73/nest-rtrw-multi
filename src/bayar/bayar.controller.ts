@@ -18,7 +18,7 @@ import { SetorUpdateDto } from './dto/setor.update.dto';
 import { LaporanSetoranDto } from './dto/laporan.setoran.dto';
 import { LaporanAnggaranDto } from './dto/laporan.anggaran.dto';
 import { HitungHutangDto } from './dto/hitung.hutang.dto';
-import { TypeAnggaranCreateDto } from './dto/type.anggaran.create.dto';
+// import { TypeAnggaranCreateDto } from './dto/type.anggaran.create.dto';
 import { IuranUpdateDto } from './dto/iuran.update.dto';
 import { IuranCreateDto } from './dto/iuran.create.dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -27,10 +27,10 @@ import { AuthGuard } from '@nestjs/passport';
 export class BayarController {
     constructor(private bayar: Bayar) {}
 
-    @Get('list/iuran')
-    async listIuran() {
+    @Get('list/iuran/:id')
+    async listIuran(@Param('id') id: string) {
         try {
-            return this.bayar.listIuran();
+            return this.bayar.listIuran(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -402,10 +402,10 @@ export class BayarController {
         }
     }
 
-    @Get('jumlah/iuran')
-    async jmLIuranAll() {
+    @Get('jumlah/iuran/:id')
+    async jmLIuranAll(@Param('id') id: string) {
         try {
-            return this.bayar.jumlahIuranBulanan();
+            return this.bayar.jumlahIuranBulanan(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -420,10 +420,10 @@ export class BayarController {
         }
     }
 
-    @Get('jumlah/anggaran/masuk')
-    async jmlAnggaranMasuk() {
+    @Get('jumlah/anggaran/masuk/:id')
+    async jmlAnggaranMasuk(@Param('id') id: string) {
         try {
-            return this.bayar.jumlahAnggaranMasuk();
+            return this.bayar.jumlahAnggaranMasuk(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -438,10 +438,10 @@ export class BayarController {
         }
     }
 
-    @Get('jumlah/anggaran/keluar')
-    async jumlahAnggaranKeluar() {
+    @Get('jumlah/anggaran/keluar/:id')
+    async jumlahAnggaranKeluar(@Param('id') id: string) {
         try {
-            return this.bayar.jumlahAnggaranKeluar();
+            return this.bayar.jumlahAnggaranKeluar(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -456,10 +456,10 @@ export class BayarController {
         }
     }
 
-    @Get('jumlah/warga/iuran')
-    async jumlahWargaIuran() {
+    @Get('jumlah/warga/iuran/:id')
+    async jumlahWargaIuran(@Param('id') id: string) {
         try {
-            return this.bayar.jmlWargaIuran();
+            return this.bayar.jmlWargaIuran(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -474,10 +474,10 @@ export class BayarController {
         }
     }
 
-    @Get('daftar/setor')
-    async daftarWargaSetor() {
+    @Get('daftar/setor/:id')
+    async daftarWargaSetor(@Param('id') id: string) {
         try {
-            return this.bayar.listWargaIuran();
+            return this.bayar.listWargaIuran(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -492,10 +492,10 @@ export class BayarController {
         }
     }
 
-    @Get('daftar/belum/setor')
-    async daftarWargaBelumSetor() {
+    @Get('daftar/belum/setor/:id')
+    async daftarWargaBelumSetor(@Param('id') id: string) {
         try {
-            return this.bayar.listBelumBayarIuran();
+            return this.bayar.listBelumBayarIuran(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -510,10 +510,10 @@ export class BayarController {
         }
     }
 
-    @Get('daftar/pemasukan')
-    async daftarPemasukan() {
+    @Get('daftar/pemasukan/:id')
+    async daftarPemasukan(@Param('id') id: string) {
         try {
-            return this.bayar.listAllPemasukan();
+            return this.bayar.listAllPemasukan(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -528,10 +528,10 @@ export class BayarController {
         }
     }
 
-    @Get('daftar/pengeluaran')
-    async daftarPengeluaran() {
+    @Get('daftar/pengeluaran/:id')
+    async daftarPengeluaran(@Param('id') id: string) {
         try {
-            return this.bayar.listAllPengeluaran();
+            return this.bayar.listAllPengeluaran(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -546,10 +546,10 @@ export class BayarController {
         }
     }
 
-    @Get('iuran/bulanan')
-    async iuranBulan() {
+    @Get('iuran/bulanan/:id')
+    async iuranBulan(@Param('id') id: string) {
         try {
-            return this.bayar.iuranBulan();
+            return this.bayar.iuranBulan(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -564,10 +564,10 @@ export class BayarController {
         }
     }
 
-    @Get('masuk/bulanan')
-    async masukBulan() {
+    @Get('masuk/bulanan/:id')
+    async masukBulan(@Param('id') id: string) {
         try {
-            return this.bayar.pemasukanBulan();
+            return this.bayar.pemasukanBulan(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -582,10 +582,10 @@ export class BayarController {
         }
     }
 
-    @Get('keluar/bulanan')
-    async keluarBulan() {
+    @Get('keluar/bulanan/:id')
+    async keluarBulan(@Param('id') id: string) {
         try {
-            return this.bayar.pengeluaranBulan();
+            return this.bayar.pengeluaranBulan(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -600,24 +600,24 @@ export class BayarController {
         }
     }
 
-    @Post('add/typeanggaran')
-    @Header('Content-Type', 'application/json')
-    async createTypeAnggaran(@Body() createTypeAnggaran: TypeAnggaranCreateDto) {
-        try {
-            return this.bayar.createTypeAnggaran(createTypeAnggaran);
-        } catch (error) {
-            throw new HttpException(
-                {
-                    status: HttpStatus.FORBIDDEN,
-                    message: 'Forbidden Access',
-                },
-                HttpStatus.FORBIDDEN,
-                {
-                    cause: error,
-                }
-            );
-        }
-    }
+    // @Post('add/typeanggaran')
+    // @Header('Content-Type', 'application/json')
+    // async createTypeAnggaran(@Body() createTypeAnggaran: TypeAnggaranCreateDto) {
+    //     try {
+    //         return this.bayar.createTypeAnggaran(createTypeAnggaran);
+    //     } catch (error) {
+    //         throw new HttpException(
+    //             {
+    //                 status: HttpStatus.FORBIDDEN,
+    //                 message: 'Forbidden Access',
+    //             },
+    //             HttpStatus.FORBIDDEN,
+    //             {
+    //                 cause: error,
+    //             }
+    //         );
+    //     }
+    // }
 
     @Post('create/iuran')
     @Header('Content-Type', 'application/json')
@@ -752,10 +752,10 @@ export class BayarController {
         }
     }
 
-    @Get('total/total')
-    async totalKabeh() {
+    @Get('total/total/:id')
+    async totalKabeh(@Param('id') id: string) {
         try {
-            return this.bayar.totalKabeh();
+            return this.bayar.totalKabeh(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -770,10 +770,10 @@ export class BayarController {
         }
     }
 
-    @Get('iuran/deret/bulan')
-    async iuranDeretBulan() {
+    @Get('iuran/deret/bulan/:id')
+    async iuranDeretBulan(@Param('id') id: string) {
         try {
-            return this.bayar.totalIuranBulanan();
+            return this.bayar.totalIuranBulanan(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -788,10 +788,10 @@ export class BayarController {
         }
     }
 
-    @Get('masuk/deret/bulan')
-    async masukDeretBulan() {
+    @Get('masuk/deret/bulan/:id')
+    async masukDeretBulan(@Param('id') id: string) {
         try {
-            return this.bayar.totalMasukBulanan();
+            return this.bayar.totalMasukBulanan(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -806,10 +806,10 @@ export class BayarController {
         }
     }
 
-    @Get('keluar/deret/bulan')
-    async keluarDeretBulan() {
+    @Get('keluar/deret/bulan/:id')
+    async keluarDeretBulan(@Param('id') id: string) {
         try {
-            return this.bayar.totalKeluarBulanan();
+            return this.bayar.totalKeluarBulanan(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -824,10 +824,10 @@ export class BayarController {
         }
     }
 
-    @Get('keluar/group')
-    async keluarGroup() {
+    @Get('keluar/group/:id')
+    async keluarGroup(@Param('id') id: string) {
         try {
-            return this.bayar.groupPengeluaran();
+            return this.bayar.groupPengeluaran(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -842,10 +842,10 @@ export class BayarController {
         }
     }
 
-    @Get('laporan/rt')
-    async LaporanRt() {
+    @Get('laporan/rt/:id')
+    async LaporanRt(@Param('id') id: string) {
         try {
-            return this.bayar.laporanRt();
+            return this.bayar.laporanRt(id);
         } catch (error) {
             throw new HttpException(
                 {

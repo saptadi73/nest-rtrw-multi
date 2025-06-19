@@ -1,4 +1,4 @@
-import { IsInt, IsOptional } from 'class-validator';
+import { IsInt, IsOptional, IsString } from 'class-validator';
 
 export class HitungHutangDto {
     @IsInt()
@@ -20,4 +20,8 @@ export class HitungHutangDto {
     @IsInt()
     @IsOptional()
     iuran: number;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }

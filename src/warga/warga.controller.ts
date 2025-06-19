@@ -25,8 +25,8 @@ import { KkUpdateDto } from './dto/kk.update.dto';
 import { WargaUpdateDto } from './dto/warga.update.dto';
 import { CreateFileKeluargaDto } from './dto/create.file.keluarga.dto';
 import { BlokCreateDto } from './dto/blok.create.dto';
-import { TypeCreateDto } from './dto/type.create.dto';
-import { TypeUpdateDto } from './dto/type.update.dto';
+// import { TypeCreateDto } from './dto/type.create.dto';
+// import { TypeUpdateDto } from './dto/type.update.dto';
 import { CreateFileUserDto } from './dto/create.file.user.dto';
 import { CreateGpsLocationDto } from './dto/create.gps.location.dto';
 import { MulterExceptionFilter } from './filter/multer.exception.filter';
@@ -407,29 +407,29 @@ export class WargaController {
         }
     }
 
-    @UseGuards(AuthGuard('jwt'))
-    @Post('tambah/type')
-    async addTyoe(@Body() data: TypeCreateDto) {
-        try {
-            return this.Warga.createType(data);
-        } catch (error) {
-            throw new HttpException(
-                {
-                    status: HttpStatus.FORBIDDEN,
-                    message: 'Forbidden Access',
-                },
-                HttpStatus.FORBIDDEN,
-                {
-                    cause: error,
-                }
-            );
-        }
-    }
+    // @UseGuards(AuthGuard('jwt'))
+    // @Post('tambah/type')
+    // async addTyoe(@Body() data: TypeCreateDto) {
+    //     try {
+    //         return this.Warga.createType(data);
+    //     } catch (error) {
+    //         throw new HttpException(
+    //             {
+    //                 status: HttpStatus.FORBIDDEN,
+    //                 message: 'Forbidden Access',
+    //             },
+    //             HttpStatus.FORBIDDEN,
+    //             {
+    //                 cause: error,
+    //             }
+    //         );
+    //     }
+    // }
 
-    @Get('daftar/type/:id')
-    async daftarType(@Param('id') id: string) {
+    @Get('daftar/type')
+    async daftarType() {
         try {
-            return this.Warga.listType(id);
+            return this.Warga.listType();
         } catch (error) {
             throw new HttpException(
                 {
@@ -462,50 +462,50 @@ export class WargaController {
         }
     }
 
-    @UseGuards(AuthGuard('jwt'))
-    @Post('update/type')
-    @Header('Content-Type', 'application/json')
-    async editType(@Body() data: TypeUpdateDto) {
-        try {
-            return this.Warga.updateType(data);
-        } catch (error) {
-            throw new HttpException(
-                {
-                    status: HttpStatus.FORBIDDEN,
-                    message: 'Forbidden Access',
-                },
-                HttpStatus.FORBIDDEN,
-                {
-                    cause: error,
-                }
-            );
-        }
-    }
+    // @UseGuards(AuthGuard('jwt'))
+    // @Post('update/type')
+    // @Header('Content-Type', 'application/json')
+    // async editType(@Body() data: TypeUpdateDto) {
+    //     try {
+    //         return this.Warga.updateType(data);
+    //     } catch (error) {
+    //         throw new HttpException(
+    //             {
+    //                 status: HttpStatus.FORBIDDEN,
+    //                 message: 'Forbidden Access',
+    //             },
+    //             HttpStatus.FORBIDDEN,
+    //             {
+    //                 cause: error,
+    //             }
+    //         );
+    //     }
+    // }
 
-    @UseGuards(AuthGuard('jwt'))
-    @Post('hapus/type')
-    @Header('Content-Type', 'application/json')
-    async busekType(@Body() updateType: TypeUpdateDto) {
-        try {
-            return this.Warga.deleteType(updateType);
-        } catch (error) {
-            throw new HttpException(
-                {
-                    status: HttpStatus.FORBIDDEN,
-                    message: 'Forbidden Access',
-                },
-                HttpStatus.FORBIDDEN,
-                {
-                    cause: error,
-                }
-            );
-        }
-    }
+    // @UseGuards(AuthGuard('jwt'))
+    // @Post('hapus/type')
+    // @Header('Content-Type', 'application/json')
+    // async busekType(@Body() updateType: TypeUpdateDto) {
+    //     try {
+    //         return this.Warga.deleteType(updateType);
+    //     } catch (error) {
+    //         throw new HttpException(
+    //             {
+    //                 status: HttpStatus.FORBIDDEN,
+    //                 message: 'Forbidden Access',
+    //             },
+    //             HttpStatus.FORBIDDEN,
+    //             {
+    //                 cause: error,
+    //             }
+    //         );
+    //     }
+    // }
 
     @Get('list/type/:id')
-    async listType(@Param('id') id: string) {
+    async listType() {
         try {
-            return this.Warga.listType(id);
+            return this.Warga.listType();
         } catch (error) {
             throw new HttpException(
                 {

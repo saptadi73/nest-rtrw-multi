@@ -10,4 +10,8 @@ export class IuranCreateDto {
 
     @IsString()
     nama: string;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }

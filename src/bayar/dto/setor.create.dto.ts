@@ -16,4 +16,8 @@ export class SetorCreateDto {
     @IsString()
     @IsOptional()
     keterangan: string;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }

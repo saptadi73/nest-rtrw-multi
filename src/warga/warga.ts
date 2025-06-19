@@ -485,86 +485,86 @@ export class Warga {
         }
     }
 
-    async createType(createType: TypeCreateDto) {
-        try {
-            const addType = await this.prisma.type.create({
-                data: {
-                    nama: createType.nama,
-                    uuid: uuidv4(),
-                    tenant: {
-                        connect: {
-                            id: createType.id_tenant,
-                        },
-                    },
-                },
-            });
-            return { status: 'ok', message: 'berhasil tambah data type warga', result: addType };
-        } catch (error) {
-            if (error instanceof Prisma.PrismaClientKnownRequestError) {
-                if (error.code === 'P2002') {
-                    console.log('failed unique constraint');
-                    return {
-                        status: 'nok',
-                        message:
-                            'gagal tambah data type warga karena ada isian seharusnya unique, diisi berulang',
-                        data: error,
-                    };
-                }
-            }
-            return { status: 'nok', message: 'gagal tambah data type warga', data: error };
-        }
-    }
+    // async createType(createType: TypeCreateDto) {
+    //     try {
+    //         const addType = await this.prisma.type.create({
+    //             data: {
+    //                 nama: createType.nama,
+    //                 uuid: uuidv4(),
+    //                 tenant: {
+    //                     connect: {
+    //                         id: createType.id_tenant,
+    //                     },
+    //                 },
+    //             },
+    //         });
+    //         return { status: 'ok', message: 'berhasil tambah data type warga', result: addType };
+    //     } catch (error) {
+    //         if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    //             if (error.code === 'P2002') {
+    //                 console.log('failed unique constraint');
+    //                 return {
+    //                     status: 'nok',
+    //                     message:
+    //                         'gagal tambah data type warga karena ada isian seharusnya unique, diisi berulang',
+    //                     data: error,
+    //                 };
+    //             }
+    //         }
+    //         return { status: 'nok', message: 'gagal tambah data type warga', data: error };
+    //     }
+    // }
 
-    async updateType(createType: TypeUpdateDto) {
-        try {
-            const addType = await this.prisma.type.update({
-                data: {
-                    nama: createType.nama,
-                },
-                where: {
-                    id: createType.id,
-                },
-            });
-            return { status: 'ok', message: 'berhasil update data type warga', result: addType };
-        } catch (error) {
-            if (error instanceof Prisma.PrismaClientKnownRequestError) {
-                if (error.code === 'P2002') {
-                    console.log('failed unique constraint');
-                    return {
-                        status: 'nok',
-                        message:
-                            'gagal update data type warga karena ada isian seharusnya unique, diisi berulang',
-                        data: error,
-                    };
-                }
-            }
-            return { status: 'nok', message: 'gagal update data type warga', data: error };
-        }
-    }
+    // async updateType(createType: TypeUpdateDto) {
+    //     try {
+    //         const addType = await this.prisma.type.update({
+    //             data: {
+    //                 nama: createType.nama,
+    //             },
+    //             where: {
+    //                 id: createType.id,
+    //             },
+    //         });
+    //         return { status: 'ok', message: 'berhasil update data type warga', result: addType };
+    //     } catch (error) {
+    //         if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    //             if (error.code === 'P2002') {
+    //                 console.log('failed unique constraint');
+    //                 return {
+    //                     status: 'nok',
+    //                     message:
+    //                         'gagal update data type warga karena ada isian seharusnya unique, diisi berulang',
+    //                     data: error,
+    //                 };
+    //             }
+    //         }
+    //         return { status: 'nok', message: 'gagal update data type warga', data: error };
+    //     }
+    // }
 
-    async deleteType(createType: TypeUpdateDto) {
-        try {
-            const addType = await this.prisma.type.delete({
-                where: {
-                    id: createType.id,
-                },
-            });
-            return { status: 'ok', message: 'berhasil hapus data type warga', result: addType };
-        } catch (error) {
-            if (error instanceof Prisma.PrismaClientKnownRequestError) {
-                if (error.code === 'P2002') {
-                    console.log('failed unique constraint');
-                    return {
-                        status: 'nok',
-                        message:
-                            'gagal hapus data type warga karena ada isian seharusnya unique, diisi berulang',
-                        data: error,
-                    };
-                }
-            }
-            return { status: 'nok', message: 'gagal hapus data type warga', data: error };
-        }
-    }
+    // async deleteType(createType: TypeUpdateDto) {
+    //     try {
+    //         const addType = await this.prisma.type.delete({
+    //             where: {
+    //                 id: createType.id,
+    //             },
+    //         });
+    //         return { status: 'ok', message: 'berhasil hapus data type warga', result: addType };
+    //     } catch (error) {
+    //         if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    //             if (error.code === 'P2002') {
+    //                 console.log('failed unique constraint');
+    //                 return {
+    //                     status: 'nok',
+    //                     message:
+    //                         'gagal hapus data type warga karena ada isian seharusnya unique, diisi berulang',
+    //                     data: error,
+    //                 };
+    //             }
+    //         }
+    //         return { status: 'nok', message: 'gagal hapus data type warga', data: error };
+    //     }
+    // }
 
     async findType(id: string) {
         try {
@@ -808,17 +808,12 @@ export class Warga {
         }
     }
 
-    async listType(id_tenant: string) {
+    async listType() {
         try {
             const listType = await this.prisma.type.findMany({
                 select: {
                     id: true,
                     nama: true,
-                },
-                where: {
-                    tenant: {
-                        id: id_tenant,
-                    },
                 },
                 orderBy: {
                     id: 'asc',

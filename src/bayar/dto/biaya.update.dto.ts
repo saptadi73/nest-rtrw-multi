@@ -1,4 +1,4 @@
-import { IsInt, IsString } from 'class-validator';
+import { IsInt, IsOptional, IsString } from 'class-validator';
 
 export class BiayaUpdateDto {
     @IsString()
@@ -9,4 +9,8 @@ export class BiayaUpdateDto {
 
     @IsInt()
     id: number;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }

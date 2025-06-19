@@ -23,4 +23,8 @@ export class AnggaranCreateDto {
     @IsInt()
     @IsOptional()
     id: number;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }

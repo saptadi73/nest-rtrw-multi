@@ -14,4 +14,8 @@ export class LaporanAnggaranDto {
 
     @IsInt()
     id_type_anggaran: number;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }

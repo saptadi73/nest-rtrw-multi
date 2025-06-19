@@ -28,7 +28,6 @@ model tenant {
   warga          warga[]
   status_warga   status_warga[]
   pekerjaan      pekerjaan[]
-  type           type[]
   iuran          iuran[]
   setor          setor[]
   anggaran       anggaran[]
@@ -182,8 +181,6 @@ model type {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   nama      String
-  tenant    tenant   @relation(fields: [id_tenant], references: [id])
-  id_tenant String
   warga     warga[]
 }
 

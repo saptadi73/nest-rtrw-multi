@@ -12,7 +12,7 @@ import { AnggaranUpdateDto } from './dto/anggaran.update.dto';
 import { LaporanSetoranDto } from './dto/laporan.setoran.dto';
 import { LaporanAnggaranDto } from './dto/laporan.anggaran.dto';
 import { v4 as uuidv4 } from 'uuid';
-import { TypeAnggaranCreateDto } from './dto/type.anggaran.create.dto';
+// import { TypeAnggaranCreateDto } from './dto/type.anggaran.create.dto';
 
 @Injectable()
 export class Bayar {
@@ -25,6 +25,11 @@ export class Bayar {
                     iuran: createIuran.iuran,
                     nama: createIuran.nama,
                     keterangan: createIuran.keterangan,
+                    tenant: {
+                        connect: {
+                            id: createIuran.id_tenant,
+                        },
+                    },
                     uuid: uuidv4(),
                 },
             });
@@ -72,6 +77,11 @@ export class Bayar {
                     nilai: createBayar.nilai,
                     tanggal: isoDate,
                     uuid: uuidv4(),
+                    tenant: {
+                        connect: {
+                            id: createBayar.id_tenant,
+                        },
+                    },
                 },
             });
 
@@ -203,7 +213,7 @@ export class Bayar {
         }
     }
 
-    async listIuran() {
+    async listIuran(id_tenan: string) {
         try {
             const allIuran = await this.prisma.iuran.findMany({
                 select: {
@@ -211,6 +221,11 @@ export class Bayar {
                     iuran: true,
                     keterangan: true,
                     nama: true,
+                },
+                where: {
+                    tenant: {
+                        id: id_tenan,
+                    },
                 },
                 orderBy: {
                     id: 'asc',
@@ -333,6 +348,11 @@ export class Bayar {
                         {
                             iuran: {
                                 id: laporanTanggal.iuran,
+                            },
+                        },
+                        {
+                            tenant: {
+                                id: laporanTanggal.id_tenant,
                             },
                         },
                     ],
@@ -472,6 +492,11 @@ export class Bayar {
                         {
                             id_iuran: hutang.iuran,
                         },
+                        {
+                            tenant: {
+                                id: hutang.id_tenant,
+                            },
+                        },
                     ],
                 },
             });
@@ -526,6 +551,11 @@ export class Bayar {
                         {
                             id_iuran: hutang.iuran,
                         },
+                        {
+                            tenant: {
+                                id: hutang.id_tenant,
+                            },
+                        },
                     ],
                 },
             });
@@ -555,9 +585,18 @@ export class Bayar {
                     },
                 },
                 where: {
-                    id: {
-                        notIn: listIDBayar,
-                    },
+                    AND: [
+                        {
+                            id: {
+                                notIn: listIDBayar,
+                            },
+                        },
+                        {
+                            tenant: {
+                                id: hutang.id_tenant,
+                            },
+                        },
+                    ],
                 },
             });
             return {
@@ -585,7 +624,7 @@ export class Bayar {
         }
     }
 
-    async listBelumBayarIuran() {
+    async listBelumBayarIuran(id_tenan: string) {
         try {
             const tanggal = new Date();
             const month = tanggal.getMonth(); // September
@@ -612,6 +651,11 @@ export class Bayar {
                         },
                         {
                             id_iuran: 1,
+                        },
+                        {
+                            tenant: {
+                                id: id_tenan,
+                            },
                         },
                     ],
                 },
@@ -735,6 +779,11 @@ export class Bayar {
                     nama: createJenisAnggaran.nama,
                     keterangan: createJenisAnggaran.keterangan,
                     uuid: uuidv4(),
+                    tenant: {
+                        connect: {
+                            id: createJenisAnggaran.id_tenant,
+                        },
+                    },
                     type_anggaran: {
                         connect: {
                             id: createJenisAnggaran.id_type_anggaran,
@@ -926,7 +975,18 @@ export class Bayar {
                     keterangan: true,
                 },
                 where: {
-                    id_type_anggaran: jenisAnggaran.id_type_anggaran,
+                    AND: [
+                        {
+                            type_anggaran: {
+                                id: jenisAnggaran.id_type_anggaran,
+                            },
+                        },
+                        {
+                            tenant: {
+                                id: jenisAnggaran.id_tenant,
+                            },
+                        },
+                    ],
                 },
             });
             return {
@@ -977,6 +1037,11 @@ export class Bayar {
                     nilai: createAnggaran.nilai,
                     tanggal: isoDate,
                     keterangan: createAnggaran.keterangan,
+                    tenant: {
+                        connect: {
+                            id: createAnggaran.id_tenant,
+                        },
+                    },
                     type_anggaran: {
                         connect: {
                             id: createAnggaran.id_type_anggaran,
@@ -1356,23 +1421,23 @@ export class Bayar {
         }
     }
 
-    async listAnggaran(laporanAnggaran: LaporanAnggaranDto) {
+    async listAnggaran(laporanAnggaranku: LaporanAnggaranDto) {
         try {
             let date_awal: Date;
             let date_akhir: Date;
 
             // Initialize both dates
-            if (!laporanAnggaran.tanggal_awal || laporanAnggaran.tanggal_awal.trim() === '') {
+            if (!laporanAnggaranku.tanggal_awal || laporanAnggaranku.tanggal_awal.trim() === '') {
                 date_awal = new Date();
                 date_awal.setDate(date_awal.getDate() - 7);
             } else {
-                date_awal = new Date(laporanAnggaran.tanggal_awal);
+                date_awal = new Date(laporanAnggaranku.tanggal_awal);
             }
 
-            if (!laporanAnggaran.tanggal_akhir || laporanAnggaran.tanggal_akhir.trim() === '') {
+            if (!laporanAnggaranku.tanggal_akhir || laporanAnggaranku.tanggal_akhir.trim() === '') {
                 date_akhir = new Date();
             } else {
-                date_akhir = new Date(laporanAnggaran.tanggal_akhir);
+                date_akhir = new Date(laporanAnggaranku.tanggal_akhir);
             }
 
             // If both dates are today, set date_awal to 7 days ago
@@ -1402,16 +1467,16 @@ export class Bayar {
             ];
 
             // Add type anggaran condition if not 0
-            if (laporanAnggaran.id_type_anggaran !== 0) {
+            if (laporanAnggaranku.id_type_anggaran !== 0) {
                 whereConditions.push({
-                    id_type_anggaran: laporanAnggaran.id_type_anggaran,
+                    id_type_anggaran: laporanAnggaranku.id_type_anggaran,
                 });
             }
 
             // Add jenis anggaran condition if not 0
-            if (laporanAnggaran.id_jenis_anggaran !== 0) {
+            if (laporanAnggaranku.id_jenis_anggaran !== 0) {
                 whereConditions.push({
-                    id_jenis_anggaran: laporanAnggaran.id_jenis_anggaran,
+                    id_jenis_anggaran: laporanAnggaranku.id_jenis_anggaran,
                 });
             }
 
@@ -1454,6 +1519,7 @@ export class Bayar {
                     },
                 },
                 where: {
+                    id_tenant: laporanAnggaranku.id_tenant,
                     AND: whereConditions,
                 },
             });
@@ -1482,7 +1548,7 @@ export class Bayar {
         }
     }
 
-    async jumlahIuranBulanan() {
+    async jumlahIuranBulanan(id_tenant: string) {
         try {
             const tanggal = new Date();
             const month = tanggal.getMonth(); // September
@@ -1496,10 +1562,15 @@ export class Bayar {
                     nilai: true,
                 },
                 where: {
-                    tanggal: {
-                        gte: startDate,
-                        lte: endDate,
-                    },
+                    AND: [
+                        { id_tenant: id_tenant },
+                        {
+                            tanggal: {
+                                gte: startDate,
+                                lte: endDate,
+                            },
+                        },
+                    ],
                 },
             });
             return {
@@ -1527,7 +1598,7 @@ export class Bayar {
         }
     }
 
-    async jumlahAnggaranMasuk() {
+    async jumlahAnggaranMasuk(id_tenant: string) {
         try {
             const tanggal = new Date();
             const month = tanggal.getMonth(); // September
@@ -1551,6 +1622,11 @@ export class Bayar {
                         {
                             type_anggaran: {
                                 id: 1,
+                            },
+                        },
+                        {
+                            tenant: {
+                                id: id_tenant,
                             },
                         },
                     ],
@@ -1581,7 +1657,7 @@ export class Bayar {
         }
     }
 
-    async jumlahAnggaranKeluar() {
+    async jumlahAnggaranKeluar(id_tenant: string) {
         try {
             const tanggal = new Date();
             const month = tanggal.getMonth(); // September
@@ -1605,6 +1681,11 @@ export class Bayar {
                         {
                             type_anggaran: {
                                 id: 2,
+                            },
+                        },
+                        {
+                            tenant: {
+                                id: id_tenant,
                             },
                         },
                     ],
@@ -1635,7 +1716,7 @@ export class Bayar {
         }
     }
 
-    async jmlWargaIuran() {
+    async jmlWargaIuran(id_tenant: string) {
         try {
             const tanggal = new Date();
             const month = tanggal.getMonth(); // September
@@ -1658,6 +1739,11 @@ export class Bayar {
                         },
                         {
                             id_iuran: 1,
+                        },
+                        {
+                            tenant: {
+                                id: id_tenant,
+                            },
                         },
                     ],
                 },
@@ -1687,7 +1773,7 @@ export class Bayar {
         }
     }
 
-    async listSetor() {
+    async listSetor(id_tenan: string) {
         try {
             const tanggal = new Date();
             const month = tanggal.getMonth(); // September
@@ -1720,10 +1806,19 @@ export class Bayar {
                     tanggal: true,
                 },
                 where: {
-                    tanggal: {
-                        gte: startDate,
-                        lte: endDate,
-                    },
+                    AND: [
+                        {
+                            tanggal: {
+                                gte: startDate,
+                                lte: endDate,
+                            },
+                        },
+                        {
+                            tenant: {
+                                id: id_tenan,
+                            },
+                        },
+                    ],
                 },
             });
             return {
@@ -1751,7 +1846,7 @@ export class Bayar {
         }
     }
 
-    async listWargaIuran() {
+    async listWargaIuran(id_tenant: string) {
         try {
             const tanggal = new Date();
             const month = tanggal.getMonth(); // September
@@ -1804,6 +1899,11 @@ export class Bayar {
                         {
                             id_iuran: 1,
                         },
+                        {
+                            tenant: {
+                                id: id_tenant,
+                            },
+                        },
                     ],
                 },
                 orderBy: {
@@ -1835,7 +1935,7 @@ export class Bayar {
         }
     }
 
-    async listAllPemasukan() {
+    async listAllPemasukan(id_tenant: string) {
         try {
             const daftarAllPemasukan = await this.prisma.anggaran.findMany({
                 select: {
@@ -1854,9 +1954,18 @@ export class Bayar {
                     tanggal: true,
                 },
                 where: {
-                    type_anggaran: {
-                        id: 1,
-                    },
+                    AND: [
+                        {
+                            type_anggaran: {
+                                id: 1,
+                            },
+                        },
+                        {
+                            tenant: {
+                                id: id_tenant,
+                            },
+                        },
+                    ],
                 },
                 orderBy: {
                     id: 'asc',
@@ -1887,7 +1996,7 @@ export class Bayar {
         }
     }
 
-    async listAllPengeluaran() {
+    async listAllPengeluaran(id_tenant: string) {
         try {
             const daftarAllPengeluaran = await this.prisma.anggaran.findMany({
                 select: {
@@ -1906,9 +2015,18 @@ export class Bayar {
                     tanggal: true,
                 },
                 where: {
-                    type_anggaran: {
-                        id: 2,
-                    },
+                    AND: [
+                        {
+                            type_anggaran: {
+                                id: 2,
+                            },
+                        },
+                        {
+                            tenant: {
+                                id: id_tenant,
+                            },
+                        },
+                    ],
                 },
                 orderBy: {
                     id: 'asc',
@@ -1939,10 +2057,14 @@ export class Bayar {
         }
     }
 
-    async iuranBulan() {
+    async iuranBulan(id_tenant: string) {
         try {
-            const iuranBulanan = await this.prisma
-                .$queryRaw`SELECT SUM(nilai)::int AS jumlah, EXTRACT(MONTH FROM tanggal) AS bulan FROM setor WHERE EXTRACT(YEAR FROM tanggal) = EXTRACT(YEAR FROM CURRENT_DATE) AND EXTRACT(MONTH FROM tanggal) = EXTRACT(MONTH FROM CURRENT_DATE) GROUP BY EXTRACT(MONTH FROM tanggal)`;
+            const iuranBulanan = await this.prisma.$queryRawUnsafe<
+                { jumlah: number; bulan: number }[]
+            >(
+                `SELECT SUM(nilai)::int AS jumlah, EXTRACT(MONTH FROM tanggal) AS bulan FROM setor WHERE EXTRACT(YEAR FROM tanggal) = EXTRACT(YEAR FROM CURRENT_DATE) AND EXTRACT(MONTH FROM tanggal) = EXTRACT(MONTH FROM CURRENT_DATE) AND id_tenant=$1 GROUP BY EXTRACT(MONTH FROM tanggal)`,
+                id_tenant
+            );
             return {
                 status: 'ok',
                 message: 'berhasil dapat data iuran',
@@ -1968,10 +2090,14 @@ export class Bayar {
         }
     }
 
-    async pemasukanBulan() {
+    async pemasukanBulan(id_tenant: string) {
         try {
-            const iuranBulanan = await this.prisma
-                .$queryRaw`SELECT SUM(nilai)::int AS jumlah, EXTRACT(MONTH FROM tanggal) AS bulan FROM anggaran WHERE id_type_anggaran = 1 AND EXTRACT(YEAR FROM tanggal) = EXTRACT(YEAR FROM CURRENT_DATE) AND EXTRACT(MONTH FROM tanggal) = EXTRACT(MONTH FROM CURRENT_DATE) GROUP BY EXTRACT(MONTH FROM tanggal)`;
+            const iuranBulanan = await this.prisma.$queryRawUnsafe<
+                { jumlah: number; bulan: number }[]
+            >(
+                `SELECT SUM(nilai)::int AS jumlah, EXTRACT(MONTH FROM tanggal) AS bulan FROM anggaran WHERE id_type_anggaran = 1 AND EXTRACT(YEAR FROM tanggal) = EXTRACT(YEAR FROM CURRENT_DATE) AND EXTRACT(MONTH FROM tanggal) = EXTRACT(MONTH FROM CURRENT_DATE) AND id_tenant=$1 GROUP BY EXTRACT(MONTH FROM tanggal)`,
+                id_tenant
+            );
             return {
                 status: 'ok',
                 message: 'berhasil dapat data bulanan pemasukan anggaran',
@@ -1997,12 +2123,16 @@ export class Bayar {
         }
     }
 
-    async pengeluaranBulan() {
+    async pengeluaranBulan(id_tenant: string) {
         try {
             // const tanggal = new Date();
             // const tahun = tanggal.getFullYear();
-            const iuranBulanan = await this.prisma
-                .$queryRaw`SELECT SUM(nilai)::int AS jumlah, EXTRACT(MONTH FROM tanggal) AS bulan FROM anggaran WHERE id_type_anggaran = 2 AND EXTRACT(YEAR FROM tanggal) = EXTRACT(YEAR FROM CURRENT_DATE) AND EXTRACT(MONTH FROM tanggal) = EXTRACT(MONTH FROM CURRENT_DATE) GROUP BY EXTRACT(MONTH FROM tanggal);`;
+            const iuranBulanan = await this.prisma.$queryRawUnsafe<
+                { jumlah: number; bulan: number }[]
+            >(
+                `SELECT SUM(nilai)::int AS jumlah, EXTRACT(MONTH FROM tanggal) AS bulan FROM anggaran WHERE id_type_anggaran = 2 AND EXTRACT(YEAR FROM tanggal) = EXTRACT(YEAR FROM CURRENT_DATE) AND EXTRACT(MONTH FROM tanggal) = EXTRACT(MONTH FROM CURRENT_DATE) AND id_tenant=$1 GROUP BY EXTRACT(MONTH FROM tanggal)`,
+                id_tenant
+            );
             return {
                 status: 'ok',
                 message: 'berhasil dapat data bulanan pengeluaran anggaran',
@@ -2028,47 +2158,58 @@ export class Bayar {
         }
     }
 
-    async createTypeAnggaran(createTypeAnggaran: TypeAnggaranCreateDto) {
-        try {
-            const TypeAnggaran = await this.prisma.type_anggaran.create({
-                data: {
-                    type: createTypeAnggaran.type,
-                    uuid: uuidv4(),
-                },
-            });
-            return {
-                status: 'ok',
-                message: 'berhasil tambah type anggaran',
-                data: TypeAnggaran,
-            };
-        } catch (error) {
-            if (error instanceof Prisma.PrismaClientKnownRequestError) {
-                if (error.code === 'P2002') {
-                    console.log('failed unique constraint');
-                    return {
-                        status: 'nok',
-                        message:
-                            'gagal dapat data bulanan pengeluaran karena ada isian seharusnya unique, diisi berulang',
-                        data: error,
-                    };
-                }
-            }
-            return {
-                status: 'nok',
-                message: 'gagal dapat data pengeluaran',
-                data: error,
-            };
-        }
-    }
+    // async createTypeAnggaran(createTypeAnggaran: TypeAnggaranCreateDto) {
+    //     try {
+    //         const TypeAnggaran = await this.prisma.type_anggaran.create({
+    //             data: {
+    //                 type: createTypeAnggaran.type,
+    //                 uuid: uuidv4(),
+    //                 tenant: {
+    //                     connect: {
+    //                         id: createTypeAnggaran.id_tenant,
+    //                     },
+    //                 },
+    //             },
+    //         });
+    //         return {
+    //             status: 'ok',
+    //             message: 'berhasil tambah type anggaran',
+    //             data: TypeAnggaran,
+    //         };
+    //     } catch (error) {
+    //         if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    //             if (error.code === 'P2002') {
+    //                 console.log('failed unique constraint');
+    //                 return {
+    //                     status: 'nok',
+    //                     message:
+    //                         'gagal dapat data bulanan pengeluaran karena ada isian seharusnya unique, diisi berulang',
+    //                     data: error,
+    //                 };
+    //             }
+    //         }
+    //         return {
+    //             status: 'nok',
+    //             message: 'gagal dapat data pengeluaran',
+    //             data: error,
+    //         };
+    //     }
+    // }
 
-    async totalKabeh() {
+    async totalKabeh(id_tenant: string) {
         try {
-            const totalIuranKabeh = await this.prisma
-                .$queryRaw`select sum(s.nilai)::bigint as iuran from setor s`;
-            const totalMasukKabeh = await this.prisma
-                .$queryRaw`select sum(a.nilai)::bigint as masuk from anggaran a where a.id_type_anggaran = 1`;
-            const totalKeluarKabeh = await this.prisma
-                .$queryRaw`select sum(a.nilai)::bigint as keluar from anggaran a where a.id_type_anggaran = 2`;
+            const totalIuranKabeh = await this.prisma.$queryRawUnsafe<{ iuran: number }>(
+                `select sum(s.nilai)::bigint as iuran from setor s where s.id_tenant=$1`,
+                id_tenant
+            );
+            const totalMasukKabeh = await this.prisma.$queryRawUnsafe<{ masuk: number }>(
+                `select sum(a.nilai)::bigint as masuk from anggaran a where a.id_tenant=$1 where a.id_type_anggaran = 1`,
+                id_tenant
+            );
+            const totalKeluarKabeh = await this.prisma.$queryRawUnsafe<{ keluar: number }>(
+                `select sum(a.nilai)::bigint as keluar from anggaran a where a.id and a.id_tenant=$1_type_anggaran = 2`,
+                id_tenant
+            );
             return {
                 status: 'ok',
                 message: 'berhasil dapat data total data keuangan',
@@ -2096,7 +2237,7 @@ export class Bayar {
         }
     }
 
-    async totalIuranBulanan() {
+    async totalIuranBulanan(id_tenant: string) {
         try {
             // return {
             //     status: 'ok',
@@ -2106,7 +2247,8 @@ export class Bayar {
             const bulanIuran = await this.prisma.$queryRawUnsafe<
                 { bulan: Date; total: bigint | null }[]
             >(
-                `WITH months AS ( SELECT generate_series(DATE_TRUNC('month', (SELECT MIN(tanggal) FROM setor WHERE tanggal IS NOT NULL)), DATE_TRUNC('month', (SELECT MAX(tanggal) FROM setor WHERE tanggal IS NOT NULL)), interval '1 month') AS bulan) SELECT m.bulan, SUM(s.nilai)::bigint AS total FROM months m LEFT JOIN setor s ON DATE_TRUNC('month', s.tanggal) = m.bulan GROUP BY m.bulan ORDER BY m.bulan ASC`
+                `WITH months AS ( SELECT generate_series(DATE_TRUNC('month', (SELECT MIN(tanggal) FROM setor WHERE tanggal IS NOT NULL)), DATE_TRUNC('month', (SELECT MAX(tanggal) FROM setor WHERE tanggal IS NOT NULL)), interval '1 month') AS bulan) SELECT m.bulan, SUM(s.nilai)::bigint AS total FROM months m LEFT JOIN setor s ON DATE_TRUNC('month', s.tanggal) = m.bulan WHERE s.id_tenant=$1 GROUP BY m.bulan ORDER BY m.bulan ASC`,
+                id_tenant
             );
             const mapped = bulanIuran.map((row) => ({
                 bulan: row.bulan.toISOString().substring(0, 7), // YYYY-MM
@@ -2138,7 +2280,7 @@ export class Bayar {
         }
     }
 
-    async totalMasukBulanan() {
+    async totalMasukBulanan(id_tenant: string) {
         try {
             // return {
             //     status: 'ok',
@@ -2148,7 +2290,8 @@ export class Bayar {
             const bulanIuran = await this.prisma.$queryRawUnsafe<
                 { bulan: Date; total: bigint | null }[]
             >(
-                `WITH months AS (SELECT generate_series(DATE_TRUNC('month', (SELECT MIN(tanggal) FROM anggaran)),DATE_TRUNC('month',(SELECT MAX(tanggal) FROM anggaran)),interval '1 month') AS bulan) SELECT m.bulan, SUM(a.nilai)::bigint AS total FROM months m LEFT JOIN anggaran a ON DATE_TRUNC('month', a.tanggal) = m.bulan AND a.id_type_anggaran = 1 GROUP BY m.bulan ORDER BY m.bulan ASC`
+                `WITH months AS (SELECT generate_series(DATE_TRUNC('month', (SELECT MIN(tanggal) FROM anggaran)),DATE_TRUNC('month',(SELECT MAX(tanggal) FROM anggaran)),interval '1 month') AS bulan) SELECT m.bulan, SUM(a.nilai)::bigint AS total FROM months m LEFT JOIN anggaran a ON DATE_TRUNC('month', a.tanggal) = m.bulan AND a.id_type_anggaran = 1 AND a.id_tenant=$1 GROUP BY m.bulan ORDER BY m.bulan ASC`,
+                id_tenant
             );
             const mapped = bulanIuran.map((row) => ({
                 bulan: row.bulan.toISOString().substring(0, 7), // YYYY-MM
@@ -2180,7 +2323,7 @@ export class Bayar {
         }
     }
 
-    async totalKeluarBulanan() {
+    async totalKeluarBulanan(id_tenant: string) {
         try {
             // return {
             //     status: 'ok',
@@ -2190,7 +2333,8 @@ export class Bayar {
             const bulanIuran = await this.prisma.$queryRawUnsafe<
                 { bulan: Date; total: bigint | null }[]
             >(
-                `WITH months AS (SELECT generate_series(DATE_TRUNC('month', (SELECT MIN(tanggal) FROM anggaran WHERE id_type_anggaran = 2 AND tanggal IS NOT NULL)),DATE_TRUNC('month', (SELECT MAX(tanggal) FROM anggaran WHERE id_type_anggaran = 2 AND tanggal IS NOT NULL)),interval '1 month') AS bulan) SELECT m.bulan, SUM(a.nilai)::bigint AS total FROM months m LEFT JOIN anggaran a ON DATE_TRUNC('month', a.tanggal) = m.bulan AND a.id_type_anggaran = 2 GROUP BY m.bulan ORDER BY m.bulan ASC`
+                `WITH months AS (SELECT generate_series(DATE_TRUNC('month', (SELECT MIN(tanggal) FROM anggaran WHERE id_type_anggaran = 2 AND tanggal IS NOT NULL)),DATE_TRUNC('month', (SELECT MAX(tanggal) FROM anggaran WHERE id_type_anggaran = 2 AND tanggal IS NOT NULL)),interval '1 month') AS bulan) SELECT m.bulan, SUM(a.nilai)::bigint AS total FROM months m LEFT JOIN anggaran a ON DATE_TRUNC('month', a.tanggal) = m.bulan AND a.id_type_anggaran = 2 AND a.id_tenant GROUP BY m.bulan ORDER BY m.bulan ASC`,
+                id_tenant
             );
             const mapped = bulanIuran.map((row) => ({
                 bulan: row.bulan.toISOString().substring(0, 7), // YYYY-MM
@@ -2222,11 +2366,12 @@ export class Bayar {
         }
     }
 
-    async groupPengeluaran() {
+    async groupPengeluaran(id_tenant: string) {
         try {
-            const bulanIuran = await this.prisma.$queryRaw<
-                { nama: string; total: bigint }[]
-            >`select sum(a.nilai)::bigint as total, ja.nama as nama from anggaran a,jenis_anggaran ja  where a.id_type_anggaran = 2 and a.id_jenis_anggaran = ja.id group by ja.nama`;
+            const bulanIuran = await this.prisma.$queryRawUnsafe<{ nama: string; total: bigint }[]>(
+                `select sum(a.nilai)::bigint as total, ja.nama as nama from anggaran a,jenis_anggaran ja  where a.id_type_anggaran = 2 and a.id_jenis_anggaran = ja.id and a.id_tenant=$1 group by ja.nama`,
+                id_tenant
+            );
             const mapped = bulanIuran.map((row) => ({
                 nama: row.nama, // YYYY-MM
                 total: row.total.toString(), // or use Number(row.total) if safe
@@ -2257,13 +2402,14 @@ export class Bayar {
         }
     }
 
-    async laporanRt() {
+    async laporanRt(id_tenant: string) {
         try {
             const hasilIuransampaiBulanLalu = await this.prisma.$queryRawUnsafe<any>(
                 `SELECT SUM(s.nilai)::bigint AS iuran 
              FROM setor s 
              WHERE EXTRACT(MONTH FROM s.tanggal) <= EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '1 month') 
-             AND EXTRACT(YEAR FROM s.tanggal) <= EXTRACT(YEAR FROM CURRENT_DATE - INTERVAL '1 month')`
+             AND EXTRACT(YEAR FROM s.tanggal) <= EXTRACT(YEAR FROM CURRENT_DATE - INTERVAL '1 month') AND s.id_tenant=$1`,
+                id_tenant
             );
 
             const hasilPemasukanSampaiBulanLalu = await this.prisma.$queryRawUnsafe<any>(
@@ -2271,7 +2417,8 @@ export class Bayar {
              FROM anggaran a 
              WHERE EXTRACT(MONTH FROM a.tanggal) <= EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '1 month') 
              AND EXTRACT(YEAR FROM a.tanggal) <= EXTRACT(YEAR FROM CURRENT_DATE - INTERVAL '1 month') 
-             AND a.id_type_anggaran = 1`
+             AND a.id_type_anggaran = 1 AND a.id_tenant=$1`,
+                id_tenant
             );
 
             const hasilPengeluaranSampaiBulanLalu = await this.prisma.$queryRawUnsafe<any>(
@@ -2279,14 +2426,16 @@ export class Bayar {
              FROM anggaran a 
              WHERE EXTRACT(MONTH FROM a.tanggal) <= EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '1 month') 
              AND EXTRACT(YEAR FROM a.tanggal) <= EXTRACT(YEAR FROM CURRENT_DATE - INTERVAL '1 month') 
-             AND a.id_type_anggaran = 2`
+             AND a.id_type_anggaran = 2 AND a.id_tenant=$1`,
+                id_tenant
             );
 
             const hasilIuranBulanIni = await this.prisma.$queryRawUnsafe<any>(
                 `SELECT SUM(s.nilai)::bigint AS iuran 
              FROM setor s 
              WHERE EXTRACT(MONTH FROM s.tanggal) = EXTRACT(MONTH FROM CURRENT_DATE) 
-             AND EXTRACT(YEAR FROM s.tanggal) = EXTRACT(YEAR FROM CURRENT_DATE)`
+             AND EXTRACT(YEAR FROM s.tanggal) = EXTRACT(YEAR FROM CURRENT_DATE) AND s.id_tenant=$1`,
+                id_tenant
             );
 
             const hasilPemasukanBulanIni = await this.prisma.$queryRawUnsafe<any>(
@@ -2295,8 +2444,9 @@ export class Bayar {
              RIGHT JOIN jenis_anggaran ja ON ja.id = a.id_jenis_anggaran 
              WHERE EXTRACT(MONTH FROM a.tanggal) = EXTRACT(MONTH FROM CURRENT_DATE) 
              AND EXTRACT(YEAR FROM a.tanggal) = EXTRACT(YEAR FROM CURRENT_DATE) 
-             AND a.id_type_anggaran = 1 
-             GROUP BY ja.nama`
+             AND a.id_type_anggaran = 1  AND a.id_tenant=$1
+             GROUP BY ja.nama`,
+                id_tenant
             );
 
             const hasilPengeluaranBulanIni = await this.prisma.$queryRawUnsafe<any>(
@@ -2305,8 +2455,9 @@ export class Bayar {
              LEFT JOIN jenis_anggaran ja ON a.id_jenis_anggaran = ja.id 
              WHERE EXTRACT(MONTH FROM a.tanggal) = EXTRACT(MONTH FROM CURRENT_DATE) 
              AND EXTRACT(YEAR FROM a.tanggal) = EXTRACT(YEAR FROM CURRENT_DATE) 
-             AND a.id_type_anggaran = 2 
-             GROUP BY ja.nama`
+             AND a.id_type_anggaran = 2 AND a.id_tenant=$1
+             GROUP BY ja.nama`,
+                id_tenant
             );
 
             const dataLaporan = {

@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class BiayaCreateDto {
     @IsString()
@@ -6,4 +6,8 @@ export class BiayaCreateDto {
 
     @IsString()
     keterangan: string;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }

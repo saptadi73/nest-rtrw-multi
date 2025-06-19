@@ -27,4 +27,8 @@ export class AnggaranUpdateDto {
 
     @IsInt()
     id: number;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }

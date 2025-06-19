@@ -24,4 +24,8 @@ export class SetorUpdateDto {
     @IsString()
     @IsOptional()
     keterangan: string;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }
