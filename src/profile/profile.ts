@@ -397,7 +397,7 @@ export class Profile {
                     keterangan: createTenant.keterangan,
                 },
             });
-            return { status: 'ok', message: 'berhasil delete data entity', result: createTenantku };
+            return { status: 'ok', message: 'berhasil tambah data tenant', result: createTenantku };
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 if (error.code === 'P2002') {

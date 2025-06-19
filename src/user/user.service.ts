@@ -64,6 +64,53 @@ export class UserService {
         }
     }
 
+    async createNewUserFirst(userCreate: CreateUserDto) {
+        try {
+            const uuidku = uuidv4();
+            const tambahUser = await this.prisma.user.create({
+                data: {
+                    email: userCreate.email,
+                    password: this.hashMD5(userCreate.password),
+                    uuid: uuidku,
+                    tenant: {
+                        connect: {
+                            id: userCreate.id_tenant,
+                        },
+                    },
+                    level: {
+                        connect: {
+                            id: parseInt(userCreate.id_level),
+                        },
+                    },
+                },
+            });
+            return {
+                status: 'ok',
+                message: 'berhasil tambah user id',
+                result: tambahUser,
+                uuid: uuidku,
+                email: userCreate.email,
+            };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal tambah userid karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return {
+                status: 'nok',
+                message: 'gagal tambah userid atau coba relogin sebelum tambah user',
+                data: error,
+            };
+        }
+    }
+
     async aktifUser(id: string) {
         try {
             const aktifkan = await this.prisma.user.update({

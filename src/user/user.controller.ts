@@ -46,6 +46,25 @@ export class UserController {
         }
     }
 
+    @Post('add/pisan')
+    @Header('Content-Type', 'application/json')
+    async addUserPisan(@Body() userCreate: CreateUserDto) {
+        try {
+            return this.User.createNewUserFirst(userCreate);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: error,
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
     @Post('login')
     @Header('Content-Type', 'application/json')
     async loginUser(@Body() login: LoginUserDto) {
@@ -117,7 +136,6 @@ export class UserController {
         }
     }
 
-    @UseGuards(AuthGuard('jwt'))
     @Post('add/level')
     @Header('Content-Type', 'application/json')
     async nambahLevelUser(@Body() createLevel: CreateLevelDto) {

@@ -49,7 +49,7 @@ export class Warga {
                     };
                 }
             }
-            return { status: 'nok', message: 'gagal tambah data kk', data: error };
+            return { status: 'nok', message: 'gagal tambah blok', data: error };
         }
     }
 
