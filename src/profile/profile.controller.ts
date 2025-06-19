@@ -7,6 +7,7 @@ import {
     HttpException,
     HttpStatus,
     Post,
+    Param,
 } from '@nestjs/common';
 import { Profile } from './profile';
 import { CreateEntityDto } from './dto/create.entity.dto';
@@ -177,9 +178,9 @@ export class ProfileController {
     }
 
     @Get('cek')
-    async cek() {
+    async cek(@Body() createEntity: CreateEntityDto) {
         try {
-            return this.profile.cekProfile();
+            return this.profile.cekProfile(createEntity);
         } catch (error) {
             throw new HttpException(
                 {
@@ -195,9 +196,9 @@ export class ProfileController {
     }
 
     @Get('polygon')
-    async getDataPolygon() {
+    async getDataPolygon(@Param('id') id: string) {
         try {
-            return this.profile.getDataPolygon();
+            return this.profile.getDataPolygon(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -213,9 +214,9 @@ export class ProfileController {
     }
 
     @Get('clear')
-    async clear() {
+    async clear(@Param('id') id: string) {
         try {
-            return this.profile.hapusDataPolygon();
+            return this.profile.hapusDataPolygon(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -231,9 +232,9 @@ export class ProfileController {
     }
 
     @Get('cari')
-    async cariProfile() {
+    async cariProfile(@Param('id') id: string) {
         try {
-            return this.profile.getProfile();
+            return this.profile.getProfile(id);
         } catch (error) {
             throw new HttpException(
                 {
@@ -249,9 +250,9 @@ export class ProfileController {
     }
 
     @Get('hapus')
-    async hapusProfile() {
+    async hapusProfile(@Param('id') id: string) {
         try {
-            return this.profile.hapusDataProfile();
+            return this.profile.hapusDataProfile(id);
         } catch (error) {
             throw new HttpException(
                 {

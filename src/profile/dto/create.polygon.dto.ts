@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreatePolygonDto {
     @IsNumber()
@@ -12,4 +12,8 @@ export class CreatePolygonDto {
     @IsNumber()
     @IsOptional()
     id: number;
+
+    @IsString()
+    @IsOptional()
+    id_tenant: string;
 }

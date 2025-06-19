@@ -23,6 +23,11 @@ export class Profile {
                     rt: createEntityDto.rt,
                     rw: createEntityDto.rw,
                     kode_wilayah: createEntityDto.kode_wilayah,
+                    tenant: {
+                        connect: {
+                            id: createEntityDto.id_tenant,
+                        },
+                    },
                 },
             });
             return { status: 'ok', message: 'berhasil isi profile', result: profile };
@@ -46,7 +51,7 @@ export class Profile {
         try {
             const editProfile = await this.prisma.entity.update({
                 where: {
-                    id: 1,
+                    id: createEntityDto.id,
                 },
                 data: {
                     dusun: createEntityDto.dusun,
@@ -76,11 +81,11 @@ export class Profile {
         }
     }
 
-    async cekProfile() {
+    async cekProfile(createEntitydto: CreateEntityDto) {
         try {
             const cekEntity = await this.prisma.entity.findUnique({
                 where: {
-                    id: 1,
+                    id: createEntitydto.id,
                 },
                 select: {
                     provinsi: true,
@@ -117,6 +122,11 @@ export class Profile {
                     latitude: createPolygon.latitude,
                     longitude: createPolygon.longitude,
                     uuid: uuidv4(),
+                    tenant: {
+                        connect: {
+                            id: createPolygon.id_tenant,
+                        },
+                    },
                 },
             });
             return {
@@ -168,12 +178,17 @@ export class Profile {
         }
     }
 
-    async getDataPolygon() {
+    async getDataPolygon(id_tenant: string) {
         try {
             const dataPolygon = await this.prisma.polygon.findMany({
                 select: {
                     latitude: true,
                     longitude: true,
+                },
+                where: {
+                    tenant: {
+                        id: id_tenant,
+                    },
                 },
                 orderBy: {
                     id: 'asc',
@@ -196,9 +211,15 @@ export class Profile {
         }
     }
 
-    async hapusDataPolygon() {
+    async hapusDataPolygon(id_tenant: string) {
         try {
-            const dataPolygon = await this.prisma.$queryRaw`TRUNCATE polygon`;
+            const dataPolygon = await this.prisma.polygon.deleteMany({
+                where: {
+                    tenant: {
+                        id: id_tenant,
+                    },
+                },
+            });
             return { status: 'ok', message: 'berhasil delete data polygon', result: dataPolygon };
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -304,7 +325,7 @@ export class Profile {
         }
     }
 
-    async getProfile() {
+    async getProfile(id_tenant: string) {
         try {
             const cariProfile = await this.prisma.entity.findFirst({
                 select: {
@@ -317,6 +338,11 @@ export class Profile {
                     rt: true,
                     rw: true,
                     dusun: true,
+                },
+                where: {
+                    tenant: {
+                        id: id_tenant,
+                    },
                 },
             });
             return { status: 'ok', message: 'berhasil get profile', result: cariProfile };
@@ -336,9 +362,15 @@ export class Profile {
         }
     }
 
-    async hapusDataProfile() {
+    async hapusDataProfile(id_tenant: string) {
         try {
-            const dataPolygon = await this.prisma.$queryRaw`TRUNCATE entity`;
+            const dataPolygon = await this.prisma.entity.deleteMany({
+                where: {
+                    tenant: {
+                        id: id_tenant,
+                    },
+                },
+            });
             return { status: 'ok', message: 'berhasil delete data entity', result: dataPolygon };
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {

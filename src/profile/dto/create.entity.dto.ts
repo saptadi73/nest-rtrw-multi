@@ -1,9 +1,13 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateEntityDto {
     @IsString()
     @IsOptional()
     dusun: string;
+
+    @IsInt()
+    @IsOptional()
+    id: number;
 
     @IsString()
     @IsOptional()
@@ -33,7 +37,7 @@ export class CreateEntityDto {
     @IsOptional()
     kode_wilayah: string;
 
-    @IsNumber()
+    @IsString()
     @IsOptional()
-    id: number;
+    id_tenant: string;
 }

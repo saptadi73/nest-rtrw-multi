@@ -6,4 +6,7 @@ export class WriteTrailDto {
 
     @IsString()
     activity: string;
+
+    @IsString()
+    id_tenant: string;
 }

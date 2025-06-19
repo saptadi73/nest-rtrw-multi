@@ -13,6 +13,11 @@ export class TrailService {
                 data: {
                     email: writedto.email,
                     activity: writedto.activity,
+                    tenant: {
+                        connect: {
+                            id: writedto.id_tenant,
+                        },
+                    },
                 },
             });
             return {
