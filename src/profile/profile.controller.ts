@@ -14,6 +14,7 @@ import { CreateEntityDto } from './dto/create.entity.dto';
 import { CreatePolygonDto } from './dto/create.polygon.dto';
 import { FindWilayahDto } from './dto/find.wilayah.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { CreateTenantDto } from './dto/create.tenant.dto';
 
 @Controller('profile')
 export class ProfileController {
@@ -253,6 +254,43 @@ export class ProfileController {
     async hapusProfile(@Param('id') id: string) {
         try {
             return this.profile.hapusDataProfile(id);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Post('add/tenant')
+    @Header('Content-Type', 'application/json')
+    async addTenant(@Body() tenant: CreateTenantDto) {
+        try {
+            return this.profile.createTenant(tenant);
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: HttpStatus.FORBIDDEN,
+                    message: 'Forbidden Access',
+                },
+                HttpStatus.FORBIDDEN,
+                {
+                    cause: error,
+                }
+            );
+        }
+    }
+
+    @Get('list/tenant')
+    async getListTenant() {
+        try {
+            return this.profile.listTenant();
         } catch (error) {
             throw new HttpException(
                 {

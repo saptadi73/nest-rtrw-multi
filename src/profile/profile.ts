@@ -5,6 +5,7 @@ import { CreateEntityDto } from './dto/create.entity.dto';
 import { Prisma } from '@prisma/client';
 import { CreatePolygonDto } from './dto/create.polygon.dto';
 import { FindWilayahDto } from './dto/find.wilayah.dto';
+import { CreateTenantDto } from './dto/create.tenant.dto';
 
 @Injectable()
 export class Profile {
@@ -385,6 +386,51 @@ export class Profile {
                 }
             }
             return { status: 'nok', message: 'gagal hapus data entity', data: error };
+        }
+    }
+
+    async createTenant(createTenant: CreateTenantDto) {
+        try {
+            const createTenantku = await this.prisma.tenant.create({
+                data: {
+                    nama: createTenant.nama,
+                    keterangan: createTenant.keterangan,
+                },
+            });
+            return { status: 'ok', message: 'berhasil delete data entity', result: createTenantku };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal tambah tenant karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal htambah tenant', data: error };
+        }
+    }
+
+    async listTenant() {
+        try {
+            const daftarTenant = await this.prisma.tenant.findMany();
+            return { status: 'ok', message: 'berhasil dapat data tenant', result: daftarTenant };
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    console.log('failed unique constraint');
+                    return {
+                        status: 'nok',
+                        message:
+                            'gagal dapat data tenant karena ada isian seharusnya unique, diisi berulang',
+                        data: error,
+                    };
+                }
+            }
+            return { status: 'nok', message: 'gagal dapat data tenant', data: error };
         }
     }
 }
