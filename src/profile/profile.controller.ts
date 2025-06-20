@@ -214,7 +214,7 @@ export class ProfileController {
         }
     }
 
-    @Get('clear')
+    @Get('clear/:id')
     async clear(@Param('id') id: string) {
         try {
             return this.profile.hapusDataPolygon(id);
@@ -250,7 +250,7 @@ export class ProfileController {
         }
     }
 
-    @Get('hapus')
+    @Get('hapus/:id')
     async hapusProfile(@Param('id') id: string) {
         try {
             return this.profile.hapusDataProfile(id);
