@@ -196,7 +196,7 @@ export class ProfileController {
         }
     }
 
-    @Get('polygon')
+    @Get('polygon/:id')
     async getDataPolygon(@Param('id') id: string) {
         try {
             return this.profile.getDataPolygon(id);
@@ -232,7 +232,7 @@ export class ProfileController {
         }
     }
 
-    @Get('cari')
+    @Get('cari/:id')
     async cariProfile(@Param('id') id: string) {
         try {
             return this.profile.getProfile(id);

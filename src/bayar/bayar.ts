@@ -2199,15 +2199,13 @@ export class Bayar {
     async totalKabeh(id_tenant: string) {
         try {
             const totalIuranKabeh = await this.prisma.$queryRawUnsafe<{ iuran: number }>(
-                `select sum(s.nilai)::bigint as iuran from setor s where s.id_tenant=$1`,
-                id_tenant
+                `select sum(s.nilai)::bigint as iuran from setor s where s.id_tenant='${id_tenant}'`
             );
             const totalMasukKabeh = await this.prisma.$queryRawUnsafe<{ masuk: number }>(
-                `select sum(a.nilai)::bigint as masuk from anggaran a where a.id_tenant=$1 where a.id_type_anggaran = 1`,
-                id_tenant
+                `select sum(a.nilai)::bigint as masuk from anggaran a where a.id_tenant='${id_tenant}' and a.id_type_anggaran = 1`
             );
             const totalKeluarKabeh = await this.prisma.$queryRawUnsafe<{ keluar: number }>(
-                `select sum(a.nilai)::bigint as keluar from anggaran a where a.id and a.id_tenant=$1_type_anggaran = 2`,
+                `select sum(a.nilai)::bigint as keluar from anggaran a where a.id_type_anggaran = 2 and a.id_tenant='${id_tenant}'`,
                 id_tenant
             );
             return {
@@ -2247,8 +2245,7 @@ export class Bayar {
             const bulanIuran = await this.prisma.$queryRawUnsafe<
                 { bulan: Date; total: bigint | null }[]
             >(
-                `WITH months AS ( SELECT generate_series(DATE_TRUNC('month', (SELECT MIN(tanggal) FROM setor WHERE tanggal IS NOT NULL)), DATE_TRUNC('month', (SELECT MAX(tanggal) FROM setor WHERE tanggal IS NOT NULL)), interval '1 month') AS bulan) SELECT m.bulan, SUM(s.nilai)::bigint AS total FROM months m LEFT JOIN setor s ON DATE_TRUNC('month', s.tanggal) = m.bulan WHERE s.id_tenant=$1 GROUP BY m.bulan ORDER BY m.bulan ASC`,
-                id_tenant
+                `WITH months AS ( SELECT generate_series(DATE_TRUNC('month', (SELECT MIN(tanggal) FROM setor WHERE tanggal IS NOT NULL)), DATE_TRUNC('month', (SELECT MAX(tanggal) FROM setor WHERE tanggal IS NOT NULL)), interval '1 month') AS bulan) SELECT m.bulan, SUM(s.nilai)::bigint AS total FROM months m LEFT JOIN setor s ON DATE_TRUNC('month', s.tanggal) = m.bulan WHERE s.id_tenant='${id_tenant}' GROUP BY m.bulan ORDER BY m.bulan ASC`
             );
             const mapped = bulanIuran.map((row) => ({
                 bulan: row.bulan.toISOString().substring(0, 7), // YYYY-MM
@@ -2290,8 +2287,7 @@ export class Bayar {
             const bulanIuran = await this.prisma.$queryRawUnsafe<
                 { bulan: Date; total: bigint | null }[]
             >(
-                `WITH months AS (SELECT generate_series(DATE_TRUNC('month', (SELECT MIN(tanggal) FROM anggaran)),DATE_TRUNC('month',(SELECT MAX(tanggal) FROM anggaran)),interval '1 month') AS bulan) SELECT m.bulan, SUM(a.nilai)::bigint AS total FROM months m LEFT JOIN anggaran a ON DATE_TRUNC('month', a.tanggal) = m.bulan AND a.id_type_anggaran = 1 AND a.id_tenant=$1 GROUP BY m.bulan ORDER BY m.bulan ASC`,
-                id_tenant
+                `WITH months AS (SELECT generate_series(DATE_TRUNC('month', (SELECT MIN(tanggal) FROM anggaran)),DATE_TRUNC('month',(SELECT MAX(tanggal) FROM anggaran)),interval '1 month') AS bulan) SELECT m.bulan, SUM(a.nilai)::bigint AS total FROM months m LEFT JOIN anggaran a ON DATE_TRUNC('month', a.tanggal) = m.bulan AND a.id_type_anggaran = 1 AND a.id_tenant='${id_tenant}' GROUP BY m.bulan ORDER BY m.bulan ASC`
             );
             const mapped = bulanIuran.map((row) => ({
                 bulan: row.bulan.toISOString().substring(0, 7), // YYYY-MM
@@ -2333,8 +2329,7 @@ export class Bayar {
             const bulanIuran = await this.prisma.$queryRawUnsafe<
                 { bulan: Date; total: bigint | null }[]
             >(
-                `WITH months AS (SELECT generate_series(DATE_TRUNC('month', (SELECT MIN(tanggal) FROM anggaran WHERE id_type_anggaran = 2 AND tanggal IS NOT NULL)),DATE_TRUNC('month', (SELECT MAX(tanggal) FROM anggaran WHERE id_type_anggaran = 2 AND tanggal IS NOT NULL)),interval '1 month') AS bulan) SELECT m.bulan, SUM(a.nilai)::bigint AS total FROM months m LEFT JOIN anggaran a ON DATE_TRUNC('month', a.tanggal) = m.bulan AND a.id_type_anggaran = 2 AND a.id_tenant GROUP BY m.bulan ORDER BY m.bulan ASC`,
-                id_tenant
+                `WITH months AS (SELECT generate_series(DATE_TRUNC('month', (SELECT MIN(tanggal) FROM anggaran WHERE id_type_anggaran = 2 AND tanggal IS NOT NULL)),DATE_TRUNC('month', (SELECT MAX(tanggal) FROM anggaran WHERE id_type_anggaran = 2 AND tanggal IS NOT NULL)),interval '1 month') AS bulan) SELECT m.bulan, SUM(a.nilai)::bigint AS total FROM months m LEFT JOIN anggaran a ON DATE_TRUNC('month', a.tanggal) = m.bulan AND a.id_type_anggaran = 2 AND a.id_tenant='${id_tenant}' GROUP BY m.bulan ORDER BY m.bulan ASC`
             );
             const mapped = bulanIuran.map((row) => ({
                 bulan: row.bulan.toISOString().substring(0, 7), // YYYY-MM
