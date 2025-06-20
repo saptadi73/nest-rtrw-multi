@@ -15,8 +15,10 @@ datasource db {
 
 model tenant {
   id             String           @id @default(uuid())
-  nama           String
+  nama           String @unique
   keterangan     String?
+  email String
+  no_hp String?
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
   kk             kk[]
