@@ -1,4 +1,3 @@
-import { Optional } from '@nestjs/common';
 import { IsDateString, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class KkCreateDto {
@@ -12,15 +11,15 @@ export class KkCreateDto {
     no_rumah: string;
 
     @IsString()
-    @Optional()
+    @IsOptional()
     nama: string;
 
     @IsString()
-    @Optional()
+    @IsOptional()
     no_hp: string;
 
     @IsString()
-    @Optional()
+    @IsOptional()
     nik: string;
 
     @IsDateString()
@@ -28,11 +27,11 @@ export class KkCreateDto {
     tanggal_lahir: string;
 
     @IsString()
-    @Optional()
+    @IsOptional()
     tempat_lahir: string;
 
     @IsString()
-    @Optional()
+    @IsOptional()
     jenis_kelamin: string;
 
     @IsNumber()

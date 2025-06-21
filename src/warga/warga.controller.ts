@@ -218,9 +218,9 @@ export class WargaController {
 
     @UseGuards(AuthGuard('jwt'))
     @Post('delete/bukti')
-    async deleteBukti(@Body() filedelete: CreateFileKeluargaDto) {
+    async deleteBukti(@Body() filedelete: CreateFileBuktiDto) {
         try {
-            return this.Warga.deleteFileKK(filedelete);
+            return this.Warga.deleteFileBukti(filedelete);
         } catch (error) {
             throw new HttpException(
                 {

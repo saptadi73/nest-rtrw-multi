@@ -1917,7 +1917,7 @@ export class Warga {
         }
 
         const filePath = path.join(__dirname, '..', '..', 'uploads', filename);
-
+        // console.log('nama file : ', filename);
         try {
             const deleteFile = await fs.promises.unlink(filePath);
             const deleteFileDB = await this.prisma.bukti.deleteMany({
