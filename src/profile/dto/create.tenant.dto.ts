@@ -7,4 +7,8 @@ export class CreateTenantDto {
     @IsString()
     @IsOptional()
     keterangan: string;
+
+    @IsString()
+    @IsOptional()
+    no_hp: string;
 }

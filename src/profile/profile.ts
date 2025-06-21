@@ -395,6 +395,7 @@ export class Profile {
                 data: {
                     nama: createTenant.nama,
                     keterangan: createTenant.keterangan,
+                    no_hp: createTenant.no_hp,
                 },
             });
             return { status: 'ok', message: 'berhasil tambah data tenant', result: createTenantku };
